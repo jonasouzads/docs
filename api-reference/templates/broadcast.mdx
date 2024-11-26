@@ -1,0 +1,59 @@
+---
+title: 'Enviar Template em Massa'
+description: 'Este endpoint permite enviar um template de mensagem para múltiplos destinatários de uma vez.'
+---
+
+
+## Endpoint
+
+<Icon icon="circle-right" color="#34D399" size={20} /> **GET** 
+<Icon icon="circle-right" color="#F87171" size={20} /> **POST**
+
+```bash
+https://app.wizebot.com.br/api/v1/whatsapp/broadcast/template/send
+```
+
+## Parâmetros
+
+| Parâmetro | Tipo | Obrigatório | Descrição |
+|-----------|------|-------------|-----------|
+| apiToken | String | Sim | Sua chave de API |
+| phone_number_id | String | Sim | ID do número de telefone da conta WhatsApp |
+| flow_data | JSON | Sim | Dados do fluxo de envio em formato JSON |
+
+## Exemplos de Requisição
+
+### <Icon icon="circle-right" color="#34D399" size={20} /> Requisição GET
+
+```bash
+https://app.wizebot.com.br/api/v1/whatsapp/broadcast/template/send?apiToken=CHAVE-DE-API&phone_number_id=ID-DO-NÚMERO&flow_data={"template":"boas_vindas","recipients":["5511999999999","5511988888888"]}
+```
+
+### <Icon icon="circle-right" color="#F87171" size={20} /> Requisição POST
+
+```bash
+curl -X POST \
+  'https://app.wizebot.com.br/api/v1/whatsapp/broadcast/template/send' \
+  -d 'apiToken=CHAVE-DE-API' \
+  -d 'phone_number_id=ID-DO-NÚMERO' \
+  -d 'flow_data={"template":"boas_vindas","recipients":["5511999999999","5511988888888"]}'
+```
+
+## Exemplo de Resposta
+
+```json
+{
+  "status": "1",
+  "visual_flow_campaign_id": 1727,
+  "message": "Dados salvos com sucesso.",
+  "redirect_on_success_url": ""
+}
+```
+
+## Observações
+
+- O flow_data deve ser um objeto JSON válido
+- Os números de telefone devem incluir o código do país
+- O template deve estar aprovado pelo WhatsApp
+- Há limites diários para envios em massa
+- O sistema processará os envios de forma assíncrona

@@ -1,33 +1,52 @@
 ---
-title: 'Introduction'
-description: 'Example section for showcasing API endpoints'
+title: 'Introdução'
+description: 'Bem-vindo à documentação da API do WhatsApp do Wizebot'
 ---
 
-<Note>
-  If you're not looking to build API reference documentation, you can delete
-  this section by removing the api-reference folder.
-</Note>
+# API do WhatsApp Wizebot
 
-## Welcome
+A API do WhatsApp do Wizebot permite que você integre facilmente as funcionalidades do WhatsApp Business em sua aplicação. Com nossa API, você pode enviar mensagens, gerenciar contatos, criar campanhas de broadcast e muito mais.
 
-There are two ways to build API documentation: [OpenAPI](https://mintlify.com/docs/api-playground/openapi/setup) and [MDX components](https://mintlify.com/docs/api-playground/mdx/configuration). For the starter kit, we are using the following OpenAPI specification.
+## Autenticação
 
-<Card
-  title="Plant Store Endpoints"
-  icon="leaf"
-  href="https://github.com/mintlify/starter/blob/main/api-reference/openapi.json"
->
-  View the OpenAPI specification file
-</Card>
+Todas as requisições à API precisam ser autenticadas usando um `apiToken`. Este token deve ser incluído em todas as chamadas à API.
 
-## Authentication
+```bash
+apiToken: Sua-Chave-API
+```
 
-All API endpoints are authenticated using Bearer tokens and picked up from the specification file.
+## Formatos de Resposta
+
+Todas as respostas da API são retornadas no formato JSON. Um exemplo de resposta bem-sucedida:
 
 ```json
-"security": [
-  {
-    "bearerAuth": []
-  }
-]
+{
+  "status": "1",
+  "message": "Operação realizada com sucesso"
+}
 ```
+
+Em caso de erro:
+
+```json
+{
+  "status": "0",
+  "message": "Mensagem de erro específica"
+}
+```
+
+## Limites de Taxa
+
+Para garantir a estabilidade do serviço, implementamos limites de taxa em nossas APIs. Entre em contato com nosso suporte para mais informações sobre limites específicos para sua conta.
+
+## Recursos Principais
+
+Nossa API oferece os seguintes recursos principais:
+
+- **Gerenciamento de Conta** - Conecte e gerencie contas do WhatsApp Business
+- **Envio de Mensagens** - Envie mensagens de texto e templates
+- **Gerenciamento de Contatos** - Adicione e gerencie seus contatos
+- **Templates** - Gerencie e envie mensagens usando templates
+- **Catálogo** - Gerencie seu catálogo de produtos
+- **Etiquetas** - Organize seus contatos com etiquetas
+- **Equipe** - Gerencie atribuições de chat para sua equipe

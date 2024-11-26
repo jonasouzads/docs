@@ -1,0 +1,66 @@
+---
+title: 'Enviar Mensagem do WhatsApp'
+description: 'Enviar mensagem do WhatsApp para qualquer número de celular'
+---
+
+
+## Texto vs Mensagem de Modelo
+
+Quando um usuário escreve para você no seu serviço de chat usando seu número comercial, você pode responder a ele por mensagem de texto em até 24 horas. Isso é conhecido como mensagem de texto iniciada pelo cliente ou mensagem de sessão. Uma mensagem de modelo do WhatsApp, por outro lado, usa um modelo pré-aprovado para comunicação e é uma mensagem de saída lançada por uma empresa. Você pode entrar em contato com um usuário usando mensagens de modelo se acidentalmente não responder à mensagem dele em até 24 horas.
+
+## Endpoint
+
+<Icon icon="circle-right" color="#34D399" size={20} /> **GET** 
+<Icon icon="circle-right" color="#F87171" size={20} /> **POST**
+
+```bash
+https://app.wizebot.com.br/api/v1/whatsapp/send
+```
+
+## Parâmetros
+
+| Parâmetro | Tipo | Obrigatório | Descrição |
+|-----------|------|-------------|-----------|
+| apiToken | String | Sim | Sua chave de API |
+| phone_number_id | String | Sim | Número de telefone da conta do WhatsApp ID |
+| message | String | Sim | Conteúdo da mensagem de texto (necessário valor codificado em URL para solicitação GET) |
+| phone_number | String | Sim | Deve começar com o código do país e apenas caracteres numéricos são permitidos |
+
+## Exemplos de Requisição
+
+### <Icon icon="circle-right" color="#34D399" size={20} /> Requisição GET
+
+```bash
+https://app.wizebot.com.br/api/v1/whatsapp/send?apiToken=API-KEY&phone_number_id=PHONE-NUMBER-ID&message=TEXT-MESSAGE&phone_number=PHONE-NUMBER
+```
+
+### <Icon icon="circle-right" color="#F87171" size={20} /> Requisição POST
+
+```bash
+curl -X POST \
+  'https://app.wizebot.com.br/api/v1/whatsapp/send' \
+  -d 'apiToken=API-KEY' \
+  -d 'phone_number_id=PHONE-NUMBER-ID' \
+  -d 'message=TEXT-MESSAGE' \
+  -d 'phone_number=PHONE-NUMBER'
+```
+
+## Respostas Possíveis
+
+### Sucesso
+
+```json
+{
+  "status": "1",
+  "message": "Message sent successfully."
+}
+```
+
+### Erro - Limite de Assinantes Excedido
+
+```json
+{
+  "status": "0",
+  "message": "Subscriber limit has been exceeded. You cannot have more subscribers."
+}
+```

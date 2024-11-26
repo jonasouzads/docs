@@ -1,6 +1,6 @@
 {
   "$schema": "https://mintlify.com/schema.json",
-  "name": "Starter Kit",
+  "name": "API WhatsApp Wizebot",
   "logo": {
     "dark": "/logo/dark.svg",
     "light": "/logo/light.svg"
@@ -17,13 +17,13 @@
   },
   "topbarLinks": [
     {
-      "name": "Support",
-      "url": "mailto:hi@mintlify.com"
+      "name": "Suporte",
+      "url": "https://wa.me/559192226534"
     }
   ],
   "topbarCtaButton": {
-    "name": "Dashboard",
-    "url": "https://dashboard.mintlify.com"
+    "name": "Ir para plataforma",
+    "url": "https://app.wizebot.com.br/dashboard"
   },
   "tabs": [
     {
@@ -31,61 +31,55 @@
       "url": "api-reference"
     }
   ],
-  "anchors": [
-    {
-      "name": "Documentation",
-      "icon": "book-open-cover",
-      "url": "https://mintlify.com/docs"
-    },
-    {
-      "name": "Community",
-      "icon": "slack",
-      "url": "https://mintlify.com/community"
-    },
-    {
-      "name": "Blog",
-      "icon": "newspaper",
-      "url": "https://mintlify.com/blog"
-    }
-  ],
+  "search": {
+    "prompt": "Buscar na documentação..."
+  },
   "navigation": [
     {
-      "group": "Get Started",
+      "group": "Introdução",
+      "pages": ["api-reference/introduction"]
+    },
+    {
+      "group": "Conta",
+      "pages": ["api-reference/account/connect"]
+    },
+    {
+      "group": "Mensagens",
+      "pages": ["api-reference/messages/send"]
+    },
+    {
+      "group": "Templates",
       "pages": [
-        "introduction",
-        "quickstart",
-        "development"
+        "api-reference/templates/list",
+        "api-reference/templates/broadcast"
       ]
     },
     {
-      "group": "Essentials",
+      "group": "Assinantes",
       "pages": [
-        "essentials/markdown",
-        "essentials/code",
-        "essentials/images",
-        "essentials/settings",
-        "essentials/navigation",
-        "essentials/reusable-snippets"
+        "api-reference/subscribers/list",
+        "api-reference/subscribers/get",
+        "api-reference/subscribers/create",
+        "api-reference/subscribers/update",
+        "api-reference/subscribers/reset-flow",
+        "api-reference/subscribers/assign-team",
+        "api-reference/subscribers/custom-fields"
       ]
     },
     {
-      "group": "API Documentation",
+      "group": "Etiquetas",
       "pages": [
-        "api-reference/introduction"
+        "api-reference/labels/list",
+        "api-reference/labels/create"
       ]
     },
     {
-      "group": "Endpoint Examples",
+      "group": "Catálogo",
       "pages": [
-        "api-reference/endpoint/get",
-        "api-reference/endpoint/create",
-        "api-reference/endpoint/delete"
+        "api-reference/catalog/list",
+        "api-reference/catalog/orders",
+        "api-reference/catalog/order-status"
       ]
     }
-  ],
-  "footerSocials": {
-    "x": "https://x.com/mintlify",
-    "github": "https://github.com/mintlify",
-    "linkedin": "https://linkedin.com/company/mintlify"
-  }
+  ]
 }

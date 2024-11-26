@@ -1,0 +1,76 @@
+---
+title: 'Listar Templates'
+description: 'Este endpoint retorna a lista de todos os templates de mensagem disponíveis para sua conta.'
+---
+
+
+## Endpoint
+
+<Icon icon="circle-right" color="#34D399" size={20} /> **GET** 
+<Icon icon="circle-right" color="#F87171" size={20} /> **POST**
+
+```bash
+https://app.wizebot.com.br/api/v1/whatsapp/template/list
+```
+
+## Parâmetros
+
+| Parâmetro | Tipo | Obrigatório | Descrição |
+|-----------|------|-------------|-----------|
+| apiToken | String | Sim | Sua chave de API |
+| phone_number_id | String | Sim | Número de telefone da conta do WhatsApp ID |
+
+## Exemplos de Requisição
+
+### <Icon icon="circle-right" color="#34D399" size={20} /> Requisição GET
+
+```bash
+https://app.wizebot.com.br/api/v1/whatsapp/template/list?apiToken=API-KEY&phone_number_id=PHONE-NUMBER-ID
+```
+
+### <Icon icon="circle-right" color="#F87171" size={20} /> Requisição POST
+
+```bash
+curl -X POST \
+  'https://app.wizebot.com.br/api/v1/whatsapp/template/list' \
+  -d 'apiToken=API-KEY' \
+  -d 'phone_number_id=PHONE-NUMBER-ID'
+```
+
+## Exemplo de Resposta
+
+```json
+{
+  "status": "1",
+  "message": {
+    "id": 48,
+    "template_id": "437509121867805",
+    "whatsapp_business_id": 11,
+    "template_name": "ada",
+    "template_type": "single",
+    "locale": "en_US",
+    "header_type": "media",
+    "header_subtype": "image",
+    "header_content": "",
+    "body_content": "To send an interactive message template, make a POST call to /PHONE_NUMBER_ID/",
+    "footer_content": "",
+    "button_content": "[]",
+    "template_json": "{\"name\":\"template_23_1666095188\",\"language\":\"en_US\",\"category\":\"transactional\",\"components\":[{\"type\":\"header\",\"format\":\"image\",\"example\":{\"header_handle\":[\"http:\\/\\/telegram.test\\/assets\\/images\\/template\\/image.jpg\"]}},{\"type\":\"body\",\"text\":\"To send an interactive message template, make a POST call to \\/PHONE_NUMBER_ID\\/\"}],\"access_token\":\"EAAHFAlhZBSyEBAIRZCsHKZA5ZAdOWMRL7AwuuCBKd3tZChAQQ1PHojPUS5k76aMVyzzxG9bYp2JQ57aLMfQBCZCpvXKac4KLDZAhejOuw1zkNCxGjvK7J5YwNmZBwTTd8Iig2YDq0vGZBoS20ipsLB4scbOOh0WmQrj7oLI9ZC5rFlsFC9mYctgQKIyJCvZBfgn5pGE1YPiBllrqwZDZD\"}",
+    "button_type": "none",
+    "variable_map": "{\"header\":[],\"body\":[]}",
+    "updated_at": "2022-10-18 12:13:09",
+    "user_id": 1,
+    "status": "Rejected",
+    "system_template": "0",
+    "map_needed": "0",
+    "check_wp_type": "general"
+  }
+}
+
+## Observações
+
+- Os templates retornados são apenas os aprovados pelo WhatsApp
+- O status pode ser: APPROVED, PENDING, REJECTED
+- As categorias podem variar conforme as políticas do WhatsApp
+- Os componentes podem ser: HEADER, BODY, FOOTER, BUTTONS
+- Suporta paginação através dos cursores na resposta

@@ -1,0 +1,56 @@
+---
+title: 'Obter Assinante'
+description: 'Este endpoint permite obter informações detalhadas de um assinante específico.'
+---
+
+## Endpoint
+
+<Icon icon="circle-right" color="#F87171" size={20} /> **POST**
+
+```bash
+https://app.wizebot.com.br/api/v1/whatsapp/subscriber/get
+```
+
+## Parâmetros
+
+| Parâmetro | Tipo | Obrigatório | Descrição |
+|-----------|------|-------------|-----------|
+| apiToken | String | Sim | Sua chave de API |
+| phone_number_id | String | Sim | Número de telefone da conta do WhatsApp ID |
+| phone_number | String | Sim | Número de telefone do assinante |
+
+## Exemplos de Requisição
+
+### <Icon icon="circle-right" color="#34D399" size={20} /> Requisição GET
+
+```bash
+https://app.wizebot.com.br/api/v1/whatsapp/subscriber/get?apiToken=API-KEY&phone_number_id=PHONE-NUMBER-ID&phone_number=PHONE-NUMBER
+```
+
+### <Icon icon="circle-right" color="#F87171" size={20} /> Requisição POST
+
+```bash
+curl -X POST \
+  'https://app.wizebot.com.br/api/v1/whatsapp/subscriber/get' \
+  -d 'apiToken=API-KEY' \
+  -d 'phone_number_id=PHONE-NUMBER-ID' \
+  -d 'phone_number=PHONE-NUMBER'
+```
+
+## Exemplo de Resposta
+
+```json
+{
+  "status": "1",
+  "message": [
+    {
+      "subscriber_id": 144,
+      "chat_id": "8801521455XXX",
+      "first_name": "Md Ronok",
+      "last_name": "Ronok",
+      "email": "test@gmail.com",
+      "gender": "Male",
+      "label_names": "Label1,Label2"
+    }
+  ]
+}

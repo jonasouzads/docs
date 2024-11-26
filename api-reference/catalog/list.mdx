@@ -1,0 +1,57 @@
+---
+title: 'Listar Catálogo'
+description: 'Este endpoint permite obter a lista de todos os produtos disponíveis no seu catálogo do WhatsApp.'
+---
+
+## Endpoint
+
+<Icon icon="circle-right" color="#34D399" size={20} /> **GET** 
+<Icon icon="circle-right" color="#F87171" size={20} /> **POST**
+
+```bash
+https://app.wizebot.com.br/api/v1/whatsapp/catalog/list
+```
+
+## Parâmetros
+
+| Parâmetro | Tipo | Obrigatório | Descrição |
+|-----------|------|-------------|-----------|
+| apiToken | String | Sim | Sua chave de API |
+
+## Exemplos de Requisição
+
+### <Icon icon="circle-right" color="#34D399" size={20} /> Requisição GET
+
+```bash
+https://app.wizebot.com.br/api/v1/whatsapp/catalog/list?apiToken=API-KEY
+```
+
+### <Icon icon="circle-right" color="#F87171" size={20} /> Requisição POST
+
+```bash
+curl -X POST \
+  'https://app.wizebot.com.br/api/v1/whatsapp/catalog/list' \
+  -d 'apiToken=API-KEY'
+```
+
+## Exemplo de Resposta
+
+```json
+{
+  "status": true,
+  "message": [
+    {
+      "catalog_id": "1429267xxxx5095",
+      "catalog_name": "The White",
+      "catalog_url": "https:xxxxx",
+      "checkout_settings": "{\"tax_percentage\":\"5.5\",\"shipping_charge\":\"20\"}"
+    }
+  ]
+}
+```
+
+## Observações
+
+- O campo status na resposta indica se o produto está ativo (true) ou inativo (false)
+- A resposta pode conter informações adicionais sobre o catálogo, como o nome e a URL
+- A URL da imagem é a mesma utilizada no catálogo do WhatsApp
