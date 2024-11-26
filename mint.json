@@ -3,16 +3,17 @@
   "name": "API WhatsApp Wizebot",
   "logo": {
     "dark": "/logo/dark.svg",
-    "light": "/logo/light.svg"
+    "light": "/logo/light.svg",
+    "href": "https://app.wizebot.com.br"
   },
   "favicon": "/favicon.svg",
   "colors": {
-    "primary": "#0D9373",
-    "light": "#07C983",
-    "dark": "#0D9373",
+    "primary": "#1C77FD",
+    "light": "#1C77FD",
+    "dark": "#1C77FD",
     "anchors": {
-      "from": "#0D9373",
-      "to": "#07C983"
+      "from": "#1C77FD",
+      "to": "#09E37D"
     }
   },
   "topbarLinks": [
@@ -40,16 +41,25 @@
   },
   "backgroundImage": "/images/background-light.png",
   "style": {
-    "accentLight": "#E8F5FF",
-    "accentDark": "#0D1117",
+    "accentLight": "#1C77FD",
+    "accentDark": "#1C77FD",
     "codeBlockLight": "#F6F8FA",
-    "codeBlockDark": "#161B22",
-    "navIconSize": "1.5rem"
+    "codeBlockDark": "#222f3e",
+    "navIconSize": "1.5rem",
+    "primaryDark": "#09E37D",
+    "primaryLight": "#1C77FD"
   },
   "spacing": {
     "navGroupSpacing": 64,
     "navItemSpacing": 32,
     "pageBottomSpacing": 48
+  },
+  "modeToggle": {
+    "default": "light"
+  },
+  "feedback": {
+    "thumbsRating": true,
+    "suggestEdit": true
   },
   "navigation": [
     {
