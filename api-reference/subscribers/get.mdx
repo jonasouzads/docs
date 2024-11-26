@@ -1,9 +1,54 @@
 ---
 title: 'Obter Assinante'
 description: 'Este endpoint permite obter informações detalhadas de um assinante específico.'
+api: 'POST https://app.wizebot.com.br/api/v1/whatsapp/subscriber/get'
+contentType: 'application/x-www-form-urlencoded'
+authentication: 'API Key'
+rightToc:
+  includeLevel: [2]
+  examples: true
+  theme: 'dark'
+  snippets:
+    - cURL
+    - Python
+    - JavaScript
+    - PHP
+  responses:
+    - success
+    - error
 ---
 
-## Endpoint
+<Note>
+  Obtenha informações detalhadas dos seus assinantes do WhatsApp de forma rápida e simples.
+</Note>
+
+<CardGroup cols={2}>
+  <Card title="Dados do Assinante" icon="user">
+    Acesse nome, email, gênero e outras informações do perfil.
+  </Card>
+  <Card title="Labels e Segmentação" icon="tags">
+    Visualize as labels associadas ao assinante para melhor segmentação.
+  </Card>
+</CardGroup>
+
+## Informações Disponíveis
+
+<Tabs>
+  <Tab title="Dados Pessoais">
+    - **Nome Completo**: Primeiro e último nome
+    - **Email**: Endereço de email cadastrado
+    - **Gênero**: Gênero do assinante
+    - **ID do Chat**: Identificador único da conversa
+  </Tab>
+  <Tab title="Segmentação">
+    - **Labels**: Tags para categorização
+    - **ID do Assinante**: Identificador único
+    - **Número**: Número do WhatsApp
+    - **Status**: Estado atual do assinante
+  </Tab>
+</Tabs>
+
+## Ponto de Extremidade da API
 
 <Icon icon="circle-right" color="#F87171" size={20} /> **POST**
 
@@ -19,17 +64,33 @@ https://app.wizebot.com.br/api/v1/whatsapp/subscriber/get
 | phone_number_id | String | Sim | Número de telefone da conta do WhatsApp ID |
 | phone_number | String | Sim | Número de telefone do assinante |
 
-## Exemplos de Requisição
+## Testar a API
 
-### <Icon icon="circle-right" color="#34D399" size={20} /> Requisição GET
+<Note>
+  Teste a API usando os exemplos de código abaixo. Substitua os valores dos parâmetros pelos seus dados reais.
+</Note>
 
-```bash
-https://app.wizebot.com.br/api/v1/whatsapp/subscriber/get?apiToken=API-KEY&phone_number_id=PHONE-NUMBER-ID&phone_number=PHONE-NUMBER
-```
+<ParamField body="apiToken" type="string" required>
+  Sua chave de API
+</ParamField>
 
-### <Icon icon="circle-right" color="#F87171" size={20} /> Requisição POST
+<ParamField body="phone_number_id" type="string" required>
+  Número de telefone da conta do WhatsApp ID
+</ParamField>
 
-```bash
+<ParamField body="phone_number" type="string" required placeholder="5511999999999">
+  Número de telefone do assinante (com código do país)
+</ParamField>
+
+<Tip>
+  O número do telefone deve incluir o código do país (ex: 55 para Brasil) sem caracteres especiais.
+</Tip>
+
+## Exemplos de Código
+
+<RequestExample>
+
+```bash cURL
 curl -X POST \
   'https://app.wizebot.com.br/api/v1/whatsapp/subscriber/get' \
   -d 'apiToken=API-KEY' \
@@ -37,20 +98,114 @@ curl -X POST \
   -d 'phone_number=PHONE-NUMBER'
 ```
 
-## Exemplo de Resposta
+```python Python
+import requests
 
-```json
-{
-  "status": "1",
-  "message": [
-    {
-      "subscriber_id": 144,
-      "chat_id": "8801521455XXX",
-      "first_name": "Md Ronok",
-      "last_name": "Ronok",
-      "email": "test@gmail.com",
-      "gender": "Male",
-      "label_names": "Label1,Label2"
-    }
-  ]
+url = "https://app.wizebot.com.br/api/v1/whatsapp/subscriber/get"
+payload = {
+    "apiToken": "API-KEY",
+    "phone_number_id": "PHONE-NUMBER-ID",
+    "phone_number": "PHONE-NUMBER"
 }
+
+response = requests.post(url, data=payload)
+print(response.json())
+```
+
+```javascript JavaScript
+fetch('https://app.wizebot.com.br/api/v1/whatsapp/subscriber/get', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/x-www-form-urlencoded',
+  },
+  body: new URLSearchParams({
+    'apiToken': 'API-KEY',
+    'phone_number_id': 'PHONE-NUMBER-ID',
+    'phone_number': 'PHONE-NUMBER'
+  })
+})
+.then(response => response.json())
+.then(data => console.log(data));
+```
+
+```php PHP
+<?php
+$url = "https://app.wizebot.com.br/api/v1/whatsapp/subscriber/get";
+$data = array(
+    'apiToken' => 'API-KEY',
+    'phone_number_id' => 'PHONE-NUMBER-ID',
+    'phone_number' => 'PHONE-NUMBER'
+);
+
+$options = array(
+    'http' => array(
+        'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
+        'method'  => 'POST',
+        'content' => http_build_query($data)
+    )
+);
+
+$context = stream_context_create($options);
+$result = file_get_contents($url, false, $context);
+echo $result;
+?>
+```
+
+</RequestExample>
+
+<ResponseField name="success" type="200 - OK">
+  ```json
+  {
+    "status": "1",
+    "message": [
+      {
+        "subscriber_id": 144,
+        "chat_id": "8801521455XXX",
+        "first_name": "JS Jonas",
+        "last_name": "Jonas",
+        "email": "test@gmail.com",
+        "gender": "Male",
+        "label_names": "Label1,Label2"
+      }
+    ]
+  }
+  ```
+</ResponseField>
+
+<ResponseField name="error" type="400 - Bad Request">
+  ```json
+  {
+    "status": "0",
+    "message": "Assinante não encontrado ou parâmetros inválidos."
+  }
+  ```
+</ResponseField>
+
+## Dicas e Boas Práticas
+
+<AccordionGroup>
+  <Accordion title="Formato do Número">
+    - Use apenas números
+    - Inclua o código do país
+    - Remova caracteres especiais
+    - Exemplo: 5511999999999
+  </Accordion>
+  
+  <Accordion title="Uso de Labels">
+    - Use para segmentação
+    - Facilita campanhas direcionadas
+    - Melhora a organização
+    - Permite automações específicas
+  </Accordion>
+
+  <Accordion title="Dados do Assinante">
+    - Mantenha dados atualizados
+    - Respeite a LGPD
+    - Use informações com responsabilidade
+    - Implemente cache quando necessário
+  </Accordion>
+</AccordionGroup>
+
+<Note>
+  Em caso de dúvidas ou problemas ao obter informações dos assinantes, entre em contato com nosso suporte técnico.
+</Note>

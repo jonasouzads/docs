@@ -1,14 +1,55 @@
 ---
-title: 'Enviar Mensagem do WhatsApp'
+title: 'API WhatsApp: Enviar Mensagem'
 description: 'Enviar mensagem do WhatsApp para qualquer número de celular'
+api: 'POST https://app.wizebot.com.br/api/v1/whatsapp/send'
+contentType: 'application/x-www-form-urlencoded'
+authentication: 'API Key'
+rightToc:
+  includeLevel: [2]
+  examples: true
+  theme: 'dark'
+  snippets:
+    - cURL
+    - Python
+    - JavaScript
+    - PHP
+    - Go
+  responses:
+    - success
+    - error
 ---
 
+<Note>
+  Envie mensagens para seus clientes de forma simples e rápida usando nossa API WhatsApp.
+</Note>
+
+<CardGroup cols={2}>
+  <Card title="Início Rápido" icon="bolt">
+    Comece a enviar mensagens em menos de 5 minutos.
+  </Card>
+  <Card title="Limites de Uso" icon="clock">
+    24 horas para responder mensagens de texto livre.
+  </Card>
+</CardGroup>
 
 ## Texto vs Mensagem de Modelo
 
-Quando um usuário escreve para você no seu serviço de chat usando seu número comercial, você pode responder a ele por mensagem de texto em até 24 horas. Isso é conhecido como mensagem de texto iniciada pelo cliente ou mensagem de sessão. Uma mensagem de modelo do WhatsApp, por outro lado, usa um modelo pré-aprovado para comunicação e é uma mensagem de saída lançada por uma empresa. Você pode entrar em contato com um usuário usando mensagens de modelo se acidentalmente não responder à mensagem dele em até 24 horas.
+<Tabs>
+  <Tab title="Mensagem de Texto">
+    - Resposta a mensagens recebidas
+    - Janela de 24 horas para responder
+    - Texto livre sem aprovação prévia
+    - Ideal para atendimento ao cliente
+  </Tab>
+  <Tab title="Mensagem de Modelo">
+    - Mensagens iniciadas pela empresa
+    - Sem limite de tempo para envio
+    - Requer aprovação prévia do template
+    - Ideal para marketing e notificações
+  </Tab>
+</Tabs>
 
-## Endpoint
+## Ponto de Extremidade da API
 
 <Icon icon="circle-right" color="#34D399" size={20} /> **GET** 
 <Icon icon="circle-right" color="#F87171" size={20} /> **POST**
@@ -26,17 +67,35 @@ https://app.wizebot.com.br/api/v1/whatsapp/send
 | message | String | Sim | Conteúdo da mensagem de texto (necessário valor codificado em URL para solicitação GET) |
 | phone_number | String | Sim | Deve começar com o código do país e apenas caracteres numéricos são permitidos |
 
-## Exemplos de Requisição
+## Testar a API
 
-### <Icon icon="circle-right" color="#34D399" size={20} /> Requisição GET
+### Insira os parâmetros
 
-```bash
-https://app.wizebot.com.br/api/v1/whatsapp/send?apiToken=API-KEY&phone_number_id=PHONE-NUMBER-ID&message=TEXT-MESSAGE&phone_number=PHONE-NUMBER
-```
+<ParamField body="apiToken" type="string" required>
+  Sua chave de API
+</ParamField>
 
-### <Icon icon="circle-right" color="#F87171" size={20} /> Requisição POST
+<ParamField body="phone_number_id" type="string" required>
+  Número de telefone da conta do WhatsApp ID
+</ParamField>
 
-```bash
+<ParamField body="message" type="string" required>
+  Conteúdo da mensagem de texto
+</ParamField>
+
+<ParamField body="phone_number" type="string" required placeholder="5511999999999">
+  Número do destinatário (com código do país)
+</ParamField>
+
+<Tip>
+  Certifique-se de incluir o código do país no número de telefone (ex: 55 para Brasil).
+</Tip>
+
+### Enviar Requisição
+
+<RequestExample>
+
+```bash cURL
 curl -X POST \
   'https://app.wizebot.com.br/api/v1/whatsapp/send' \
   -d 'apiToken=API-KEY' \
@@ -45,22 +104,134 @@ curl -X POST \
   -d 'phone_number=PHONE-NUMBER'
 ```
 
-## Respostas Possíveis
+```python Python
+import requests
 
-### Sucesso
+url = "https://app.wizebot.com.br/api/v1/whatsapp/send"
 
-```json
-{
-  "status": "1",
-  "message": "Message sent successfully."
+payload = {
+    "apiToken": "API-KEY",
+    "phone_number_id": "PHONE-NUMBER-ID",
+    "message": "TEXT-MESSAGE",
+    "phone_number": "PHONE-NUMBER"
+}
+
+response = requests.post(url, data=payload)
+print(response.json())
+```
+
+```javascript JavaScript
+fetch('https://app.wizebot.com.br/api/v1/whatsapp/send', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/x-www-form-urlencoded',
+  },
+  body: new URLSearchParams({
+    'apiToken': 'API-KEY',
+    'phone_number_id': 'PHONE-NUMBER-ID',
+    'message': 'TEXT-MESSAGE',
+    'phone_number': 'PHONE-NUMBER'
+  })
+})
+.then(response => response.json())
+.then(data => console.log(data));
+```
+
+```php PHP
+<?php
+$url = "https://app.wizebot.com.br/api/v1/whatsapp/send";
+$data = array(
+    'apiToken' => 'API-KEY',
+    'phone_number_id' => 'PHONE-NUMBER-ID',
+    'message' => 'TEXT-MESSAGE',
+    'phone_number' => 'PHONE-NUMBER'
+);
+
+$options = array(
+    'http' => array(
+        'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
+        'method'  => 'POST',
+        'content' => http_build_query($data)
+    )
+);
+
+$context = stream_context_create($options);
+$result = file_get_contents($url, false, $context);
+echo $result;
+?>
+```
+
+```go Go
+package main
+
+import (
+    "fmt"
+    "net/http"
+    "net/url"
+    "io/ioutil"
+)
+
+func main() {
+    apiUrl := "https://app.wizebot.com.br/api/v1/whatsapp/send"
+    data := url.Values{}
+    data.Set("apiToken", "API-KEY")
+    data.Set("phone_number_id", "PHONE-NUMBER-ID")
+    data.Set("message", "TEXT-MESSAGE")
+    data.Set("phone_number", "PHONE-NUMBER")
+
+    resp, err := http.PostForm(apiUrl, data)
+    if err != nil {
+        panic(err)
+    }
+    defer resp.Body.Close()
+
+    body, _ := ioutil.ReadAll(resp.Body)
+    fmt.Println(string(body))
 }
 ```
 
-### Erro - Limite de Assinantes Excedido
+</RequestExample>
 
-```json
-{
-  "status": "0",
-  "message": "Subscriber limit has been exceeded. You cannot have more subscribers."
-}
-```
+<ResponseField name="success" type="200 - OK">
+  ```json
+  {
+    "status": "1",
+    "message": "Mensagem enviada com sucesso."
+  }
+  ```
+</ResponseField>
+
+<ResponseField name="error" type="400 - Bad Request">
+  ```json
+  {
+    "status": "0",
+    "message": "Limite de assinantes excedido. Você não pode ter mais assinantes."
+  }
+  ```
+</ResponseField>
+
+## Dicas e Boas Práticas
+
+<AccordionGroup>
+  <Accordion title="Formatação de Números">
+    - Use apenas números (sem caracteres especiais)
+    - Inclua o código do país (ex: 55 para Brasil)
+    - Não inclua o '+' no início do número
+  </Accordion>
+  
+  <Accordion title="Mensagens de Texto">
+    - Responda dentro da janela de 24 horas
+    - Mantenha mensagens concisas e claras
+    - Evite spam ou mensagens repetitivas
+  </Accordion>
+
+  <Accordion title="Tratamento de Erros">
+    - Sempre verifique o status da resposta
+    - Implemente retentativas para falhas temporárias
+    - Mantenha logs para diagnóstico
+  </Accordion>
+</AccordionGroup>
+
+<Note>
+  Em caso de dúvidas ou problemas, entre em contato com nosso suporte técnico.
+</Note>

@@ -27,6 +27,10 @@
   },
   "tabs": [
     {
+      "name": "Tutoriais",
+      "url": "tutorials"
+    },
+    {
       "name": "API Reference",
       "url": "api-reference"
     }
@@ -34,52 +38,130 @@
   "search": {
     "prompt": "Buscar na documentação..."
   },
+  "backgroundImage": "/images/background-light.png",
+  "style": {
+    "accentLight": "#E8F5FF",
+    "accentDark": "#0D1117",
+    "codeBlockLight": "#F6F8FA",
+    "codeBlockDark": "#161B22",
+    "navIconSize": "1.5rem"
+  },
+  "spacing": {
+    "navGroupSpacing": 64,
+    "navItemSpacing": 32,
+    "pageBottomSpacing": 48
+  },
   "navigation": [
     {
-      "group": "Introdução",
-      "pages": ["api-reference/introduction"]
-    },
-    {
-      "group": "Conta",
-      "pages": ["api-reference/account/connect"]
-    },
-    {
-      "group": "Mensagens",
-      "pages": ["api-reference/messages/send"]
-    },
-    {
-      "group": "Templates",
+      "group": "Tutoriais",
       "pages": [
-        "api-reference/templates/list",
-        "api-reference/templates/broadcast"
+        {
+          "group": "Visão Geral",
+          "icon": "eye",
+          "pages": [
+            "tutorials/overview/introduction",
+            "tutorials/overview/whatsapp-cloud",
+            "tutorials/overview/display-name",
+            "tutorials/overview/profile-photo"
+          ]
+        },
+        {
+          "group": "Instalação e Configuração",
+          "icon": "gear",
+          "pages": [
+            "tutorials/setup/connect-whatsapp",
+            "tutorials/setup/payment-method"
+          ]
+        },
+        {
+          "group": "Modelos de Mensagem",
+          "icon": "message-bot",
+          "pages": [
+            "tutorials/message-templates/overview",
+            "tutorials/message-templates/creation"
+          ]
+        },
+        {
+          "group": "Gerenciador de Bots",
+          "icon": "robot",
+          "pages": [
+            "tutorials/bot-manager/no-keyword",
+            "tutorials/bot-manager/flow"
+          ]
+        },
+        {
+          "group": "Inteligência Artificial",
+          "icon": "brain",
+          "pages": [
+            "tutorials/ai/chatgpt"
+          ]
+        },
+        {
+          "group": "Gerenciador de Contatos",
+          "icon": "address-book",
+          "pages": [
+            "tutorials/contact-manager/overview",
+            "tutorials/contact-manager/import"
+          ]
+        },
+        {
+          "group": "Campanha",
+          "icon": "bullhorn",
+          "pages": [
+            "tutorials/campaign/mass-messaging"
+          ]
+        },
+        {
+          "group": "Bate-papo Ao Vivo",
+          "icon": "messages",
+          "pages": [
+            "tutorials/live-chat/inbox"
+          ]
+        },
+        {
+          "group": "Integração Webhook",
+          "icon": "webhook",
+          "pages": [
+            "tutorials/webhook/form-capture",
+            "tutorials/webhook/kirvano",
+            "tutorials/webhook/kiwify"
+          ]
+        },
+        {
+          "group": "Solução de Problemas",
+          "icon": "wrench",
+          "pages": [
+            "tutorials/troubleshooting/common-issues",
+            "tutorials/troubleshooting/faq"
+          ]
+        }
       ]
     },
     {
-      "group": "Assinantes",
+      "group": "API Reference",
       "pages": [
+        "api-reference/introduction",
+        "api-reference/account/connect",
+        "api-reference/messages/send",
+        "api-reference/templates/list",
+        "api-reference/templates/broadcast",
         "api-reference/subscribers/list",
         "api-reference/subscribers/get",
         "api-reference/subscribers/create",
         "api-reference/subscribers/update",
-        "api-reference/subscribers/reset-flow",
+        "api-reference/subscribers/custom-fields",
         "api-reference/subscribers/assign-team",
-        "api-reference/subscribers/custom-fields"
-      ]
-    },
-    {
-      "group": "Etiquetas",
-      "pages": [
+        "api-reference/subscribers/reset-flow",
         "api-reference/labels/list",
-        "api-reference/labels/create"
-      ]
-    },
-    {
-      "group": "Catálogo",
-      "pages": [
+        "api-reference/labels/create",
         "api-reference/catalog/list",
         "api-reference/catalog/orders",
+        "api-reference/catalog/order-list",
         "api-reference/catalog/order-status"
       ]
     }
-  ]
+  ],
+  "footerSocials": {
+    "website": "https://wizebot.com.br"
+  }
 }

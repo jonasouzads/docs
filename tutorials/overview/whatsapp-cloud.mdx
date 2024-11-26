@@ -1,0 +1,90 @@
+---
+title: 'WhatsApp Cloud API'
+description: 'Entenda os conceitos básicos da API do WhatsApp Cloud'
+---
+
+## O que é a WhatsApp Cloud API?
+
+A WhatsApp Cloud API é uma interface baseada em nuvem que permite que empresas se comuniquem com seus clientes através do WhatsApp de forma programática.
+
+## Principais Conceitos
+
+<CardGroup cols={2}>
+  <Card title="Webhooks" icon="webhook">
+    Receba notificações em tempo real de eventos do WhatsApp
+  </Card>
+  <Card title="Templates" icon="file-code">
+    Mensagens pré-aprovadas para iniciar conversas
+  </Card>
+  <Card title="Session Messages" icon="messages">
+    Mensagens dentro da janela de 24 horas
+  </Card>
+  <Card title="Business Profile" icon="building">
+    Informações e configurações da sua empresa
+  </Card>
+</CardGroup>
+
+## Tipos de Mensagem Suportados
+
+| Tipo | Descrição | Suporte |
+|------|-----------|---------|
+| Texto | Mensagens de texto simples | ✅ |
+| Imagem | JPG, PNG | ✅ |
+| Documento | PDF, DOC | ✅ |
+| Áudio | MP3, OGG | ✅ |
+| Vídeo | MP4, 3GPP | ✅ |
+| Botões | Até 3 botões | ✅ |
+| Lista | Menu de opções | ✅ |
+
+## Janela de 24 Horas
+
+<Note>
+A WhatsApp Cloud API tem uma política de janela de 24 horas para respostas. Após esse período, apenas templates podem ser usados.
+</Note>
+
+## Limites e Restrições
+
+- **Taxa de Envio**: Limite de mensagens por segundo
+- **Tamanho de Mídia**: Máximo de 64MB
+- **Templates**: Processo de aprovação necessário
+- **Números**: Verificação de negócio requerida
+
+## Fluxo de Comunicação
+
+<Frame>
+  ```mermaid
+  sequenceDiagram
+    participant C as Cliente
+    participant W as WhatsApp
+    participant A as API Wizebot
+    participant B as Seu Backend
+    
+    C->>W: Envia mensagem
+    W->>A: Webhook notification
+    A->>B: Encaminha evento
+    B->>A: Processa resposta
+    A->>W: Envia resposta
+    W->>C: Entrega mensagem
+  ```
+</Frame>
+
+## Boas Práticas
+
+<Check>Use templates para mensagens iniciais</Check>
+<Check>Responda dentro da janela de 24h</Check>
+<Check>Implemente tratamento de erros</Check>
+<Check>Monitore as taxas de entrega</Check>
+
+## Próximos Passos
+
+<Steps>
+  <Step title="Instalação">
+    [Configure sua primeira integração](/tutorials/setup/installation)
+  </Step>
+  <Step title="Templates">
+    [Crie seus templates de mensagem](/tutorials/message-templates/overview)
+  </Step>
+  <Step title="Webhooks">
+    [Configure os webhooks](/tutorials/webhook/setup)
+  </Step>
+</Steps>
