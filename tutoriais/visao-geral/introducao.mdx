@@ -43,27 +43,65 @@ O Wizebot é uma plataforma completa para automação de WhatsApp Business, perm
 
 ## Arquitetura da Plataforma
 
-<Frame>
-  ```mermaid
-  graph TD
-    A[Cliente WhatsApp] -->|Mensagem| B[Wizebot Platform]
-    B -->|Processamento| C[Automações]
-    B -->|Gerenciamento| D[Equipe]
-    C -->|Resposta| A
-    D -->|Atendimento| A
-  ```
-</Frame>
+```mermaid
+flowchart LR
+    subgraph Wizebot
+        direction TB
+        API[API OFICIAL] --> Auto[Automações]
+        API --> IA[Inteligência Artificial]
+        API --> Webhook[Webhooks]
+        API --> Multi[Múltiplos Atendentes]
+        
+        Auto --> Int[Integração]
+        IA --> Int
+        
+        style API fill:#0D9373,color:#fff
+        style Auto fill:#07C983,color:#fff
+        style IA fill:#9C27B0,color:#fff
+        style Webhook fill:#F44336,color:#fff
+        style Multi fill:#2196F3,color:#fff
+        style Int fill:#FF9800,color:#fff
+    end
+```
+
+O Wizebot é uma plataforma robusta e escalável para automação de WhatsApp. Nossa arquitetura é dividida em componentes principais:
+
+<CardGroup>
+  <Card title="API OFICIAL" icon="code">
+    Utilizamos a API oficial do WhatsApp
+  </Card>
+  
+  <Card title="Automações" icon="robot">
+    Motor de automação para suas conversas
+  </Card>
+  
+  <Card title="Inteligência Artificial" icon="brain">
+    Processamento inteligente de mensagens
+  </Card>
+  
+  <Card title="Webhooks" icon="webhook">
+    Integração com sistemas externos
+  </Card>
+  
+  <Card title="Múltiplos Atendentes" icon="users">
+    Gestão de equipe de atendimento
+  </Card>
+  
+  <Card title="Integração" icon="puzzle">
+    Conexão com outras plataformas
+  </Card>
+</CardGroup>
 
 ## Próximos Passos
 
 <Steps>
   <Step title="Configuração">
-    Aprenda a [configurar sua conta](/tutorials/setup/installation)
+    Aprenda a [configurar sua conta](/tutoriais/configuracao/conectar-whatsapp)
   </Step>
   <Step title="WhatsApp Cloud">
-    Entenda a [API do WhatsApp Cloud](/tutorials/overview/whatsapp-cloud)
+    Entenda a [API do WhatsApp Cloud](/tutoriais/visao-geral/whatsapp-cloud)
   </Step>
   <Step title="Templates">
-    Crie seus primeiros [templates de mensagem](/tutorials/message-templates/overview)
+    Crie seus primeiros [modelos de mensagem](/tutoriais/modelos-mensagem/criacao)
   </Step>
 </Steps>
