@@ -1,0 +1,74 @@
+---
+title: "Modelos de Autenticação"
+description: "Aprenda sobre os modelos de autenticação e suas restrições específicas"
+---
+
+## Modelos de Autenticação
+
+Somente modelos de autenticação podem ser usados para enviar um código de acesso único para verificação de identidade; os de marketing e utilidade não podem ser usados para isso.
+
+<Note>
+A partir de 1º de outubro de 2024, as empresas na API de Nuvem poderão usar modelos de autenticação da biblioteca de modelos.
+</Note>
+
+Com modelos de autenticação, as empresas podem autenticar usuários com senhas de uso único (em geral, códigos alfanuméricos de 4 a 8 dígitos) em várias etapas do processo de login (por exemplo, verificação/recuperação de conta e desafios de integridade).
+
+## Requisitos e Restrições
+
+Os modelos de autenticação são os mais restritos. Para que um modelo seja classificado como "autenticação", a empresa deve seguir estas diretrizes:
+
+<CardGroup>
+  <Card title="Modelos Predefinidos" icon="shield-check">
+    Usar os modelos de mensagem de autenticação predefinidos do WhatsApp, que contam com complementos opcionais, como avisos legais de segurança e notificações de expiração.
+  </Card>
+  <Card title="Botão OTP" icon="key">
+    Configurar um botão de senha descartável (copiar código ou um toque).
+  </Card>
+  <Card title="Restrições de Conteúdo" icon="ban">
+    Respeitar as restrições de conteúdo: não são permitidos URLs, mídias e emojis em parâmetros ou no conteúdo dos modelos de autenticação.
+  </Card>
+</CardGroup>
+
+<Warning>
+No caso dos parâmetros, há um limite máximo de 15 caracteres.
+</Warning>
+
+## Exemplos de Modelos
+
+<AccordionGroup>
+  <Accordion title="Código de Autenticação Básico">
+    **Exemplo:**
+    
+    "\{\{1\}\} é seu código de verificação."
+  </Accordion>
+
+  <Accordion title="Código com Aviso de Segurança">
+    **Exemplo:**
+    
+    "\{\{1\}\} é seu código de verificação. Para sua segurança, não compartilhe esse código."
+  </Accordion>
+
+  <Accordion title="Código com Tempo de Expiração">
+    **Exemplo:**
+    
+    "\{\{1\}\} é seu código de verificação. Esse código expira em 15 minutos."
+  </Accordion>
+</AccordionGroup>
+
+## Melhores Práticas
+
+<CardGroup>
+  <Card title="Segurança" icon="lock">
+    Sempre inclua avisos de segurança para educar os usuários sobre a importância de não compartilhar o código.
+  </Card>
+  <Card title="Expiração" icon="clock">
+    Defina e comunique claramente o tempo de expiração do código para melhor experiência do usuário.
+  </Card>
+  <Card title="Simplicidade" icon="wand-sparkles">
+    Mantenha as mensagens simples e diretas, focando apenas na autenticação.
+  </Card>
+</CardGroup>
+
+<Warning>
+**Importante:** Modelos de autenticação são exclusivos para verificação de identidade. Não tente usar modelos de marketing ou utilidade para este fim, pois isso viola as políticas do WhatsApp.
+</Warning>
