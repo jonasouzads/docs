@@ -1,0 +1,48 @@
+---
+title: 'Conectar Conta'
+description: 'Conectar conta do WhatsApp Business'
+---
+
+## Endpoint
+
+<Icon icon="circle-right" color="#F87171" size={20} /> **POST**
+
+```bash
+https://app.wizebot.com.br/api/v1/whatsapp/account/connect
+```
+
+## Parâmetros
+
+| Parâmetro | Tipo | Obrigatório | Descrição |
+|-----------|------|-------------|-----------|
+| apiToken | String | Sim | Sua chave de API |
+| user_id | Integer | Sim | ID do usuário do proprietário da conta do WhatsApp |
+| whatsapp_business_account_id | String | Sim | ID da Conta do WhatsApp Business |
+| access_token | String | Sim | Token de Acesso |
+
+## Exemplo de Requisição
+
+### <Icon icon="circle-right" color="#34D399" size={20} /> Requisição GET
+
+```bash
+https://app.wizebot.com.br/api/v1/whatsapp/account/connect?apiToken=API-KEY&user_id=USER-ID&whatsapp_business_account_id=WHATSAPP-BUSINESS-ACCOUNT-ID&access_token=ACCESS-TOKEN
+```
+
+### <Icon icon="circle-right" color="#F87171" size={20} /> Requisição POST
+
+```bash
+curl -X POST \
+  'https://app.wizebot.com.br/api/v1/whatsapp/account/connect' \
+  -d 'apiToken=API-KEY' \
+  -d 'user_id=USER-ID' \
+  -d 'whatsapp_business_account_id=WHATSAPP-BUSINESS-ACCOUNT-ID' \
+  -d 'access_token=ACCESS-TOKEN'
+```
+
+## Exemplo de Resposta
+
+```json
+{
+  "status": "1",
+  "message": "Whatsapp account has been connect successfully."
+}

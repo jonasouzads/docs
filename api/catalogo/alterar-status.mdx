@@ -1,0 +1,47 @@
+---
+title: 'Alterar Status do Pedido'
+description: 'Este endpoint permite alterar o status de um pedido específico do catálogo.'
+---
+
+## Endpoint
+
+<Icon icon="circle-right" color="#34D399" size={20} /> **GET** 
+<Icon icon="circle-right" color="#F87171" size={20} /> **POST**
+
+```bash
+https://app.wizebot.com.br/api/v1/whatsapp/catalog/order/status-change
+```
+
+## Parâmetros
+
+| Parâmetro | Tipo | Obrigatório | Descrição |
+|-----------|------|-------------|-----------|
+| apiToken | String | Sim | Sua chave de API |
+| order_unique_id | String | Sim | Seu ID de Pedido do Catálogo |
+| cart_status | String | Sim | O valor do status deve ser Aprovado\|Concluído\|Enviado\|Entregue\|Reembolsado. |
+
+## Exemplos de Requisição
+
+### <Icon icon="circle-right" color="#34D399" size={20} /> Requisição GET
+
+```bash
+https://app.wizebot.com.br/api/v1/whatsapp/catalog/order/status-change?apiToken=API-KEY&order_unique_id=ORDER-UNIQUE-ID&cart_status=CART-STATUS
+```
+
+### <Icon icon="circle-right" color="#F87171" size={20} /> Requisição POST
+
+```bash
+curl -X POST \
+  'https://app.wizebot.com.br/api/v1/whatsapp/catalog/order/status-change' \
+  -d 'apiToken=API-KEY' \
+  -d 'order_unique_id=ORDER-UNIQUE-ID' \
+  -d 'cart_status=CART-STATUS'
+```
+
+## Exemplo de Resposta
+
+```json
+{
+  "status": true,
+  "message": "Cart status has been updated successfully"
+}

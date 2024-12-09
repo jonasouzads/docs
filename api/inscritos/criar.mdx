@@ -1,0 +1,85 @@
+---
+title: 'Criar Assinante'
+description: 'Este endpoint permite criar um novo assinante/contato no WhatsApp Business.'
+---
+
+
+## Endpoint
+
+<Icon icon="circle-right" color="#F87171" size={20} /> **POST**
+
+```bash
+https://app.wizebot.com.br/api/v1/whatsapp/subscriber/create
+```
+
+## Parâmetros
+
+| Parâmetro | Tipo | Obrigatório | Descrição |
+|-----------|------|-------------|-----------|
+| apiToken | String | Sim | Sua chave de API |
+| phoneNumberID | String | Sim | Número de telefone da conta do WhatsApp ID |
+| name | String | Sim | Nome do seu assinante |
+| phoneNumber | String | Sim | Número de telefone do assinante com código do país (sem o sinal de +) |
+
+## Exemplos de Requisição
+
+### <Icon icon="circle-right" color="#34D399" size={20} /> Requisição GET
+
+```bash
+https://app.wizebot.com.br/api/v1/whatsapp/subscriber/create?apiToken=API-KEY&phoneNumberID=PHONE-NUMBER-ID&name=NAME&phoneNumber=MOBILE
+```
+
+### <Icon icon="circle-right" color="#F87171" size={20} /> Requisição POST
+
+```bash
+curl -X POST \
+  'https://app.wizebot.com.br/api/v1/whatsapp/subscriber/create' \
+  -d 'apiToken=API-KEY' \
+  -d 'phoneNumberID=PHONE-NUMBER-ID' \
+  -d 'name=NAME' \
+  -d 'phoneNumber=MOBILE'
+```
+
+## Exemplos de Resposta
+
+### Sucesso
+
+```json
+{
+  "status": "1",
+  "mesasge": "WhatsApp subscriber has been created."
+}
+```
+
+### Erro - Conta não encontrada
+
+```json
+{
+  "status": "0",
+  "message": "WhatsApp account not found."
+}
+```
+
+### Erro - Limite de assinantes excedido
+
+```json
+{
+  "status": "0",
+  "message": "Subscriber limit has been exceeded. You cannot have more subscribers."
+}
+```
+
+### Erro - Assinante já existe
+
+```json
+{
+  "status": "0",
+  "message": "Something went wrong or subscriber already exist."
+}
+```
+
+## Observações
+
+- O número de telefone deve incluir o código do país sem o sinal de +
+- Certifique-se de que o assinante não existe antes de tentar criar
+- Verifique se você não atingiu o limite de assinantes da sua conta

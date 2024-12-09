@@ -1,0 +1,53 @@
+---
+title: 'Atribuir Chat à Equipe'
+description: 'Este endpoint permite atribuir o chat de um assinante a um membro específico da equipe.'
+---
+
+## Endpoint
+
+```bash
+POST https://app.wizebot.com.br/api/v1/whatsapp/subscriber/chat/assign-to-team-member
+```
+
+## Parâmetros
+
+| Parâmetro | Tipo | Obrigatório | Descrição |
+|-----------|------|-------------|-----------|
+| apiToken | String | Sim | Sua chave de API |
+| phone_number_id | String | Sim | ID do número de telefone da conta WhatsApp |
+| phone_number | String | Sim | Número de telefone do assinante |
+| team_member_id | Integer | Sim | ID do membro da equipe |
+
+## Exemplo de Requisição
+
+### GET
+
+```bash
+https://app.wizebot.com.br/api/v1/whatsapp/subscriber/chat/assign-to-team-member?apiToken=API-KEY&phone_number_id=PHONE-NUMBER-ID&phone_number=PHONE-NUMBER&team_member_id=TEAM-MEMBER-ID
+```
+
+### POST
+
+```bash
+curl -X POST \
+  'https://app.wizebot.com.br/api/v1/whatsapp/subscriber/chat/assign-to-team-member' \
+  -d 'apiToken=API-KEY' \
+  -d 'phone_number_id=PHONE-NUMBER-ID' \
+  -d 'phone_number=PHONE-NUMBER' \
+  -d 'team_member_id=TEAM-MEMBER-ID'
+```
+
+## Exemplo de Resposta
+
+```json
+{
+  "status": "1",
+  "message": "Successfully Assign Agent to Conversation."
+}
+```
+
+## Observações
+
+- O team_member_id deve ser um ID válido de um membro da sua equipe
+- A atribuição pode ser alterada a qualquer momento usando o mesmo endpoint
+- Apenas um membro da equipe pode ser atribuído por vez a um chat

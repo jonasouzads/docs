@@ -1,0 +1,208 @@
+{
+  "$schema": "https://mintlify.com/schema.json",
+  "name": "Central de Ajuda - Wizebot",
+  "logo": {
+    "dark": "/logo/dark.svg",
+    "light": "/logo/light.svg",
+    "href": "https://app.wizebot.com.br"
+  },
+  "favicon": "/favicon.svg",
+  "colors": {
+    "primary": "#0D9373",
+    "light": "#07C983",
+    "dark": "#0D9373",
+    "anchors": {
+      "from": "#0D9373",
+      "to": "#07C983"
+    }
+  },
+  "topbarLinks": [
+    {
+      "name": "Suporte",
+      "url": "https://wa.me/559192226534"
+    }
+  ],
+  "topbarCtaButton": {
+    "name": "Dashboard",
+    "url": "https://app.wizebot.com.br"
+  },
+  "anchors": [
+    {
+      "name": "Blog",
+      "icon": "newspaper",
+      "url": "https://wizebot.com.br/blog"
+    },
+    {
+      "name": "WhatsApp",
+      "icon": "whatsapp",
+      "url": "https://wa.me/559192226534"
+    }
+  ],
+  "navigation": [
+    {
+      "group": "Primeiros Passos",
+      "icon": "rocket-launch",
+      "pages": [
+        "tutoriais/visao-geral/introducao",
+        "tutoriais/visao-geral/whatsapp-cloud",
+        "tutoriais/visao-geral/nome-exibicao",
+        "tutoriais/visao-geral/foto-perfil",
+        {
+          "group": "Configuração",
+          "icon": "gear",
+          "pages": [
+            "tutoriais/configuracao/conectar-whatsapp",
+            "tutoriais/configuracao/metodo-pagamento"
+          ]
+        }
+      ]
+    },
+    {
+      "group": "WhatsApp",
+      "icon": "messages",
+      "pages": [
+        {
+          "group": "Modelos de Mensagem",
+          "icon": "envelope",
+          "pages": [
+            "tutoriais/modelos-mensagem/visao-geral",
+            "tutoriais/modelos-mensagem/marketing",
+            "tutoriais/modelos-mensagem/utilidade",
+            "tutoriais/modelos-mensagem/autenticacao",
+            "tutoriais/modelos-mensagem/atualizacoes-precos",
+            "tutoriais/modelos-mensagem/criacao"
+          ]
+        },
+        {
+          "group": "Automação",
+          "icon": "sparkles",
+          "pages": [
+            "tutoriais/gerenciador-bots/sem-palavra-chave",
+            "tutoriais/gerenciador-bots/fluxo"
+          ]
+        },
+        {
+          "group": "Contatos",
+          "icon": "users",
+          "pages": [
+            "tutoriais/gerenciador-contatos/visao-geral",
+            "tutoriais/gerenciador-contatos/importar",
+            "tutoriais/subscribers"
+          ]
+        },
+        {
+          "group": "Atendimento",
+          "icon": "headset",
+          "pages": [
+            "tutoriais/bate-papo/caixa-entrada"
+          ]
+        },
+        {
+          "group": "Campanhas",
+          "icon": "megaphone",
+          "pages": [
+            "tutoriais/campanha/mensagem-em-massa"
+          ]
+        },
+        {
+          "group": "Integrações",
+          "icon": "webhook",
+          "pages": [
+            "tutoriais/integracoes/captura-formulario",
+            "tutoriais/integracoes/kirvano",
+            "tutoriais/integracoes/kiwify",
+            "tutoriais/integracoes/woocommerce"
+          ]
+        },
+        {
+          "group": "IA",
+          "icon": "brain",
+          "pages": [
+            "tutoriais/ia/chatgpt"
+          ]
+        },
+        {
+          "group": "Solução de Problemas",
+          "icon": "wrench",
+          "pages": [
+            "tutoriais/solucao-problemas/problemas-comuns",
+            "tutoriais/solucao-problemas/perguntas-frequentes"
+          ]
+        }
+      ]
+    },
+    {
+      "group": "API",
+      "icon": "code",
+      "pages": [
+        "api/introducao",
+        {
+          "group": "Conta",
+          "icon": "user",
+          "pages": [
+            "api/conta/conectar"
+          ]
+        },
+        {
+          "group": "Mensagens",
+          "icon": "envelope",
+          "pages": [
+            "api/mensagens/enviar-templates",
+            "api/mensagens/listar-templates",
+            "api/mensagens/broadcast"
+          ]
+        },
+        {
+          "group": "Inscritos",
+          "icon": "users",
+          "pages": [
+            "api/inscritos/listar",
+            "api/inscritos/obter",
+            "api/inscritos/criar",
+            "api/inscritos/atualizar",
+            "api/inscritos/campos-personalizados",
+            "api/inscritos/atribuir-equipe",
+            "api/inscritos/resetar-fluxo"
+          ]
+        },
+        {
+          "group": "Etiquetas",
+          "icon": "tags",
+          "pages": [
+            "api/etiquetas/listar",
+            "api/etiquetas/criar"
+          ]
+        },
+        {
+          "group": "Catálogo",
+          "icon": "shop",
+          "pages": [
+            "api/catalogo/listar",
+            "api/catalogo/alterar-status",
+            "api/catalogo/listar-pedidos"
+          ]
+        }
+      ]
+    },
+    {
+      "group": "Atualizações",
+      "icon": "stars",
+      "pages": [
+        "changelog/atualizacoes"
+      ]
+    }
+  ],
+  "footerSocials": {
+    "website": "https://wizebot.com.br",
+    "instagram": "https://instagram.com/wizebot.com.br"
+  },
+  "analytics": {
+    "ga4": {
+      "measurementId": "G-XXXXXXXXXX"
+    }
+  },
+  "feedback": {
+    "thumbsRating": true,
+    "suggestEdit": true
+  }
+}

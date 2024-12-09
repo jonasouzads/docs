@@ -1,0 +1,71 @@
+---
+title: 'Enviando Mensagens'
+description: 'Aprenda a enviar diferentes tipos de mensagens usando o Wizebot'
+---
+
+## Tipos de Mensagem
+
+O Wizebot suporta vários tipos de mensagem:
+
+<CardGroup>
+  <Card title="Texto" icon="message">
+    Mensagens de texto simples ou formatadas
+  </Card>
+  <Card title="Mídia" icon="image">
+    Imagens, vídeos, áudios e documentos
+  </Card>
+  <Card title="Botões" icon="circle-dot">
+    Mensagens interativas com botões
+  </Card>
+  <Card title="Listas" icon="list">
+    Menus de opções em formato de lista
+  </Card>
+</CardGroup>
+
+## Enviando Mensagem de Texto
+
+```javascript
+const response = await fetch('https://app.wizebot.com.br/api/v1/whatsapp/send', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/x-www-form-urlencoded',
+    'Authorization': 'Bearer SEU_TOKEN'
+  },
+  body: new URLSearchParams({
+    'phone_number': '5511999999999',
+    'message': 'Olá! Esta é uma mensagem de teste.'
+  })
+});
+```
+
+## Enviando Mídia
+
+Para enviar mídia, você precisa fornecer a URL do arquivo:
+
+```javascript
+const response = await fetch('https://app.wizebot.com.br/api/v1/whatsapp/send', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/x-www-form-urlencoded',
+    'Authorization': 'Bearer SEU_TOKEN'
+  },
+  body: new URLSearchParams({
+    'phone_number': '5511999999999',
+    'message': 'Confira nossa promoção!',
+    'media_url': 'https://exemplo.com/imagem.jpg'
+  })
+});
+```
+
+## Boas Práticas
+
+<Check>Sempre valide o número de telefone antes de enviar</Check>
+<Check>Evite enviar muitas mensagens em sequência</Check>
+<Check>Use templates para mensagens frequentes</Check>
+<Check>Monitore as taxas de entrega</Check>
+
+## Próximos Passos
+
+- [Criar templates de mensagem](/tutorials/templates)
+- [Gerenciar assinantes](/tutorials/subscribers)
+- [Documentação da API](/api-reference/messages/send)

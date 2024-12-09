@@ -1,0 +1,51 @@
+---
+title: 'Listar Etiquetas'
+description: 'Este endpoint permite obter a lista de todas as etiquetas disponíveis para sua conta do WhatsApp.'
+---
+
+## Endpoint
+
+<Icon icon="circle-right" color="#34D399" size={20} /> **GET** 
+<Icon icon="circle-right" color="#F87171" size={20} /> **POST**
+
+```bash
+https://app.wizebot.com.br/api/v1/whatsapp/label/list
+```
+
+## Parâmetros
+
+| Parâmetro | Tipo | Obrigatório | Descrição |
+|-----------|------|-------------|-----------|
+| apiToken | String | Sim | Sua chave de API |
+| phone_number_id | String | Sim | Seu número de telefone do WhatsApp |
+
+## Exemplos de Requisição
+
+### <Icon icon="circle-right" color="#34D399" size={20} /> Requisição GET
+
+```bash
+https://app.wizebot.com.br/api/v1/whatsapp/label/list?apiToken=API-KEY&phone_number_id=PHONE-NUMBER-ID
+```
+
+### <Icon icon="circle-right" color="#F87171" size={20} /> Requisição POST
+
+```bash
+curl -X POST \
+  'https://app.wizebot.com.br/api/v1/whatsapp/label/list' \
+  -d 'apiToken=API-KEY' \
+  -d 'phone_number_id=PHONE-NUMBER-ID'
+```
+
+## Exemplo de Resposta
+
+```json
+{
+  "status": "1",
+  "message": [
+    {
+      "id": 1,
+      "label_name": "Your label name",
+      "status": "1"
+    }
+  ]
+}

@@ -1,0 +1,67 @@
+---
+title: 'Listar Pedidos do Catálogo'
+description: 'Este endpoint permite obter a lista de todos os pedidos do catálogo.'
+---
+
+## Endpoint
+
+<Icon icon="circle-right" color="#34D399" size={20} /> **GET** 
+<Icon icon="circle-right" color="#F87171" size={20} /> **POST**
+
+```bash
+https://app.wizebot.com.br/api/v1/whatsapp/catalog/order/list
+```
+
+## Parâmetros
+
+| Parâmetro | Tipo | Obrigatório | Descrição |
+|-----------|------|-------------|-----------|
+| apiToken | String | Sim | Sua chave de API |
+| whatsapp_catalog_id | String | Não | Seu ID de catálogo do WhatsApp |
+
+## Exemplos de Requisição
+
+### <Icon icon="circle-right" color="#34D399" size={20} /> Requisição GET
+
+```bash
+https://app.wizebot.com.br/api/v1/whatsapp/catalog/order/list?apiToken=API-KEY&whatsapp_catalog_id=WHATSAPP-CATALOG-ID
+```
+
+### <Icon icon="circle-right" color="#F87171" size={20} /> Requisição POST
+
+```bash
+curl -X POST \
+  'https://app.wizebot.com.br/api/v1/whatsapp/catalog/order/list' \
+  -d 'apiToken=API-KEY' \
+  -d 'whatsapp_catalog_id=WHATSAPP-CATALOG-ID'
+```
+
+## Exemplo de Resposta
+
+```json
+{
+  "status": "1",
+  "message": [
+    {
+      "order_unique_id": "17231046738801724816054",
+      "catalog_id": "762561142206860",
+      "chat_id": "8801724816XXX",
+      "catalog_name": "Ez soci Chat",
+      "first_name": "JS Jonas",
+      "cart_total": 4300,
+      "cart_currency": "USD",
+      "cart_status_raw": "Submitted",
+      "ordered_at": "2024-08-08 08:11:13",
+      "updated_at": "2024-08-08 08:30:40",
+      "payment_amount": 4300,
+      "payment_method": "Cash on Delivery",
+      "shipping_address": "{\"name\":\"Mamuduzzaman Jonas\",\"phone_number\":\"015XXXXXXXXX\",\"email\":\"Jonas@gmail.com\",\"address\":\"pti road\"}",
+      "checkout_account_email": null,
+      "checkout_amount": "0",
+      "checkout_timestamp": null,
+      "transaction_id": "PD1723104673880172481605433FAD1",
+      "paid_at": "2024-08-08 08:30:40",
+      "status_changed_at": "2024-08-08 08:30:40"
+    }
+  ]
+}

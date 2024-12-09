@@ -1,0 +1,209 @@
+---
+title: 'Listar Modelos'
+description: 'Este endpoint retorna a lista de todos os templates de mensagem disponíveis para sua conta.'
+api: 'POST https://app.wizebot.com.br/api/v1/whatsapp/template/list'
+contentType: 'application/x-www-form-urlencoded'
+authentication: 'API Key'
+openapi: listTemplates
+rightToc:
+  includeLevel: [2]
+  examples: true
+  theme: 'dark'
+  snippets:
+    - cURL
+    - Python
+    - JavaScript
+    - PHP
+  responses:
+    - success
+    - error
+---
+
+<Note>
+  Liste e gerencie seus templates de mensagem do WhatsApp de forma simples e eficiente.
+</Note>
+
+<CardGroup cols={2}>
+  <Card title="Templates Aprovados" icon="check-circle">
+    Visualize todos os seus templates aprovados pelo WhatsApp.
+  </Card>
+  <Card title="Componentes Suportados" icon="puzzle">
+    Header, Body, Footer e Buttons personalizáveis.
+  </Card>
+</CardGroup>
+
+## Tipos de Template
+
+<Tabs>
+  <Tab title="Componentes">
+    - **Header**: Título, imagem ou vídeo
+    - **Body**: Texto principal com variáveis
+    - **Footer**: Texto adicional opcional
+    - **Buttons**: Botões interativos
+  </Tab>
+  <Tab title="Status">
+    - **Approved**: Template aprovado e pronto para uso
+    - **Pending**: Em análise pelo WhatsApp
+    - **Rejected**: Reprovado, necessita ajustes
+  </Tab>
+</Tabs>
+
+## Ponto de Extremidade da API
+
+<Icon icon="circle-right" color="#F87171" size={20} /> **POST**
+
+```bash
+https://app.wizebot.com.br/api/v1/whatsapp/template/list
+```
+
+## Parâmetros
+
+| Parâmetro | Tipo | Obrigatório | Descrição |
+|-----------|------|-------------|-----------|
+| apiToken | String | Sim | Sua chave de API |
+| phone_number_id | String | Sim | Número de telefone da conta do WhatsApp ID |
+
+## Testar a API
+
+<Note>
+  Teste a API usando os exemplos de código abaixo. Substitua os valores dos parâmetros pelos seus dados reais.
+</Note>
+
+<ParamField body="apiToken" type="string" required>
+  Sua chave de API
+</ParamField>
+
+<ParamField body="phone_number_id" type="string" required>
+  Número de telefone da conta do WhatsApp ID
+</ParamField>
+
+<Tip>
+  Use uma chave de API válida para listar todos os seus templates disponíveis.
+</Tip>
+
+## Exemplos de Código
+
+<RequestExample>
+
+```bash cURL
+curl -X POST \
+  'https://app.wizebot.com.br/api/v1/whatsapp/template/list' \
+  -d 'apiToken=API-KEY' \
+  -d 'phone_number_id=PHONE-NUMBER-ID'
+```
+
+```python Python
+import requests
+
+url = "https://app.wizebot.com.br/api/v1/whatsapp/template/list"
+payload = {
+    "apiToken": "API-KEY",
+    "phone_number_id": "PHONE-NUMBER-ID"
+}
+
+response = requests.post(url, data=payload)
+print(response.json())
+```
+
+```javascript JavaScript
+fetch('https://app.wizebot.com.br/api/v1/whatsapp/template/list', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/x-www-form-urlencoded',
+  },
+  body: new URLSearchParams({
+    'apiToken': 'API-KEY',
+    'phone_number_id': 'PHONE-NUMBER-ID'
+  })
+})
+.then(response => response.json())
+.then(data => console.log(data));
+```
+
+```php PHP
+<?php
+$url = "https://app.wizebot.com.br/api/v1/whatsapp/template/list";
+$data = array(
+    'apiToken' => 'API-KEY',
+    'phone_number_id' => 'PHONE-NUMBER-ID'
+);
+
+$options = array(
+    'http' => array(
+        'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
+        'method'  => 'POST',
+        'content' => http_build_query($data)
+    )
+);
+
+$context = stream_context_create($options);
+$result = file_get_contents($url, false, $context);
+echo $result;
+?>
+```
+
+</RequestExample>
+
+<ResponseField name="success" type="200 - OK">
+  ```json
+  {
+    "status": "1",
+    "message": {
+      "id": 48,
+      "template_id": "437509121867805",
+      "whatsapp_business_id": 11,
+      "template_name": "ada",
+      "template_type": "single",
+      "locale": "en_US",
+      "header_type": "media",
+      "header_subtype": "image",
+      "header_content": "",
+      "body_content": "To send an interactive message template...",
+      "footer_content": "",
+      "button_content": "[]",
+      "status": "Approved",
+      "system_template": "0",
+      "map_needed": "0",
+      "check_wp_type": "general"
+    }
+  }
+  ```
+</ResponseField>
+
+<ResponseField name="error" type="400 - Bad Request">
+  ```json
+  {
+    "status": "0",
+    "message": "Parâmetros inválidos ou ausentes."
+  }
+  ```
+</ResponseField>
+
+## Dicas e Boas Práticas
+
+<AccordionGroup>
+  <Accordion title="Componentes do Template">
+    - Combine diferentes tipos de mídia no header
+    - Use variáveis no corpo da mensagem
+    - Adicione botões interativos quando necessário
+    - Mantenha o footer conciso
+  </Accordion>
+  
+  <Accordion title="Processo de Aprovação">
+    - Siga as diretrizes do WhatsApp
+    - Evite conteúdo promocional excessivo
+    - Use linguagem clara e profissional
+    - Teste o template antes de submeter
+  </Accordion>
+
+  <Accordion title="Gerenciamento">
+    - Monitore o status dos templates
+    - Atualize templates rejeitados
+    - Mantenha um catálogo organizado
+    - Documente as variáveis usadas
+  </Accordion>
+</AccordionGroup>
+
+<Note>
+  Em caso de dúvidas ou problemas com seus templates, entre em contato com nosso suporte técnico.
+</Note>

@@ -1,0 +1,107 @@
+---
+title: "Visão Geral dos Modelos de Mensagem"
+description: "Entenda o processo de validação e aprovação dos modelos de mensagem do WhatsApp"
+---
+
+## Categorias de Modelos
+
+O WhatsApp oferece três categorias principais de modelos de mensagem, cada uma com seu propósito específico:
+
+<CardGroup>
+  <Card title="Marketing" icon="bullhorn">
+    Modelos flexíveis para promoções, vendas e engajamento com clientes.
+  </Card>
+  <Card title="Utilidade" icon="wrench">
+    Mensagens disparadas por ações do usuário, como confirmações de pedido e atualizações de conta.
+  </Card>
+  <Card title="Autenticação" icon="shield-check">
+    Exclusivamente para envio de códigos de verificação e senhas descartáveis.
+  </Card>
+</CardGroup>
+
+## Processo de Validação
+
+Quando você envia uma solicitação de criação ou edição de modelo, o WhatsApp valida a categoria indicada com base nas diretrizes e no conteúdo do modelo.
+
+<AccordionGroup>
+  <Accordion title="Status Possíveis" icon="circle-check">
+    Após a validação, seu modelo receberá um dos seguintes status:
+
+    <CardGroup>
+      <Card title="APPROVED" icon="check">
+        O modelo foi aprovado e pode ser usado imediatamente.
+      </Card>
+      <Card title="PENDING" icon="clock">
+        O modelo está em análise e aguarda aprovação.
+      </Card>
+      <Card title="REJECTED" icon="xmark">
+        A categoria foi considerada incorreta para o conteúdo do modelo.
+      </Card>
+    </CardGroup>
+  </Accordion>
+
+  <Accordion title="Aprovação (APPROVED)" icon="check-double">
+    - Indica concordância com a categoria escolhida
+    - Modelo está pronto para uso em mensagens
+    - Notificação enviada por email e no Gerenciador do WhatsApp
+    - Webhook `message_template_status_update` disparado com `event: APPROVED`
+    
+    <Note>
+    Normalmente, apenas modelos de autenticação são aprovados imediatamente, devido ao seu conteúdo predefinido.
+    </Note>
+  </Accordion>
+
+  <Accordion title="Pendente (PENDING)" icon="hourglass">
+    - Indica concordância inicial com a categoria
+    - Modelo está em processo de análise
+    - Resultado será comunicado por:
+      - Email
+      - Alerta no Gerenciador do WhatsApp
+      - Webhook `message_template_status_update` com `event: APPROVED` ou `REJECTED`
+  </Accordion>
+
+  <Accordion title="Rejeitado (REJECTED)" icon="triangle-exclamation">
+    - Indica discordância com a categoria designada
+    - Notificação enviada por:
+      - Email
+      - Alerta no Gerenciador do WhatsApp
+      - Webhook `message_template_status_update` com:
+        - `event: REJECTED`
+        - `reason: INCORRECT_CATEGORY`
+  </Accordion>
+</AccordionGroup>
+
+## Em Caso de Rejeição
+
+Se seu modelo for rejeitado, você tem três opções:
+
+<Steps>
+  <Step title="Criar Novo Modelo">
+    Crie um novo modelo com a categoria desejada e conteúdo adequado às diretrizes.
+  </Step>
+  <Step title="Atualizar Categoria">
+    Atualize manualmente a categoria do modelo para uma mais apropriada ao conteúdo.
+  </Step>
+  <Step title="Solicitar Análise">
+    Se você acredita que a rejeição foi um erro, solicite uma nova análise do modelo.
+  </Step>
+</Steps>
+
+
+<Warning>
+É importante escolher a categoria correta ao criar seu modelo. Uma categorização incorreta resultará em rejeição e atraso na aprovação do seu modelo.
+</Warning>
+
+## Melhores Práticas
+
+<CardGroup>
+  <Card title="Análise Prévia" icon="magnifying-glass">
+    Revise cuidadosamente as diretrizes de cada categoria antes de submeter seu modelo.
+  </Card>
+  <Card title="Conteúdo Adequado" icon="file-lines">
+    Certifique-se que o conteúdo do modelo está alinhado com os requisitos da categoria escolhida.
+  </Card>
+  <Card title="Monitoramento" icon="bell">
+    Configure webhooks para receber atualizações automáticas sobre o status dos seus modelos.
+  </Card>
+</CardGroup>
