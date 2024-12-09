@@ -46,15 +46,15 @@
         "tutoriais/visao-geral/introducao",
         "tutoriais/visao-geral/whatsapp-cloud",
         "tutoriais/visao-geral/nome-exibicao",
-        "tutoriais/visao-geral/foto-perfil",
-        {
-          "group": "Configuração",
-          "icon": "gear",
-          "pages": [
-            "tutoriais/configuracao/conectar-whatsapp",
-            "tutoriais/configuracao/metodo-pagamento"
-          ]
-        }
+        "tutoriais/visao-geral/foto-perfil"
+      ]
+    },
+    {
+      "group": "Configuração",
+      "icon": "gear",
+      "pages": [
+        "tutoriais/configuracao/conectar-whatsapp",
+        "tutoriais/configuracao/metodo-pagamento"
       ]
     },
     {
@@ -137,13 +137,6 @@
       "pages": [
         "api/introducao",
         {
-          "group": "Conta",
-          "icon": "user",
-          "pages": [
-            "api/conta/conectar"
-          ]
-        },
-        {
           "group": "Mensagens",
           "icon": "envelope",
           "pages": [
@@ -183,13 +176,6 @@
           ]
         }
       ]
-    },
-    {
-      "group": "Atualizações",
-      "icon": "stars",
-      "pages": [
-        "changelog/atualizacoes"
-      ]
     }
   ],
   "footerSocials": {
@@ -200,9 +186,5 @@
     "ga4": {
       "measurementId": "G-XXXXXXXXXX"
     }
-  },
-  "feedback": {
-    "thumbsRating": true,
-    "suggestEdit": true
   }
 }
