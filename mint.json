@@ -187,11 +187,14 @@
       "measurementId": "G-XXXXXXXXXX"
     }
   },
-  "openapi": "./api/openapi.json",
   "api": {
     "baseUrl": "https://app.wizebot.com.br/api/v1",
     "auth": {
-      "method": "key"
+      "method": "key",
+      "name": "X-API-Key"
+    },
+    "playground": {
+      "mode": "show"
     }
   },
   "feedback": {
