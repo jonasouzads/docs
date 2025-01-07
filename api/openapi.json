@@ -1,0 +1,42 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Wizebot API",
+    "description": "API de integração do Wizebot",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://app.wizebot.com.br/api/v1",
+      "description": "Produção"
+    }
+  ],
+  "paths": {
+    "/whatsapp/template/list": {
+      "post": {
+        "summary": "Listar Modelos",
+        "description": "Este endpoint retorna a lista de todos os templates de mensagem disponíveis para sua conta.",
+        "tags": ["Mensagens"],
+        "security": [
+          {
+            "apiKey": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de templates retornada com sucesso"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "apiKey": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-API-Key"
+      }
+    }
+  }
+}

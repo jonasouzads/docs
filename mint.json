@@ -126,7 +126,7 @@
           "icon": "wrench",
           "pages": [
             "tutoriais/solucao-problemas/problemas-comuns",
-            "tutoriais/solucao-problemas/perguntas-frequentes"
+            "tutoriais/solucao-problemas/faq"
           ]
         }
       ]
@@ -186,5 +186,10 @@
     "ga4": {
       "measurementId": "G-XXXXXXXXXX"
     }
+  },
+  "openapi": "./api/openapi.json",
+  "feedback": {
+    "thumbsRating": true,
+    "suggestEdit": true
   }
 }
