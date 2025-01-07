@@ -4,19 +4,6 @@ description: 'Enviar mensagem do WhatsApp para qualquer número de celular'
 api: 'POST https://app.wizebot.com.br/api/v1/whatsapp/send'
 contentType: 'application/x-www-form-urlencoded'
 authentication: 'API Key'
-rightToc:
-  includeLevel: [2]
-  examples: true
-  theme: 'dark'
-  snippets:
-    - cURL
-    - Python
-    - JavaScript
-    - PHP
-    - Go
-  responses:
-    - success
-    - error
 ---
 
 <Note>
@@ -49,13 +36,10 @@ rightToc:
   </Tab>
 </Tabs>
 
-## Ponto de Extremidade da API
-
-<Icon icon="circle-right" color="#34D399" size={20} /> **GET** 
-<Icon icon="circle-right" color="#F87171" size={20} /> **POST**
+## Endpoint da API
 
 ```bash
-https://app.wizebot.com.br/api/v1/whatsapp/send
+POST https://app.wizebot.com.br/api/v1/whatsapp/send
 ```
 
 ## Parâmetros
@@ -64,12 +48,10 @@ https://app.wizebot.com.br/api/v1/whatsapp/send
 |-----------|------|-------------|-----------|
 | apiToken | String | Sim | Sua chave de API |
 | phone_number_id | String | Sim | Número de telefone da conta do WhatsApp ID |
-| message | String | Sim | Conteúdo da mensagem de texto (necessário valor codificado em URL para solicitação GET) |
-| phone_number | String | Sim | Deve começar com o código do país e apenas caracteres numéricos são permitidos |
+| message | String | Sim | Conteúdo da mensagem de texto |
+| phone_number | String | Sim | Número do destinatário com código do país |
 
 ## Testar a API
-
-### Insira os parâmetros
 
 <ParamField body="apiToken" type="string" required>
   Sua chave de API
@@ -91,29 +73,27 @@ https://app.wizebot.com.br/api/v1/whatsapp/send
   Certifique-se de incluir o código do país no número de telefone (ex: 55 para Brasil).
 </Tip>
 
-### Enviar Requisição
+## Exemplos
 
-<RequestExample>
-
+<CodeGroup>
 ```bash cURL
 curl -X POST \
   'https://app.wizebot.com.br/api/v1/whatsapp/send' \
   -d 'apiToken=API-KEY' \
   -d 'phone_number_id=PHONE-NUMBER-ID' \
-  -d 'message=TEXT-MESSAGE' \
-  -d 'phone_number=PHONE-NUMBER'
+  -d 'message=Olá! Esta é uma mensagem de teste.' \
+  -d 'phone_number=5511999999999'
 ```
 
 ```python Python
 import requests
 
 url = "https://app.wizebot.com.br/api/v1/whatsapp/send"
-
 payload = {
     "apiToken": "API-KEY",
     "phone_number_id": "PHONE-NUMBER-ID",
-    "message": "TEXT-MESSAGE",
-    "phone_number": "PHONE-NUMBER"
+    "message": "Olá! Esta é uma mensagem de teste.",
+    "phone_number": "5511999999999"
 }
 
 response = requests.post(url, data=payload)
@@ -129,109 +109,31 @@ fetch('https://app.wizebot.com.br/api/v1/whatsapp/send', {
   body: new URLSearchParams({
     'apiToken': 'API-KEY',
     'phone_number_id': 'PHONE-NUMBER-ID',
-    'message': 'TEXT-MESSAGE',
-    'phone_number': 'PHONE-NUMBER'
+    'message': 'Olá! Esta é uma mensagem de teste.',
+    'phone_number': '5511999999999'
   })
 })
 .then(response => response.json())
 .then(data => console.log(data));
 ```
+</CodeGroup>
 
-```php PHP
-<?php
-$url = "https://app.wizebot.com.br/api/v1/whatsapp/send";
-$data = array(
-    'apiToken' => 'API-KEY',
-    'phone_number_id' => 'PHONE-NUMBER-ID',
-    'message' => 'TEXT-MESSAGE',
-    'phone_number' => 'PHONE-NUMBER'
-);
+## Respostas
 
-$options = array(
-    'http' => array(
-        'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
-        'method'  => 'POST',
-        'content' => http_build_query($data)
-    )
-);
-
-$context = stream_context_create($options);
-$result = file_get_contents($url, false, $context);
-echo $result;
-?>
-```
-
-```go Go
-package main
-
-import (
-    "fmt"
-    "net/http"
-    "net/url"
-    "io/ioutil"
-)
-
-func main() {
-    apiUrl := "https://app.wizebot.com.br/api/v1/whatsapp/send"
-    data := url.Values{}
-    data.Set("apiToken", "API-KEY")
-    data.Set("phone_number_id", "PHONE-NUMBER-ID")
-    data.Set("message", "TEXT-MESSAGE")
-    data.Set("phone_number", "PHONE-NUMBER")
-
-    resp, err := http.PostForm(apiUrl, data)
-    if err != nil {
-        panic(err)
-    }
-    defer resp.Body.Close()
-
-    body, _ := ioutil.ReadAll(resp.Body)
-    fmt.Println(string(body))
-}
-```
-
-</RequestExample>
-
-<ResponseField name="success" type="200 - OK">
+<ResponseField name="success" type="200">
   ```json
   {
     "status": "1",
-    "message": "Mensagem enviada com sucesso."
+    "message": "Mensagem enviada com sucesso"
   }
   ```
 </ResponseField>
 
-<ResponseField name="error" type="400 - Bad Request">
+<ResponseField name="error" type="400">
   ```json
   {
     "status": "0",
-    "message": "Limite de assinantes excedido. Você não pode ter mais assinantes."
+    "message": "Erro ao enviar mensagem"
   }
   ```
 </ResponseField>
-
-## Dicas e Boas Práticas
-
-<AccordionGroup>
-  <Accordion title="Formatação de Números">
-    - Use apenas números (sem caracteres especiais)
-    - Inclua o código do país (ex: 55 para Brasil)
-    - Não inclua o '+' no início do número
-  </Accordion>
-  
-  <Accordion title="Mensagens de Texto">
-    - Responda dentro da janela de 24 horas
-    - Mantenha mensagens concisas e claras
-    - Evite spam ou mensagens repetitivas
-  </Accordion>
-
-  <Accordion title="Tratamento de Erros">
-    - Sempre verifique o status da resposta
-    - Implemente retentativas para falhas temporárias
-    - Mantenha logs para diagnóstico
-  </Accordion>
-</AccordionGroup>
-
-<Note>
-  Em caso de dúvidas ou problemas, entre em contato com nosso suporte técnico.
-</Note>
