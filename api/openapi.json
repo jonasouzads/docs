@@ -24,13 +24,78 @@
         ],
         "responses": {
           "200": {
-            "description": "Lista de templates retornada com sucesso"
+            "description": "Lista de templates retornada com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TemplateListResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Erro na requisição",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
           }
         }
       }
     }
   },
   "components": {
+    "schemas": {
+      "TemplateListResponse": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "example": "1"
+          },
+          "message": {
+            "type": "string",
+            "example": "Templates listados com sucesso"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Template"
+            }
+          }
+        }
+      },
+      "Template": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          }
+        }
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "example": "0"
+          },
+          "message": {
+            "type": "string",
+            "example": "Mensagem de erro"
+          }
+        }
+      }
+    },
     "securitySchemes": {
       "apiKey": {
         "type": "apiKey",

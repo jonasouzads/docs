@@ -188,6 +188,12 @@
     }
   },
   "openapi": "./api/openapi.json",
+  "api": {
+    "baseUrl": "https://app.wizebot.com.br/api/v1",
+    "auth": {
+      "method": "key"
+    }
+  },
   "feedback": {
     "thumbsRating": true,
     "suggestEdit": true
