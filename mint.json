@@ -137,12 +137,22 @@
       "pages": [
         "api/introducao",
         {
+          "group": "Conta",
+          "icon": "user",
+          "pages": [
+            "api/conta/conectar"
+          ]
+        },
+        {
           "group": "Mensagens",
           "icon": "envelope",
           "pages": [
+            "api/mensagens/enviar",
             "api/mensagens/enviar-templates",
-            "api/mensagens/listar-templates",
-            "api/mensagens/broadcast"
+            "api/mensagens/broadcast",
+            "api/mensagens/trigger-bot",
+            "api/mensagens/obter-conversa",
+            "api/mensagens/listar-templates"
           ]
         },
         {

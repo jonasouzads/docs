@@ -1,15 +1,17 @@
 ---
-title: 'Listar Assinantes'
-description: 'Este endpoint retorna a lista de todos os assinantes do seu número do WhatsApp Business.'
+title: 'Lista de Assinantes'
+description: 'Obter lista de todos os assinantes'
+api: 'GET https://app.wizebot.com.br/api/v1/whatsapp/subscriber/list'
+contentType: 'application/json'
+authentication: 'API Key'
 ---
-
 
 ## Endpoint
 
 <Icon icon="circle-right" color="#34D399" size={20} /> **GET**
 
 ```bash
-https://app.wizebot.com.br/api/v1/whatsapp/subscribers
+https://app.wizebot.com.br/api/v1/whatsapp/subscriber/list
 ```
 
 ## Parâmetros
@@ -17,50 +19,40 @@ https://app.wizebot.com.br/api/v1/whatsapp/subscribers
 | Parâmetro | Tipo | Obrigatório | Descrição |
 |-----------|------|-------------|-----------|
 | apiToken | String | Sim | Sua chave de API |
-| phone_number_id | String | Sim | ID do número de telefone da conta WhatsApp |
-| page | Integer | Não | Número da página (padrão: 1) |
-| limit | Integer | Não | Quantidade de registros por página (padrão: 20) |
-| search | String | Não | Termo para busca por nome ou número |
+| phone_number_id | String | Sim | Seu número de telefone do WhatsApp |
+| limit | Number | Sim | Obter número de assinantes |
+| offset | Number | Não | Deslocamento de paginação |
 
 ## Exemplo de Requisição
 
-### <Icon icon="circle-right" color="#34D399" size={20} /> Requisição GET
-
 ```bash
-https://app.wizebot.com.br/api/v1/whatsapp/subscribers?apiToken=CHAVE-DE-API&phone_number_id=ID-DO-NÚMERO&page=1&limit=20&search=João
+https://app.wizebot.com.br/api/v1/whatsapp/subscriber/list?apiToken=API-KEY&phone_number_id=PHONE-NUMBER-ID&limit=10&offset=1
 ```
 
 ## Exemplo de Resposta
 
 ```json
 {
-  "data": [
+  "status": "1",
+  "message": [
     {
-      "id": "123456789",
-      "name": "João Silva",
-      "phone_number": "5511999999999",
-      "status": "active",
-      "tags": ["cliente", "vip"],
-      "last_interaction": "2024-01-15T14:30:00Z",
-      "custom_fields": {
-        "cidade": "São Paulo",
-        "idade": "32"
-      }
+      "subscriber_id": 144,
+      "chat_id": "880152145XXX",
+      "first_name": "Mamuduzzaman",
+      "last_name": "Ronok",
+      "email": "test@gmail.com",
+      "gender": "male",
+      "label_names": "One ,two"
+    },
+    {
+      "subscriber_id": 157,
+      "chat_id": "8801518951XXX",
+      "first_name": "Rahim",
+      "last_name": "Karim",
+      "email": "null",
+      "gender": "Male",
+      "label_names": "ChatTest,remove tag,One"
     }
-  ],
-  "pagination": {
-    "total": 150,
-    "per_page": 20,
-    "current_page": 1,
-    "last_page": 8
-  }
+  ]
 }
 ```
-
-## Observações
-
-- Os assinantes são ordenados por data da última interação
-- O status pode ser: active, inactive, blocked
-- As tags são personalizáveis e ajudam na segmentação
-- Os custom_fields são campos personalizados definidos por você
-- Use a paginação para lidar com grandes volumes de dados

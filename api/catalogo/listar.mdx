@@ -1,16 +1,10 @@
 ---
-title: 'Listar Catálogo'
-description: 'Este endpoint permite obter a lista de todos os produtos disponíveis no seu catálogo do WhatsApp.'
+title: 'Lista de Catálogos'
+description: 'Obter lista de todos os catálogos'
+api: 'GET https://app.wizebot.com.br/api/v1/whatsapp/catalog/list'
+contentType: 'application/json'
+authentication: 'API Key'
 ---
-
-## Endpoint
-
-<Icon icon="circle-right" color="#34D399" size={20} /> **GET** 
-<Icon icon="circle-right" color="#F87171" size={20} /> **POST**
-
-```bash
-https://app.wizebot.com.br/api/v1/whatsapp/catalog/list
-```
 
 ## Parâmetros
 
@@ -18,20 +12,11 @@ https://app.wizebot.com.br/api/v1/whatsapp/catalog/list
 |-----------|------|-------------|-----------|
 | apiToken | String | Sim | Sua chave de API |
 
-## Exemplos de Requisição
-
-### <Icon icon="circle-right" color="#34D399" size={20} /> Requisição GET
+## Exemplo de Requisição
 
 ```bash
-https://app.wizebot.com.br/api/v1/whatsapp/catalog/list?apiToken=API-KEY
-```
-
-### <Icon icon="circle-right" color="#F87171" size={20} /> Requisição POST
-
-```bash
-curl -X POST \
-  'https://app.wizebot.com.br/api/v1/whatsapp/catalog/list' \
-  -d 'apiToken=API-KEY'
+curl -X GET \
+  'https://app.wizebot.com.br/api/v1/whatsapp/catalog/list?apiToken=API-KEY'
 ```
 
 ## Exemplo de Resposta
@@ -50,8 +35,24 @@ curl -X POST \
 }
 ```
 
-## Observações
+### Erros Possíveis
 
-- O campo status na resposta indica se o produto está ativo (true) ou inativo (false)
-- A resposta pode conter informações adicionais sobre o catálogo, como o nome e a URL
-- A URL da imagem é a mesma utilizada no catálogo do WhatsApp
+<AccordionGroup>
+  <Accordion title="Conta não encontrada" icon="xmark">
+    ```json
+    {
+      "status": "0",
+      "message": "WhatsApp account not found."
+    }
+    ```
+  </Accordion>
+
+  <Accordion title="Catálogo não encontrado" icon="shop">
+    ```json
+    {
+      "status": "0",
+      "message": "Catalog not found for this account."
+    }
+    ```
+  </Accordion>
+</AccordionGroup>

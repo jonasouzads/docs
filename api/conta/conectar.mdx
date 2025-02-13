@@ -1,15 +1,10 @@
 ---
 title: 'Conectar Conta'
 description: 'Conectar conta do WhatsApp Business'
+api: 'POST https://app.wizebot.com.br/api/v1/whatsapp/account/connect'
+contentType: 'application/json'
+authentication: 'API Key'
 ---
-
-## Endpoint
-
-<Icon icon="circle-right" color="#F87171" size={20} /> **POST**
-
-```bash
-https://app.wizebot.com.br/api/v1/whatsapp/account/connect
-```
 
 ## Parâmetros
 
@@ -22,21 +17,16 @@ https://app.wizebot.com.br/api/v1/whatsapp/account/connect
 
 ## Exemplo de Requisição
 
-### <Icon icon="circle-right" color="#34D399" size={20} /> Requisição GET
-
-```bash
-https://app.wizebot.com.br/api/v1/whatsapp/account/connect?apiToken=API-KEY&user_id=USER-ID&whatsapp_business_account_id=WHATSAPP-BUSINESS-ACCOUNT-ID&access_token=ACCESS-TOKEN
-```
-
-### <Icon icon="circle-right" color="#F87171" size={20} /> Requisição POST
-
 ```bash
 curl -X POST \
   'https://app.wizebot.com.br/api/v1/whatsapp/account/connect' \
-  -d 'apiToken=API-KEY' \
-  -d 'user_id=USER-ID' \
-  -d 'whatsapp_business_account_id=WHATSAPP-BUSINESS-ACCOUNT-ID' \
-  -d 'access_token=ACCESS-TOKEN'
+  -H 'Content-Type: application/json' \
+  -d '{
+    "apiToken": "API-KEY",
+    "user_id": "USER-ID",
+    "whatsapp_business_account_id": "WHATSAPP-BUSINESS-ACCOUNT-ID",
+    "access_token": "ACCESS-TOKEN"
+  }'
 ```
 
 ## Exemplo de Resposta
@@ -46,3 +36,4 @@ curl -X POST \
   "status": "1",
   "message": "Whatsapp account has been connect successfully."
 }
+```

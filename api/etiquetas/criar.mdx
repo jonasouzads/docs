@@ -1,16 +1,10 @@
 ---
 title: 'Criar Etiqueta'
-description: 'Este endpoint permite criar uma nova etiqueta para sua conta do WhatsApp Business.'
+description: 'Criar uma nova etiqueta'
+api: 'POST https://app.wizebot.com.br/api/v1/whatsapp/label/create'
+contentType: 'application/json'
+authentication: 'API Key'
 ---
-
-## Endpoint
-
-<Icon icon="circle-right" color="#34D399" size={20} /> **GET** 
-<Icon icon="circle-right" color="#F87171" size={20} /> **POST**
-
-```bash
-https://app.wizebot.com.br/api/v1/whatsapp/label/create
-```
 
 ## Parâmetros
 
@@ -20,22 +14,17 @@ https://app.wizebot.com.br/api/v1/whatsapp/label/create
 | phone_number_id | String | Sim | Seu número de telefone do WhatsApp |
 | label_name | String | Sim | Nome da etiqueta |
 
-## Exemplos de Requisição
-
-### <Icon icon="circle-right" color="#34D399" size={20} /> Requisição GET
-
-```bash
-https://app.wizebot.com.br/api/v1/whatsapp/label/create?apiToken=API-KEY&phone_number_id=PHONE-NUMBER-ID&label_name=LABEL-NAME
-```
-
-### <Icon icon="circle-right" color="#F87171" size={20} /> Requisição POST
+## Exemplo de Requisição
 
 ```bash
 curl -X POST \
   'https://app.wizebot.com.br/api/v1/whatsapp/label/create' \
-  -d 'apiToken=API-KEY' \
-  -d 'phone_number_id=PHONE-NUMBER-ID' \
-  -d 'label_name=LABEL-NAME'
+  -H 'Content-Type: application/json' \
+  -d '{
+    "apiToken": "API-KEY",
+    "phone_number_id": "PHONE-NUMBER-ID",
+    "label_name": "LABEL-NAME"
+  }'
 ```
 
 ## Exemplo de Resposta
@@ -47,8 +36,24 @@ curl -X POST \
 }
 ```
 
-## Observações
+### Erros Possíveis
 
-- O nome da etiqueta deve ser único
-- O ID da etiqueta retornado pode ser usado em outras chamadas da API
-- Uma vez criada, a etiqueta pode ser atribuída a múltiplos assinantes
+<AccordionGroup>
+  <Accordion title="Etiqueta já existe" icon="xmark">
+    ```json
+    {
+      "status": "0",
+      "message": "Tag with this name already exists."
+    }
+    ```
+  </Accordion>
+
+  <Accordion title="Cor inválida" icon="palette">
+    ```json
+    {
+      "status": "0",
+      "message": "Invalid color format."
+    }
+    ```
+  </Accordion>
+</AccordionGroup>

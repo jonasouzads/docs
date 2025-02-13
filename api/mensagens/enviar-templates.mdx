@@ -1,46 +1,10 @@
 ---
-title: 'API WhatsApp: Enviar Mensagem'
-description: 'Enviar mensagem do WhatsApp para qualquer número de celular'
-api: 'POST https://app.wizebot.com.br/api/v1/whatsapp/send'
-contentType: 'application/x-www-form-urlencoded'
+title: 'Enviar Mensagem de Modelo'
+description: 'Enviar mensagem de modelo do WhatsApp para qualquer número de celular'
+api: 'POST https://app.wizebot.com.br/api/v1/whatsapp/template/send'
+contentType: 'application/json'
 authentication: 'API Key'
 ---
-
-<Note>
-  Envie mensagens para seus clientes de forma simples e rápida usando nossa API WhatsApp.
-</Note>
-
-<CardGroup cols={2}>
-  <Card title="Início Rápido" icon="bolt">
-    Comece a enviar mensagens em menos de 5 minutos.
-  </Card>
-  <Card title="Limites de Uso" icon="clock">
-    24 horas para responder mensagens de texto livre.
-  </Card>
-</CardGroup>
-
-## Texto vs Mensagem de Modelo
-
-<Tabs>
-  <Tab title="Mensagem de Texto">
-    - Resposta a mensagens recebidas
-    - Janela de 24 horas para responder
-    - Texto livre sem aprovação prévia
-    - Ideal para atendimento ao cliente
-  </Tab>
-  <Tab title="Mensagem de Modelo">
-    - Mensagens iniciadas pela empresa
-    - Sem limite de tempo para envio
-    - Requer aprovação prévia do template
-    - Ideal para marketing e notificações
-  </Tab>
-</Tabs>
-
-## Endpoint da API
-
-```bash
-POST https://app.wizebot.com.br/api/v1/whatsapp/send
-```
 
 ## Parâmetros
 
@@ -48,92 +12,41 @@ POST https://app.wizebot.com.br/api/v1/whatsapp/send
 |-----------|------|-------------|-----------|
 | apiToken | String | Sim | Sua chave de API |
 | phone_number_id | String | Sim | Número de telefone da conta do WhatsApp ID |
-| message | String | Sim | Conteúdo da mensagem de texto |
-| phone_number | String | Sim | Número do destinatário com código do país |
+| template_name | String | Sim | Nome do modelo a ser enviado |
+| phone_number | String | Sim | Deve começar com o código do país e apenas caracteres numéricos são permitidos |
+| language | String | Não | Código do idioma do modelo (padrão: pt_BR) |
+| components | Array | Não | Array de componentes do modelo com valores dinâmicos |
 
-## Testar a API
+## Exemplo de Requisição
 
-<ParamField body="apiToken" type="string" required>
-  Sua chave de API
-</ParamField>
-
-<ParamField body="phone_number_id" type="string" required>
-  Número de telefone da conta do WhatsApp ID
-</ParamField>
-
-<ParamField body="message" type="string" required>
-  Conteúdo da mensagem de texto
-</ParamField>
-
-<ParamField body="phone_number" type="string" required placeholder="5511999999999">
-  Número do destinatário (com código do país)
-</ParamField>
-
-<Tip>
-  Certifique-se de incluir o código do país no número de telefone (ex: 55 para Brasil).
-</Tip>
-
-## Exemplos
-
-<CodeGroup>
-```bash cURL
+```bash
 curl -X POST \
-  'https://app.wizebot.com.br/api/v1/whatsapp/send' \
-  -d 'apiToken=API-KEY' \
-  -d 'phone_number_id=PHONE-NUMBER-ID' \
-  -d 'message=Olá! Esta é uma mensagem de teste.' \
-  -d 'phone_number=5511999999999'
-```
-
-```python Python
-import requests
-
-url = "https://app.wizebot.com.br/api/v1/whatsapp/send"
-payload = {
+  'https://app.wizebot.com.br/api/v1/whatsapp/template/send' \
+  -H 'Content-Type: application/json' \
+  -d '{
     "apiToken": "API-KEY",
     "phone_number_id": "PHONE-NUMBER-ID",
-    "message": "Olá! Esta é uma mensagem de teste.",
-    "phone_number": "5511999999999"
+    "template_name": "hello_world",
+    "phone_number": "PHONE-NUMBER",
+    "language": "pt_BR",
+    "components": [
+      {
+        "type": "body",
+        "parameters": [
+          {
+            "type": "text",
+            "text": "John"
+          }
+        ]
+      }
+    ]
+  }'
+```
+
+## Exemplo de Resposta
+
+```json
+{
+  "status": "1",
+  "message": "Template message sent successfully."
 }
-
-response = requests.post(url, data=payload)
-print(response.json())
-```
-
-```javascript JavaScript
-fetch('https://app.wizebot.com.br/api/v1/whatsapp/send', {
-  method: 'POST',
-  headers: {
-    'Content-Type': 'application/x-www-form-urlencoded',
-  },
-  body: new URLSearchParams({
-    'apiToken': 'API-KEY',
-    'phone_number_id': 'PHONE-NUMBER-ID',
-    'message': 'Olá! Esta é uma mensagem de teste.',
-    'phone_number': '5511999999999'
-  })
-})
-.then(response => response.json())
-.then(data => console.log(data));
-```
-</CodeGroup>
-
-## Respostas
-
-<ResponseField name="success" type="200">
-  ```json
-  {
-    "status": "1",
-    "message": "Mensagem enviada com sucesso"
-  }
-  ```
-</ResponseField>
-
-<ResponseField name="error" type="400">
-  ```json
-  {
-    "status": "0",
-    "message": "Erro ao enviar mensagem"
-  }
-  ```
-</ResponseField>

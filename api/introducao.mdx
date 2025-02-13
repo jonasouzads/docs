@@ -15,6 +15,14 @@ Todas as requisições à API precisam ser autenticadas usando um `apiToken`. Es
 apiToken: Sua-Chave-API
 ```
 
+## Base URL
+
+Todas as requisições devem ser feitas para a seguinte URL base:
+
+```bash
+https://app.wizebot.com.br/api/v1
+```
+
 ## Formatos de Resposta
 
 Todas as respostas da API são retornadas no formato JSON. Um exemplo de resposta bem-sucedida:
@@ -35,18 +43,41 @@ Em caso de erro:
 }
 ```
 
-## Limites de Taxa
-
-Para garantir a estabilidade do serviço, implementamos limites de taxa em nossas APIs. Entre em contato com nosso suporte para mais informações sobre limites específicos para sua conta.
-
-## Recursos Principais
+## Recursos Disponíveis
 
 Nossa API oferece os seguintes recursos principais:
 
-- **Gerenciamento de Conta** - Conecte e gerencie contas do WhatsApp Business
-- **Envio de Mensagens** - Envie mensagens de texto e templates
-- **Gerenciamento de Contatos** - Adicione e gerencie seus contatos
-- **Templates** - Gerencie e envie mensagens usando templates
-- **Catálogo** - Gerencie seu catálogo de produtos
-- **Etiquetas** - Organize seus contatos com etiquetas
-- **Equipe** - Gerencie atribuições de chat para sua equipe
+<CardGroup cols={2}>
+  <Card title="Assinantes" icon="users">
+    Gerencie seus contatos e assinantes do WhatsApp
+  </Card>
+  <Card title="Etiquetas" icon="tags">
+    Organize seus contatos com etiquetas personalizadas
+  </Card>
+  <Card title="Catálogo" icon="shop">
+    Gerencie produtos e pedidos do seu catálogo
+  </Card>
+  <Card title="Mensagens" icon="message">
+    Envie mensagens e templates para seus contatos
+  </Card>
+</CardGroup>
+
+## Limites de Taxa
+
+Para garantir a estabilidade do serviço, implementamos limites de taxa em nossas APIs:
+
+- Máximo de 100 requisições por minuto por API Key
+- Máximo de 1000 mensagens por dia por número de WhatsApp
+- Máximo de 10.000 contatos por conta
+
+<Note>
+  Entre em contato com nosso suporte para solicitar limites maiores para sua conta.
+</Note>
+
+## Suporte
+
+Se você tiver dúvidas ou precisar de ajuda:
+
+1. Consulte nossa documentação detalhada
+2. Entre em contato via WhatsApp: [+55 91 92226534](https://wa.me/559192226534)
+3. Envie um e-mail para suporte@wizebot.com.br

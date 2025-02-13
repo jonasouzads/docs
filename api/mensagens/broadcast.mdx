@@ -1,117 +1,52 @@
 ---
-title: 'Enviar Template em Massa'
-description: 'Este endpoint permite enviar um template de mensagem para múltiplos destinatários de uma vez.'
-api: 'POST https://app.wizebot.com.br/api/v1/whatsapp/broadcast/template/send'
-contentType: 'application/x-www-form-urlencoded'
+title: 'Enviar Broadcast'
+description: 'Enviar mensagem em massa usando templates'
+api: 'POST https://app.wizebot.com.br/api/v1/whatsapp/broadcast/send'
+contentType: 'application/json'
 authentication: 'API Key'
 ---
-
-<Note>
-  Envie templates de mensagem para múltiplos destinatários de uma vez.
-</Note>
-
-## Endpoint da API
-
-```bash
-POST https://app.wizebot.com.br/api/v1/whatsapp/broadcast/template/send
-```
 
 ## Parâmetros
 
 | Parâmetro | Tipo | Obrigatório | Descrição |
 |-----------|------|-------------|-----------|
 | apiToken | String | Sim | Sua chave de API |
-| phone_number_id | String | Sim | ID do número de telefone da conta WhatsApp |
-| flow_data | JSON | Sim | Dados do fluxo de envio em formato JSON |
+| phone_number_id | String | Sim | Número de telefone da conta do WhatsApp ID |
+| template_name | String | Sim | Nome do modelo a ser enviado |
+| language | String | Não | Código do idioma do modelo (padrão: pt_BR) |
+| phone_numbers | Array | Sim | Array de números de telefone que devem começar com o código do país |
+| components | Array | Não | Array de componentes do modelo com valores dinâmicos |
 
-## Testar a API
+## Exemplo de Requisição
 
-<ParamField body="apiToken" type="string" required>
-  Sua chave de API
-</ParamField>
-
-<ParamField body="phone_number_id" type="string" required>
-  ID do número de telefone da conta WhatsApp
-</ParamField>
-
-<ParamField body="flow_data" type="json" required>
-  ```json
-  {
-    "template": "boas_vindas",
-    "recipients": ["5511999999999", "5511988888888"]
-  }
-  ```
-</ParamField>
-
-## Exemplos
-
-<CodeGroup>
-```bash cURL
+```bash
 curl -X POST \
-  'https://app.wizebot.com.br/api/v1/whatsapp/broadcast/template/send' \
-  -d 'apiToken=API-KEY' \
-  -d 'phone_number_id=PHONE-NUMBER-ID' \
-  -d 'flow_data={"template":"boas_vindas","recipients":["5511999999999","5511988888888"]}'
-```
-
-```python Python
-import requests
-import json
-
-url = "https://app.wizebot.com.br/api/v1/whatsapp/broadcast/template/send"
-payload = {
+  'https://app.wizebot.com.br/api/v1/whatsapp/broadcast/send' \
+  -H 'Content-Type: application/json' \
+  -d '{
     "apiToken": "API-KEY",
     "phone_number_id": "PHONE-NUMBER-ID",
-    "flow_data": json.dumps({
-        "template": "boas_vindas",
-        "recipients": ["5511999999999", "5511988888888"]
-    })
+    "template_name": "hello_world",
+    "language": "pt_BR",
+    "phone_numbers": ["5511999999999", "5511888888888"],
+    "components": [
+      {
+        "type": "body",
+        "parameters": [
+          {
+            "type": "text",
+            "text": "John"
+          }
+        ]
+      }
+    ]
+  }'
+```
+
+## Exemplo de Resposta
+
+```json
+{
+  "status": "1",
+  "message": "Broadcast message sent successfully."
 }
-
-response = requests.post(url, data=payload)
-print(response.json())
-```
-
-```javascript JavaScript
-const flowData = {
-  template: 'boas_vindas',
-  recipients: ['5511999999999', '5511988888888']
-};
-
-fetch('https://app.wizebot.com.br/api/v1/whatsapp/broadcast/template/send', {
-  method: 'POST',
-  headers: {
-    'Content-Type': 'application/x-www-form-urlencoded',
-  },
-  body: new URLSearchParams({
-    'apiToken': 'API-KEY',
-    'phone_number_id': 'PHONE-NUMBER-ID',
-    'flow_data': JSON.stringify(flowData)
-  })
-})
-.then(response => response.json())
-.then(data => console.log(data));
-```
-</CodeGroup>
-
-## Respostas
-
-<ResponseField name="success" type="200">
-  ```json
-  {
-    "status": "1",
-    "visual_flow_campaign_id": 1727,
-    "message": "Dados salvos com sucesso.",
-    "redirect_on_success_url": ""
-  }
-  ```
-</ResponseField>
-
-<ResponseField name="error" type="400">
-  ```json
-  {
-    "status": "0",
-    "message": "Erro ao enviar mensagens"
-  }
-  ```
-</ResponseField>

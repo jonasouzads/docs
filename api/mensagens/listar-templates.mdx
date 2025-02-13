@@ -1,45 +1,10 @@
 ---
-title: 'Listar Modelos'
-description: 'Este endpoint retorna a lista de todos os templates de mensagem disponíveis para sua conta.'
-api: 'POST https://app.wizebot.com.br/api/v1/whatsapp/template/list'
-contentType: 'application/x-www-form-urlencoded'
+title: 'Listar Templates'
+description: 'Obter modelo de bot do Whatsapp'
+api: 'GET https://app.wizebot.com.br/api/v1/whatsapp/template/list'
+contentType: 'application/json'
 authentication: 'API Key'
 ---
-
-<Note>
-  Liste e gerencie seus templates de mensagem do WhatsApp de forma simples e eficiente.
-</Note>
-
-<CardGroup cols={2}>
-  <Card title="Templates Aprovados" icon="check-circle">
-    Visualize todos os seus templates aprovados pelo WhatsApp.
-  </Card>
-  <Card title="Componentes Suportados" icon="puzzle">
-    Header, Body, Footer e Buttons personalizáveis.
-  </Card>
-</CardGroup>
-
-## Tipos de Template
-
-<Tabs>
-  <Tab title="Componentes">
-    - **Header**: Título, imagem ou vídeo
-    - **Body**: Texto principal com variáveis
-    - **Footer**: Texto adicional opcional
-    - **Buttons**: Botões interativos
-  </Tab>
-  <Tab title="Status">
-    - **Approved**: Template aprovado e pronto para uso
-    - **Pending**: Em análise pelo WhatsApp
-    - **Rejected**: Reprovado, necessita ajustes
-  </Tab>
-</Tabs>
-
-## Endpoint da API
-
-```bash
-POST https://app.wizebot.com.br/api/v1/whatsapp/template/list
-```
 
 ## Parâmetros
 
@@ -48,93 +13,39 @@ POST https://app.wizebot.com.br/api/v1/whatsapp/template/list
 | apiToken | String | Sim | Sua chave de API |
 | phone_number_id | String | Sim | Número de telefone da conta do WhatsApp ID |
 
-## Testar a API
+## Exemplo de Requisição
 
-<ParamField body="apiToken" type="string" required>
-  Sua chave de API
-</ParamField>
-
-<ParamField body="phone_number_id" type="string" required>
-  Número de telefone da conta do WhatsApp ID
-</ParamField>
-
-<Tip>
-  Use uma chave de API válida para listar todos os seus templates disponíveis.
-</Tip>
-
-## Exemplos
-
-<CodeGroup>
-```bash cURL
-curl -X POST \
-  'https://app.wizebot.com.br/api/v1/whatsapp/template/list' \
-  -d 'apiToken=API-KEY' \
-  -d 'phone_number_id=PHONE-NUMBER-ID'
+```bash
+curl -X GET \
+  'https://app.wizebot.com.br/api/v1/whatsapp/template/list?apiToken=API-KEY&phone_number_id=PHONE-NUMBER-ID'
 ```
 
-```python Python
-import requests
+## Exemplo de Resposta
 
-url = "https://app.wizebot.com.br/api/v1/whatsapp/template/list"
-payload = {
-    "apiToken": "API-KEY",
-    "phone_number_id": "PHONE-NUMBER-ID"
+```json
+{
+  "status": "1",
+  "message": {
+    "id": 48,
+    "template_id": "437509121867805",
+    "whatsapp_business_id": 11,
+    "template_name": "ada",
+    "template_type": "single",
+    "locale": "en_US",
+    "header_type": "media",
+    "header_subtype": "image",
+    "header_content": "",
+    "body_content": "To send an interactive message template, make a POST call to /PHONE_NUMBER_ID/",
+    "footer_content": "",
+    "button_content": "[]",
+    "template_json": "{\"name\":\"template_23_1666095188\",\"language\":\"en_US\",\"category\":\"transactional\",\"components\":[{\"type\":\"header\",\"format\":\"image\",\"example\":{\"header_handle\":[\"http:\\/\\/telegram.test\\/assets\\/images\\/template\\/image.jpg\"]}},{\"type\":\"body\",\"text\":\"To send an interactive message template, make a POST call to \\/PHONE_NUMBER_ID\\/\"}],\"access_token\":\"EAAHFAlhZBSyEBAIRZCsHKZA5ZAdOWMRL7AwuuCBKd3tZChAQQ1PHojPUS5k76aMVyzzxG9bYp2JQ57aLMfQBCZCpvXKac4KLDZAhejOuw1zkNCxGjvK7J5YwNmZBwTTd8Iig2YDq0vGZBoS20ipsLB4scbOOh0WmQrj7oLI9ZC5rFlsFC9mYctgQKIyJCvZBfgn5pGE1YPiBllrqwZDZD\"}",
+    "button_type": "none",
+    "variable_map": "{\"header\":[],\"body\":[]}",
+    "updated_at": "2022-10-18 12:13:09",
+    "user_id": 1,
+    "status": "Rejected",
+    "system_template": "0",
+    "map_needed": "0",
+    "check_wp_type": "general"
+  }
 }
-
-response = requests.post(url, data=payload)
-print(response.json())
-```
-
-```javascript JavaScript
-fetch('https://app.wizebot.com.br/api/v1/whatsapp/template/list', {
-  method: 'POST',
-  headers: {
-    'Content-Type': 'application/x-www-form-urlencoded',
-  },
-  body: new URLSearchParams({
-    'apiToken': 'API-KEY',
-    'phone_number_id': 'PHONE-NUMBER-ID'
-  })
-})
-.then(response => response.json())
-.then(data => console.log(data));
-```
-</CodeGroup>
-
-## Respostas
-
-<ResponseField name="success" type="200">
-  ```json
-  {
-    "status": "1",
-    "data": [
-      {
-        "name": "boas_vindas",
-        "status": "APPROVED",
-        "category": "MARKETING",
-        "language": "pt_BR",
-        "components": [
-          {
-            "type": "HEADER",
-            "format": "TEXT",
-            "text": "Olá {{1}}!"
-          },
-          {
-            "type": "BODY",
-            "text": "Bem-vindo ao Wizebot!"
-          }
-        ]
-      }
-    ]
-  }
-  ```
-</ResponseField>
-
-<ResponseField name="error" type="400">
-  ```json
-  {
-    "status": "0",
-    "message": "Erro ao listar templates"
-  }
-  ```
-</ResponseField>

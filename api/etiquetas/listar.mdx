@@ -1,16 +1,10 @@
 ---
-title: 'Listar Etiquetas'
-description: 'Este endpoint permite obter a lista de todas as etiquetas disponíveis para sua conta do WhatsApp.'
+title: 'Lista de Etiquetas'
+description: 'Obter lista de todas as etiquetas'
+api: 'GET https://app.wizebot.com.br/api/v1/whatsapp/label/list'
+contentType: 'application/json'
+authentication: 'API Key'
 ---
-
-## Endpoint
-
-<Icon icon="circle-right" color="#34D399" size={20} /> **GET** 
-<Icon icon="circle-right" color="#F87171" size={20} /> **POST**
-
-```bash
-https://app.wizebot.com.br/api/v1/whatsapp/label/list
-```
 
 ## Parâmetros
 
@@ -19,21 +13,11 @@ https://app.wizebot.com.br/api/v1/whatsapp/label/list
 | apiToken | String | Sim | Sua chave de API |
 | phone_number_id | String | Sim | Seu número de telefone do WhatsApp |
 
-## Exemplos de Requisição
-
-### <Icon icon="circle-right" color="#34D399" size={20} /> Requisição GET
+## Exemplo de Requisição
 
 ```bash
-https://app.wizebot.com.br/api/v1/whatsapp/label/list?apiToken=API-KEY&phone_number_id=PHONE-NUMBER-ID
-```
-
-### <Icon icon="circle-right" color="#F87171" size={20} /> Requisição POST
-
-```bash
-curl -X POST \
-  'https://app.wizebot.com.br/api/v1/whatsapp/label/list' \
-  -d 'apiToken=API-KEY' \
-  -d 'phone_number_id=PHONE-NUMBER-ID'
+curl -X GET \
+  'https://app.wizebot.com.br/api/v1/whatsapp/label/list?apiToken=API-KEY&phone_number_id=PHONE-NUMBER-ID'
 ```
 
 ## Exemplo de Resposta
@@ -49,3 +33,17 @@ curl -X POST \
     }
   ]
 }
+```
+
+### Erros Possíveis
+
+<AccordionGroup>
+  <Accordion title="Conta não encontrada" icon="xmark">
+    ```json
+    {
+      "status": "0",
+      "message": "WhatsApp account not found."
+    }
+    ```
+  </Accordion>
+</AccordionGroup>

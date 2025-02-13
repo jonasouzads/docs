@@ -1,16 +1,10 @@
 ---
-title: 'Atribuir Campos Personalizados'
-description: 'Este endpoint permite atribuir campos personalizados a um assinante específico.'
+title: 'Campos Personalizados'
+description: 'Atribuir Campo Personalizado ao Assinante'
+api: 'POST https://app.wizebot.com.br/api/v1/whatsapp/subscriber/chat/assign-custom-fields'
+contentType: 'application/json'
+authentication: 'API Key'
 ---
-
-
-## Endpoint
-
-<Icon icon="circle-right" color="#F87171" size={20} /> **POST**
-
-```bash
-https://app.wizebot.com.br/api/v1/whatsapp/subscriber/chat/assign-custom-fields
-```
 
 ## Parâmetros
 
@@ -19,19 +13,23 @@ https://app.wizebot.com.br/api/v1/whatsapp/subscriber/chat/assign-custom-fields
 | apiToken | String | Sim | Sua chave de API |
 | phone_number_id | String | Sim | Seu número de telefone do WhatsApp |
 | phone_number | String | Sim | Número de telefone do assinante |
-| custom_fields | JSON | Sim | Nome e valor de campos personalizados no formato JSON. |
+| custom_fields | JSON | Sim | Nome e valor de campos personalizados no formato JSON |
 
 ## Exemplo de Requisição
-
-### <Icon icon="circle-right" color="#F87171" size={20} /> Requisição POST
 
 ```bash
 curl -X POST \
   'https://app.wizebot.com.br/api/v1/whatsapp/subscriber/chat/assign-custom-fields' \
-  -d 'apiToken=API-KEY' \
-  -d 'phone_number_id=PHONE-NUMBER-ID' \
-  -d 'phone_number=PHONE-NUMBER' \
-  -d 'custom_fields={"custom_filed_name1": "custom_field_value1","custom_filed_name2": "custom_field_value2"}'
+  -H 'Content-Type: application/json' \
+  -d '{
+    "apiToken": "API-KEY",
+    "phone_number_id": "PHONE-NUMBER-ID",
+    "phone_number": "PHONE-NUMBER",
+    "custom_fields": {
+      "custom_filed_name1": "custom_field_value1",
+      "custom_filed_name2": "custom_field_value2"
+    }
+  }'
 ```
 
 ## Exemplo de Resposta
@@ -41,21 +39,3 @@ curl -X POST \
   "status": "1",
   "message": "Subscriber changes have been saved successfully."
 }
-
-## Formato dos Campos Personalizados
-
-Os campos personalizados devem ser enviados em um objeto JSON com o seguinte formato:
-
-```json
-{
-  "nome_do_campo1": "valor_do_campo1",
-  "nome_do_campo2": "valor_do_campo2"
-}
-```
-
-## Observações
-
-- Os nomes dos campos personalizados devem ser únicos
-- Você pode atualizar múltiplos campos em uma única chamada
-- Para remover um campo personalizado, envie seu valor como null
-- Os campos personalizados são úteis para armazenar informações específicas do seu negócio sobre o assinante

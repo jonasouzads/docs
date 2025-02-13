@@ -1,15 +1,10 @@
 ---
 title: 'Atualizar Assinante'
-description: 'Este endpoint permite atualizar as informações de um assinante existente.'
+description: 'Atualizar um assinante existente'
+api: 'POST https://app.wizebot.com.br/api/v1/whatsapp/subscriber/update'
+contentType: 'application/json'
+authentication: 'API Key'
 ---
-
-## Endpoint
-
-<Icon icon="circle-right" color="#F87171" size={20} /> **POST**
-
-```bash
-https://app.wizebot.com.br/api/v1/whatsapp/subscriber/update
-```
 
 ## Parâmetros
 
@@ -21,28 +16,23 @@ https://app.wizebot.com.br/api/v1/whatsapp/subscriber/update
 | first_name | String | Não | Primeiro nome do seu assinante |
 | last_name | String | Não | Sobrenome do seu assinante |
 | gender | String | Não | Gênero do seu assinante |
-| label_ids | String | Não | Identificar IDs separados por vírgula, como (1,4,5). |
+| label_ids | String | Não | Identificar IDs separados por vírgula, como (1,4,5) |
 
-## Exemplos de Requisição
-
-### <Icon icon="circle-right" color="#34D399" size={20} /> Requisição GET
-
-```bash
-https://app.wizebot.com.br/api/v1/whatsapp/subscriber/update?apiToken=API-KEY&phone_number_id=PHONE-NUMBER-ID&phone_number=PHONE-NUMBER&first_name=FIRST-NAME&last_name=LAST-NAME&gender=GENDER&label_ids=LABEL-IDS
-```
-
-### <Icon icon="circle-right" color="#F87171" size={20} /> Requisição POST
+## Exemplo de Requisição
 
 ```bash
 curl -X POST \
   'https://app.wizebot.com.br/api/v1/whatsapp/subscriber/update' \
-  -d 'apiToken=API-KEY' \
-  -d 'phone_number_id=PHONE-NUMBER-ID' \
-  -d 'phone_number=PHONE-NUMBER' \
-  -d 'first_name=FIRST-NAME' \
-  -d 'last_name=LAST-NAME' \
-  -d 'gender=GENDER' \
-  -d 'label_ids=LABEL-IDS'
+  -H 'Content-Type: application/json' \
+  -d '{
+    "apiToken": "API-KEY",
+    "phone_number_id": "PHONE-NUMBER-ID",
+    "phone_number": "PHONE-NUMBER",
+    "first_name": "FIRST-NAME",
+    "last_name": "LAST-NAME",
+    "gender": "GENDER",
+    "label_ids": "LABEL-IDS"
+  }'
 ```
 
 ## Exemplo de Resposta
@@ -52,9 +42,3 @@ curl -X POST \
   "status": "1",
   "message": "Subscriber Updated Successfully."
 }
-
-## Observações
-
-- Você pode atualizar apenas os campos que deseja modificar
-- Para remover todas as etiquetas, envie label_ids como uma string vazia
-- O número de telefone não pode ser alterado, ele é usado apenas para identificar o assinante
