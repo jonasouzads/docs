@@ -1,0 +1,65 @@
+---
+title: 'Obter Inscrito'
+description: 'Obtenha informações de um inscrito específico'
+---
+
+# Obter Inscrito
+
+Este endpoint permite obter informações detalhadas de um inscrito específico usando seu número de telefone.
+
+## Endpoint
+
+```bash
+POST https://app.wizebot.com.br/api/v1/whatsapp/subscriber/get
+```
+
+## Parâmetros
+
+| Parâmetro | Tipo | Obrigatório | Descrição |
+|-----------|------|-------------|-----------|
+| apiToken | String | Sim | Sua chave de API |
+| phone_number_id | String | Sim | ID do número de telefone da sua conta WhatsApp |
+| phone_number | String | Sim | Número do telefone do inscrito |
+
+## Exemplo de Requisição
+
+### GET
+```bash
+https://app.wizebot.com.br/api/v1/whatsapp/subscriber/get?apiToken=API-KEY&phone_number_id=PHONE-NUMBER-ID&phone_number=PHONE-NUMBER
+```
+
+### POST
+```bash
+curl -X POST \
+  'https://app.wizebot.com.br/api/v1/whatsapp/subscriber/get' \
+  -d 'apiToken=API-KEY' \
+  -d 'phone_number_id=PHONE-NUMBER-ID' \
+  -d 'phone_number=PHONE-NUMBER'
+```
+
+## Resposta
+
+```json
+{
+  "status": "1",
+  "message": [
+    {
+      "subscriber_id": 144,
+      "chat_id": "5511999999999",
+      "first_name": "João",
+      "last_name": "Silva",
+      "email": "joao@email.com",
+      "gender": "Male",
+      "label_names": "Cliente,VIP"
+    }
+  ]
+}
+```
+
+## Observações
+
+<Info>
+- O número de telefone deve incluir o código do país
+- Se o inscrito não for encontrado, a lista de message estará vazia
+- O campo label_names contém todas as etiquetas atribuídas ao inscrito
+</Info>

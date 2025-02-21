@@ -1,0 +1,63 @@
+---
+title: 'Atualizar Inscrito'
+description: 'Atualize as informações de um inscrito existente'
+---
+
+# Atualizar Inscrito
+
+Este endpoint permite atualizar as informações de um inscrito existente em sua conta do WhatsApp.
+
+## Endpoint
+
+```bash
+POST https://app.wizebot.com.br/api/v1/whatsapp/subscriber/update
+```
+
+## Parâmetros
+
+| Parâmetro | Tipo | Obrigatório | Descrição |
+|-----------|------|-------------|-----------|
+| apiToken | String | Sim | Sua chave de API |
+| phone_number_id | String | Sim | ID do número de telefone da sua conta WhatsApp |
+| phone_number | String | Sim | Número do telefone do inscrito |
+| first_name | String | Não | Primeiro nome do inscrito |
+| last_name | String | Não | Sobrenome do inscrito |
+| gender | String | Não | Gênero do inscrito |
+| label_ids | String | Não | IDs das etiquetas separados por vírgula (ex: 1,4,5) |
+
+## Exemplo de Requisição
+
+### GET
+```bash
+https://app.wizebot.com.br/api/v1/whatsapp/subscriber/update?apiToken=API-KEY&phone_number_id=PHONE-NUMBER-ID&phone_number=PHONE-NUMBER&first_name=FIRST-NAME&last_name=LAST-NAME&gender=GENDER&label_ids=LABEL-IDS
+```
+
+### POST
+```bash
+curl -X POST \
+  'https://app.wizebot.com.br/api/v1/whatsapp/subscriber/update' \
+  -d 'apiToken=API-KEY' \
+  -d 'phone_number_id=PHONE-NUMBER-ID' \
+  -d 'phone_number=PHONE-NUMBER' \
+  -d 'first_name=FIRST-NAME' \
+  -d 'last_name=LAST-NAME' \
+  -d 'gender=GENDER' \
+  -d 'label_ids=LABEL-IDS'
+```
+
+## Resposta
+
+```json
+{
+  "status": "1",
+  "message": "Inscrito Atualizado com Sucesso."
+}
+```
+
+## Observações
+
+<Info>
+- Você pode atualizar apenas os campos que deseja modificar
+- O número de telefone não pode ser alterado
+- Para remover todas as etiquetas, envie label_ids vazio
+</Info>

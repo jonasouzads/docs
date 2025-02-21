@@ -1,0 +1,76 @@
+---
+title: 'Listar Inscritos'
+description: 'Obtenha a lista de inscritos do WhatsApp'
+---
+
+# Listar Inscritos
+
+Este endpoint retorna a lista de inscritos da sua conta do WhatsApp com suporte a paginação.
+
+## Endpoint
+
+```bash
+GET https://app.wizebot.com.br/api/v1/whatsapp/subscriber/list
+```
+
+## Parâmetros
+
+| Parâmetro | Tipo | Obrigatório | Descrição |
+|-----------|------|-------------|-----------|
+| apiToken | String | Sim | Sua chave de API |
+| phone_number_id | String | Sim | ID do número de telefone da sua conta WhatsApp |
+| limit | Number | Sim | Número de inscritos por página |
+| offset | Number | Não | Número da página para paginação |
+
+## Exemplo de Requisição
+
+### GET
+```bash
+https://app.wizebot.com.br/api/v1/whatsapp/subscriber/list?apiToken=API-KEY&phone_number_id=PHONE-NUMBER-ID&limit=10&offset=1
+```
+
+### POST
+```bash
+curl -X POST \
+  'https://app.wizebot.com.br/api/v1/whatsapp/subscriber/list' \
+  -d 'apiToken=API-KEY' \
+  -d 'phone_number_id=PHONE-NUMBER-ID' \
+  -d 'limit=10' \
+  -d 'offset=1'
+```
+
+## Resposta
+
+```json
+{
+  "status": "1",
+  "message": [
+    {
+      "subscriber_id": 144,
+      "chat_id": "5511999999999",
+      "first_name": "João",
+      "last_name": "Silva",
+      "email": "joao@email.com",
+      "gender": "Male",
+      "label_names": "Cliente,VIP"
+    },
+    {
+      "subscriber_id": 157,
+      "chat_id": "5511888888888",
+      "first_name": "Maria",
+      "last_name": "Santos",
+      "email": null,
+      "gender": "Female",
+      "label_names": "Cliente"
+    }
+  ]
+}
+```
+
+## Observações
+
+<Info>
+- Use os parâmetros limit e offset para implementar paginação
+- O campo label_names retorna as etiquetas do inscrito separadas por vírgula
+- Alguns campos podem retornar null se não estiverem preenchidos
+</Info>

@@ -57,26 +57,26 @@
   },
   "navigation": [
     {
-      "group": "Introdução",
+      "group": "Primeiros Passos",
       "icon": "rocket-launch",
       "pages": [
         "tutoriais/visao-geral/introducao",
-        "tutoriais/visao-geral/whatsapp-cloud"
+        "tutoriais/visao-geral/whatsapp-cloud",
+        "tutoriais/visao-geral/nome-exibicao",
+        "tutoriais/visao-geral/foto-perfil"
       ]
     },
     {
-      "group": "Configuração Inicial",
+      "group": "Configuração",
       "icon": "gear",
       "pages": [
-        "tutoriais/visao-geral/nome-exibicao",
-        "tutoriais/visao-geral/foto-perfil",
         "tutoriais/configuracao/conectar-whatsapp",
         "tutoriais/configuracao/metodo-pagamento"
       ]
     },
     {
-      "group": "Recursos Principais",
-      "icon": "star",
+      "group": "WhatsApp",
+      "icon": "messages",
       "pages": [
         {
           "group": "Modelos de Mensagem",
@@ -111,33 +111,21 @@
             "tutoriais/gerenciador-contatos/importar",
             "tutoriais/subscribers"
           ]
-        }
-      ]
-    },
-    {
-      "group": "Comunicação",
-      "icon": "messages",
-      "pages": [
+        },
         {
-          "group": "Atendimento ao Cliente",
+          "group": "Atendimento",
           "icon": "headset",
           "pages": [
             "tutoriais/bate-papo/caixa-entrada"
           ]
         },
         {
-          "group": "Marketing",
+          "group": "Campanhas",
           "icon": "megaphone",
           "pages": [
             "tutoriais/campanha/mensagem-em-massa"
           ]
-        }
-      ]
-    },
-    {
-      "group": "Recursos Avançados",
-      "icon": "rocket",
-      "pages": [
+        },
         {
           "group": "Integrações",
           "icon": "webhook",
@@ -149,7 +137,7 @@
           ]
         },
         {
-          "group": "Inteligência Artificial",
+          "group": "IA",
           "icon": "brain",
           "pages": [
             "tutoriais/ia/chatgpt"
@@ -163,6 +151,40 @@
       "pages": [
         "tutoriais/solucao-problemas/problemas-comuns",
         "tutoriais/solucao-problemas/faq"
+      ]
+    },
+    {
+      "group": "API",
+      "icon": "code",
+      "pages": [
+        {
+          "group": "Introdução",
+          "pages": ["api/introducao"]
+        },
+        {
+          "group": "Conta",
+          "pages": ["api/conta/conectar"]
+        },
+        {
+          "group": "Mensagens",
+          "pages": [
+            "api/mensagens/enviar",
+            "api/mensagens/listar-templates",
+            "api/mensagens/broadcast"
+          ]
+        },
+        {
+          "group": "Inscritos",
+          "pages": [
+            "api/inscritos/criar",
+            "api/inscritos/atualizar",
+            "api/inscritos/listar",
+            "api/inscritos/obter",
+            "api/inscritos/resetar-fluxo",
+            "api/inscritos/atribuir-equipe",
+            "api/inscritos/campos-personalizados"
+          ]
+        }
       ]
     }
   ],

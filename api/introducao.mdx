@@ -1,0 +1,52 @@
+---
+title: 'Introdução'
+description: 'Bem-vindo à API da Wizebot para WhatsApp'
+---
+
+# API do WhatsApp
+
+A API da Wizebot para WhatsApp permite que você integre funcionalidades do WhatsApp Business em sua aplicação, incluindo envio de mensagens, gerenciamento de contatos e muito mais.
+
+## Autenticação
+
+Todas as requisições à API precisam ser autenticadas usando sua chave de API (apiToken). Você pode incluir a chave de API de duas maneiras:
+
+- Como parâmetro de query string em requisições GET
+- Como parâmetro no corpo da requisição em requisições POST
+
+```bash
+# Exemplo de autenticação em GET
+https://app.wizebot.com.br/api/v1/endpoint?apiToken=SUA-CHAVE-API
+
+# Exemplo de autenticação em POST
+curl -X POST 'https://app.wizebot.com.br/api/v1/endpoint' \
+     -d 'apiToken=SUA-CHAVE-API'
+```
+
+## Base URL
+
+Todas as requisições devem ser feitas para:
+
+```
+https://app.wizebot.com.br/api/v1
+```
+
+## Formatos de Resposta
+
+A API retorna respostas em formato JSON. Cada resposta contém pelo menos dois campos:
+
+- `status`: `1` para sucesso, `0` para erro
+- `message`: Mensagem descritiva ou dados solicitados
+
+```json
+{
+  "status": "1",
+  "message": "Operação realizada com sucesso"
+}
+```
+
+## Limites e Restrições
+
+- As mensagens de texto diretas só podem ser enviadas dentro de uma janela de 24 horas após a última mensagem do cliente
+- Para mensagens fora dessa janela, é necessário usar modelos de mensagem pré-aprovados
+- Alguns endpoints podem ter limites de taxa ou restrições baseadas em seu plano

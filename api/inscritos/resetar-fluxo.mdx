@@ -1,0 +1,55 @@
+---
+title: 'Resetar Fluxo'
+description: 'Resete o fluxo de entrada do usuário'
+---
+
+# Resetar Fluxo de Entrada
+
+Este endpoint permite resetar o fluxo de entrada de um usuário específico.
+
+## Endpoint
+
+```bash
+POST https://app.wizebot.com.br/api/v1/whatsapp/subscriber/reset/user-input-flow
+```
+
+## Parâmetros
+
+| Parâmetro | Tipo | Obrigatório | Descrição |
+|-----------|------|-------------|-----------|
+| apiToken | String | Sim | Sua chave de API |
+| phone_number_id | String | Sim | ID do número de telefone da sua conta WhatsApp |
+| phone_number | String | Sim | Número do telefone do inscrito |
+
+## Exemplo de Requisição
+
+### GET
+```bash
+https://app.wizebot.com.br/api/v1/whatsapp/subscriber/reset/user-input-flow?apiToken=API-KEY&phone_number_id=PHONE-NUMBER-ID&phone_number=PHONE-NUMBER
+```
+
+### POST
+```bash
+curl -X POST \
+  'https://app.wizebot.com.br/api/v1/whatsapp/subscriber/reset/user-input-flow' \
+  -d 'apiToken=API-KEY' \
+  -d 'phone_number_id=PHONE-NUMBER-ID' \
+  -d 'phone_number=PHONE-NUMBER'
+```
+
+## Resposta
+
+```json
+{
+  "status": "1",
+  "message": "Fluxo de entrada do usuário resetado com sucesso."
+}
+```
+
+## Observações
+
+<Warning>
+- Use este endpoint com cautela, pois ele irá resetar todo o progresso do usuário no fluxo atual
+- Esta ação não pode ser desfeita
+- O usuário precisará começar o fluxo do início novamente
+</Warning>

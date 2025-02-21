@@ -1,0 +1,80 @@
+---
+title: 'Criar Inscrito'
+description: 'Crie um novo inscrito/contato no WhatsApp'
+---
+
+# Criar Inscrito
+
+Este endpoint permite criar um novo inscrito (contato) em sua conta do WhatsApp.
+
+## Endpoint
+
+```bash
+POST https://app.wizebot.com.br/api/v1/whatsapp/subscriber/create
+```
+
+## Parâmetros
+
+| Parâmetro | Tipo | Obrigatório | Descrição |
+|-----------|------|-------------|-----------|
+| apiToken | String | Sim | Sua chave de API |
+| phoneNumberID | String | Sim | ID do número de telefone da sua conta WhatsApp |
+| name | String | Sim | Nome do inscrito |
+| phoneNumber | String | Sim | Número do telefone com código do país (sem +) |
+
+## Exemplo de Requisição
+
+### GET
+```bash
+https://app.wizebot.com.br/api/v1/whatsapp/subscriber/create?apiToken=API-KEY&phoneNumberID=PHONE-NUMBER-ID&name=NAME&phoneNumber=MOBILE
+```
+
+### POST
+```bash
+curl -X POST \
+  'https://app.wizebot.com.br/api/v1/whatsapp/subscriber/create' \
+  -d 'apiToken=API-KEY' \
+  -d 'phoneNumberID=PHONE-NUMBER-ID' \
+  -d 'name=NAME' \
+  -d 'phoneNumber=MOBILE'
+```
+
+## Respostas Possíveis
+
+### Sucesso
+```json
+{
+  "status": "1",
+  "message": "Inscrito do WhatsApp foi criado."
+}
+```
+
+### Erros Comuns
+```json
+{
+  "status": "0",
+  "message": "Conta do WhatsApp não encontrada."
+}
+```
+
+```json
+{
+  "status": "0",
+  "message": "Limite de inscritos excedido. Você não pode ter mais inscritos."
+}
+```
+
+```json
+{
+  "status": "0",
+  "message": "Algo deu errado ou o inscrito já existe."
+}
+```
+
+## Observações
+
+<Warning>
+- O número de telefone deve incluir o código do país (por exemplo: 5511999999999)
+- Não inclua caracteres especiais ou espaços no número
+- Verifique seu limite de inscritos antes de adicionar novos contatos
+</Warning>
