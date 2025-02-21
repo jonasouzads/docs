@@ -9,11 +9,11 @@
   "favicon": "/favicon.svg",
   "theme": "venus",
   "colors": {
-    "primary": "#4F46E5",
-    "light": "#818CF8",
-    "dark": "#3730A3",
+    "primary": "#1968f0",
+    "light": "#1968f0",
+    "dark": "#1968f0",
     "background": {
-      "dark": "#1E1E2E"
+      "dark": "#181818"
     },
     "anchors": {
       "from": "#4F46E5",
@@ -59,10 +59,6 @@
     {
       "group": "Introdução",
       "icon": "rocket-launch",
-      "badge": {
-        "text": "Começar Aqui",
-        "color": "blue"
-      },
       "pages": [
         "tutoriais/visao-geral/introducao",
         "tutoriais/visao-geral/whatsapp-cloud"
@@ -85,10 +81,6 @@
         {
           "group": "Modelos de Mensagem",
           "icon": "envelope",
-          "badge": {
-            "text": "Essencial",
-            "color": "green"
-          },
           "pages": [
             "tutoriais/modelos-mensagem/visao-geral",
             "tutoriais/modelos-mensagem/criacao",
@@ -106,10 +98,6 @@
         {
           "group": "Automação",
           "icon": "sparkles",
-          "badge": {
-            "text": "Popular",
-            "color": "purple"
-          },
           "pages": [
             "tutoriais/gerenciador-bots/sem-palavra-chave",
             "tutoriais/gerenciador-bots/fluxo"
@@ -153,10 +141,6 @@
         {
           "group": "Integrações",
           "icon": "webhook",
-          "badge": {
-            "text": "Beta",
-            "color": "orange"
-          },
           "pages": [
             "tutoriais/integracoes/captura-formulario",
             "tutoriais/integracoes/kirvano",
@@ -167,10 +151,6 @@
         {
           "group": "Inteligência Artificial",
           "icon": "brain",
-          "badge": {
-            "text": "Novo",
-            "color": "blue"
-          },
           "pages": [
             "tutoriais/ia/chatgpt"
           ]
