@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="800" height="200" viewBox="0 0 800 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="800" height="200" fill="#F8FAFC"/>
+  <path d="M400 50C400 44.4772 404.477 40 410 40H700C705.523 40 710 44.4772 710 50V150C710 155.523 705.523 160 700 160H410C404.477 160 400 155.523 400 150V50Z" fill="#E2E8F0"/>
+  <path d="M420 70H690" stroke="#94A3B8" stroke-width="2" stroke-linecap="round"/>
+  <path d="M420 90H690" stroke="#94A3B8" stroke-width="2" stroke-linecap="round"/>
+  <path d="M420 110H690" stroke="#94A3B8" stroke-width="2" stroke-linecap="round"/>
+  <path d="M420 130H550" stroke="#94A3B8" stroke-width="2" stroke-linecap="round"/>
+  <path d="M100 50C100 44.4772 104.477 40 110 40H350C355.523 40 360 44.4772 360 50V150C360 155.523 355.523 160 350 160H110C104.477 160 100 155.523 100 150V50Z" fill="#1968f0"/>
+  <path d="M150 90C150 84.4772 154.477 80 160 80H300C305.523 80 310 84.4772 310 90V120C310 125.523 305.523 130 300 130H160C154.477 130 150 125.523 150 120V90Z" fill="white"/>
+  <text x="205" y="110" font-family="Arial" font-size="14" fill="#1968f0" text-anchor="middle">API WIZEBOT</text>
+  <text x="230" y="70" font-family="Arial" font-size="18" font-weight="bold" fill="white" text-anchor="middle">WhatsApp Business API</text>
+</svg>

@@ -18,18 +18,31 @@
             "group": "Primeiros Passos",
             "icon": "rocket-launch",
             "pages": [
-              "tutoriais/visao-geral/introducao",
-              "tutoriais/visao-geral/whatsapp-cloud",
-              "tutoriais/visao-geral/nome-exibicao",
-              "tutoriais/visao-geral/foto-perfil"
-            ]
-          },
-          {
-            "group": "Configuração",
-            "icon": "gear",
-            "pages": [
-              "tutoriais/configuracao/conectar-whatsapp",
-              "tutoriais/configuracao/metodo-pagamento"
+              {
+                "group": "Introdução",
+                "icon": "book-open-cover",
+                "pages": ["tutoriais/visao-geral/introducao"]
+              },
+              {
+                "group": "Conectar seu número",
+                "icon": "phone",
+                "pages": ["tutoriais/configuracao/conectar-whatsapp"]
+              },
+              {
+                "group": "Nome de Exibição",
+                "icon": "signature",
+                "pages": ["tutoriais/visao-geral/nome-exibicao"]
+              },
+              {
+                "group": "Foto de Perfil",
+                "icon": "image",
+                "pages": ["tutoriais/visao-geral/foto-perfil"]
+              },
+              {
+                "group": "Adicionar forma de pagamento",
+                "icon": "credit-card",
+                "pages": ["tutoriais/configuracao/metodo-pagamento"]
+              }
             ]
           },
           {
@@ -110,33 +123,6 @@
               "tutoriais/solucao-problemas/problemas-comuns",
               "tutoriais/solucao-problemas/faq"
             ]
-          },
-          {
-            "group": "API",
-            "icon": "code",
-            "pages": [
-              "tutoriais/api/introducao",
-              {
-                "group": "Mensagens",
-                "pages": [
-                  "tutoriais/api/enviar",
-                  "tutoriais/api/listar-templates",
-                  "tutoriais/api/broadcast"
-                ]
-              },
-              {
-                "group": "Inscritos",
-                "pages": [
-                  "tutoriais/api/criar",
-                  "tutoriais/api/atualizar",
-                  "tutoriais/api/listar",
-                  "tutoriais/api/obter",
-                  "tutoriais/api/resetar-fluxo",
-                  "tutoriais/api/atribuir-equipe",
-                  "tutoriais/api/campos-personalizados"
-                ]
-              }
-            ]
           }
         ]
       }
@@ -186,25 +172,20 @@
   "navbar": {
     "links": [
       {
+        "label": "Acessar Wizebot",
+        "href": "https://app.wizebot.com.br"
+      },
+      {
         "label": "Suporte",
         "href": "https://wa.me/559192226534"
       }
-    ],
-    "primary": {
-      "type": "button",
-      "label": "Dashboard",
-      "href": "https://app.wizebot.com.br"
-    }
+    ]
   },
   "footer": {
     "socials": {
-      "website": "https://wizebot.com.br",
-      "instagram": "https://instagram.com/wizebot.com.br"
-    }
-  },
-  "integrations": {
-    "ga4": {
-      "measurementId": "G-XXXXXXXXXX"
+      "instagram": "https://www.instagram.com/wizebotbr",
+      "facebook": "https://www.facebook.com/wizebotbr",
+      "linkedin": "https://www.linkedin.com/company/wizebot"
     }
   }
 }
