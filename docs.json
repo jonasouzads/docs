@@ -115,25 +115,25 @@
             "group": "API",
             "icon": "code",
             "pages": [
-              "api/introducao",
+              "tutoriais/api/introducao",
               {
                 "group": "Mensagens",
                 "pages": [
-                  "api/mensagens/enviar",
-                  "api/mensagens/listar-templates",
-                  "api/mensagens/broadcast"
+                  "tutoriais/api/enviar",
+                  "tutoriais/api/listar-templates",
+                  "tutoriais/api/broadcast"
                 ]
               },
               {
                 "group": "Inscritos",
                 "pages": [
-                  "api/inscritos/criar",
-                  "api/inscritos/atualizar",
-                  "api/inscritos/listar",
-                  "api/inscritos/obter",
-                  "api/inscritos/resetar-fluxo",
-                  "api/inscritos/atribuir-equipe",
-                  "api/inscritos/campos-personalizados"
+                  "tutoriais/api/criar",
+                  "tutoriais/api/atualizar",
+                  "tutoriais/api/listar",
+                  "tutoriais/api/obter",
+                  "tutoriais/api/resetar-fluxo",
+                  "tutoriais/api/atribuir-equipe",
+                  "tutoriais/api/campos-personalizados"
                 ]
               }
             ]
