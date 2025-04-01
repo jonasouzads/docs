@@ -110,37 +110,37 @@
               "tutoriais/solucao-problemas/problemas-comuns",
               "tutoriais/solucao-problemas/faq"
             ]
+          }
+        ]
+      },
+      {
+        "anchor": "API",
+        "icon": "code",
+        "groups": [
+          {
+            "group": "Introdução",
+            "pages": [
+              "api/introducao"
+            ]
           },
           {
-            "group": "API",
-            "icon": "code",
+            "group": "Mensagens",
             "pages": [
-              {
-                "group": "Introdução",
-                "pages": [
-                  "api/introducao"
-                ]
-              },
-              {
-                "group": "Mensagens",
-                "pages": [
-                  "api/mensagens/enviar",
-                  "api/mensagens/listar-templates",
-                  "api/mensagens/broadcast"
-                ]
-              },
-              {
-                "group": "Inscritos",
-                "pages": [
-                  "api/inscritos/criar",
-                  "api/inscritos/atualizar",
-                  "api/inscritos/listar",
-                  "api/inscritos/obter",
-                  "api/inscritos/resetar-fluxo",
-                  "api/inscritos/atribuir-equipe",
-                  "api/inscritos/campos-personalizados"
-                ]
-              }
+              "api/mensagens/enviar",
+              "api/mensagens/listar-templates",
+              "api/mensagens/broadcast"
+            ]
+          },
+          {
+            "group": "Inscritos",
+            "pages": [
+              "api/inscritos/criar",
+              "api/inscritos/atualizar",
+              "api/inscritos/listar",
+              "api/inscritos/obter",
+              "api/inscritos/resetar-fluxo",
+              "api/inscritos/atribuir-equipe",
+              "api/inscritos/campos-personalizados"
             ]
           }
         ]
