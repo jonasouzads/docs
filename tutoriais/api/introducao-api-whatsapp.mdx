@@ -22,7 +22,9 @@ Para utilizar a API da WizeBot, você precisará de uma chave API (apiToken). Si
 1. Acesse o Console de Desenvolvedor da WizeBot em [https://app.wizebot.com.br/api/developer/console](https://app.wizebot.com.br/api/developer/console)
 2. Clique no botão "Gerar chave API"
 
-![Gerando chave API](/images/geral/key.png)
+<Frame>
+  <img src="/images/geral/key.png" alt="Gerando chave API" />
+</Frame>
 
 <Warning>
   **Importante**: Sua chave API é confidencial e não deve ser compartilhada. Ela concede acesso total à sua conta da WizeBot.
@@ -39,13 +41,15 @@ Para encontrar seu Phone Number ID:
 1. Acesse [https://app.wizebot.com.br/whatsapp/bot/connect](https://app.wizebot.com.br/whatsapp/bot/connect)
 2. Localize o número na seção de identificação da conta
 
-![Identificação do Phone Number ID](/images/geral/identificação.png)
+<Frame>
+  <img src="/images/geral/identificação.png" alt="Identificação do Phone Number ID" />
+</Frame>
 
 ## Estrutura das Requisições
 
 Todas as APIs da WizeBot seguem uma estrutura consistente:
 
-- **Método HTTP**: Principalmente POST
+- **Método HTTP**: POST GET
 - **URL Base**: `https://app.wizebot.com.br/api/v1/whatsapp/`
 - **Autenticação**: Via parâmetro `apiToken` no corpo da requisição
 - **Formato de Resposta**: JSON
