@@ -117,6 +117,42 @@
             ]
           },
           {
+            "group": "API WhatsApp",
+            "icon": "code",
+            "pages": [
+              {
+                "group": "Mensagens",
+                "icon": "message",
+                "pages": [
+                  "tutoriais/api/enviar-mensagem-whatsapp",
+                  "tutoriais/api/enviar-modelo-transmissao-whatsapp",
+                  "tutoriais/api/listar-modelos-whatsapp",
+                  "tutoriais/api/obter-conversa-whatsapp"
+                ]
+              },
+              {
+                "group": "Fluxo de Conversa",
+                "icon": "flow-chart",
+                "pages": [
+                  "tutoriais/api/acionar-fluxo-bot-whatsapp"
+                ]
+              },
+              {
+                "group": "Contatos",
+                "icon": "users",
+                "pages": [
+                  "tutoriais/api/obter-assinante-whatsapp",
+                  "tutoriais/api/listar-assinantes-whatsapp",
+                  "tutoriais/api/criar-assinante-whatsapp",
+                  "tutoriais/api/atualizar-assinante-whatsapp",
+                  "tutoriais/api/redefinir-fluxo-entrada-whatsapp",
+                  "tutoriais/api/atribuir-chat-equipe-whatsapp",
+                  "tutoriais/api/atribuir-campos-personalizados-whatsapp"
+                ]
+              }
+            ]
+          },
+          {
             "group": "Suporte",
             "icon": "wrench",
             "pages": [
@@ -152,11 +188,7 @@
       "display": "interactive"
     },
     "mdx": {
-      "server": "https://app.wizebot.com.br/api/v1",
-      "auth": {
-        "method": "key",
-        "name": "X-API-Key"
-      }
+      "server": "https://app.wizebot.com.br/api/v1"
     }
   },
   "appearance": {

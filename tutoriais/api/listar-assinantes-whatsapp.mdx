@@ -1,0 +1,201 @@
+---
+title: 'Listar Assinantes WhatsApp'
+description: 'Obter lista de assinantes do WhatsApp'
+api: 'POST https://app.wizebot.com.br/api/v1/whatsapp/subscriber/list'
+---
+
+# Listar Assinantes
+
+Esta API permite obter uma lista de assinantes da sua conta do WhatsApp Business.
+
+## Endpoint da API
+
+<ParamField method="POST" type="string">
+  Obter lista de assinantes da sua conta do WhatsApp
+</ParamField>
+
+## Parâmetros
+
+<ParamField query="apiToken" type="string" required>
+  Sua chave de API
+</ParamField>
+
+<ParamField query="phone_number_id" type="string" required>
+  Seu número de telefone do WhatsApp
+</ParamField>
+
+<ParamField query="limit" type="number" required>
+  Obter número de assinantes
+</ParamField>
+
+<ParamField query="offset" type="number">
+  Deslocamento de paginação
+</ParamField>
+
+## Exemplo de Solicitação
+
+<CodeGroup>
+```bash POST
+curl -X POST \ 
+'https://app.wizebot.com.br/api/v1/whatsapp/subscriber/list' \
+-d 'apiToken=API-KEY' \
+-d 'phone_number_id=PHONE-NUMBER-ID' \
+-d 'limit=10' \
+-d 'offset=1'
+```
+</CodeGroup>
+
+## Exemplo de Resposta
+
+<CodeGroup>
+```json Sucesso
+{
+  "status": "1",
+  "message": [
+    {
+      "subscriber_id": 144,
+      "chat_id": "880152145XXX",
+      "first_name": "Mamuduzzaman",
+      "last_name": "Ronok",
+      "email": "test@gmail.com",
+      "gender": "male",
+      "label_names": "One ,two"
+    },
+    {
+      "subscriber_id": 157,
+      "chat_id": "8801518951XXX",
+      "first_name": "Rahim",
+      "last_name": "Karim",
+      "email": "null",
+      "gender": "Male",
+      "label_names": "ChatTest,remove tag,One"
+    }
+  ]
+}
+```
+
+```json Erro
+{
+  "status": "0",
+  "message": "Invalid API Key."
+}
+```
+</CodeGroup>
+
+## Teste a API
+
+<Note>
+  Para testar esta API, você precisará de sua chave API (apiToken) que pode ser encontrada no painel da WizeBot em Configurações > API.
+</Note>
+
+<Playground
+  method="POST"
+  endpoint="https://app.wizebot.com.br/api/v1/whatsapp/subscriber/list"
+>
+  ```json
+  {
+    "apiToken": "SUA_API_KEY_AQUI",
+    "phone_number_id": "SEU_PHONE_NUMBER_ID",
+    "limit": 10,
+    "offset": 0
+  }
+  ```
+</Playground>
+
+<RequestExample>
+  ```bash cURL
+  curl -X POST \
+    'https://app.wizebot.com.br/api/v1/whatsapp/subscriber/list' \
+    -d 'apiToken=SUA_API_KEY_AQUI' \
+    -d 'phone_number_id=SEU_PHONE_NUMBER_ID' \
+    -d 'limit=10' \
+    -d 'offset=0'
+  ```
+
+  ```javascript Node.js
+  const axios = require('axios');
+
+  const data = {
+    apiToken: 'SUA_API_KEY_AQUI',
+    phone_number_id: 'SEU_PHONE_NUMBER_ID',
+    limit: 10,
+    offset: 0
+  };
+
+  axios.post('https://app.wizebot.com.br/api/v1/whatsapp/subscriber/list', data)
+  .then(response => {
+    console.log(response.data);
+  })
+  .catch(error => {
+    console.error('Erro:', error);
+  });
+  ```
+
+  ```php PHP
+  <?php
+  $url = 'https://app.wizebot.com.br/api/v1/whatsapp/subscriber/list';
+  
+  $data = array(
+    'apiToken' => 'SUA_API_KEY_AQUI',
+    'phone_number_id' => 'SEU_PHONE_NUMBER_ID',
+    'limit' => 10,
+    'offset' => 0
+  );
+  
+  $options = array(
+    'http' => array(
+      'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
+      'method'  => 'POST',
+      'content' => http_build_query($data)
+    )
+  );
+  
+  $context  = stream_context_create($options);
+  $result = file_get_contents($url, false, $context);
+  
+  echo $result;
+  ?>
+  ```
+</RequestExample>
+
+<ResponseExample>
+  ```json Sucesso
+  {
+    "status": "1",
+    "message": [
+      {
+        "subscriber_id": 144,
+        "chat_id": "880152145XXX",
+        "first_name": "Mamuduzzaman",
+        "last_name": "Ronok",
+        "email": "test@gmail.com",
+        "gender": "male",
+        "label_names": "One ,two"
+      },
+      {
+        "subscriber_id": 157,
+        "chat_id": "8801518951XXX",
+        "first_name": "Rahim",
+        "last_name": "Karim",
+        "email": "null",
+        "gender": "Male",
+        "label_names": "ChatTest,remove tag,One"
+      }
+    ]
+  }
+  ```
+
+  ```json Erro - API Key Inválida
+  {
+    "status": "0",
+    "message": "Invalid API Key."
+  }
+  ```
+
+  ```json Erro - Parâmetros Inválidos
+  {
+    "status": "0",
+    "message": "Missing required parameters."
+  }
+  ```
+</ResponseExample>

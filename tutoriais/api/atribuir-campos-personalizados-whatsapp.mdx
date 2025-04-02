@@ -1,0 +1,179 @@
+---
+title: 'Atribuir Campos Personalizados WhatsApp'
+description: 'Atribuir Campo Personalizado ao Assinante'
+api: 'POST https://app.wizebot.com.br/api/v1/whatsapp/subscriber/chat/assign-custom-fields'
+---
+
+# Atribuir Campos Personalizados
+
+Esta API permite atribuir campos personalizados a um assinante específico no WhatsApp.
+
+## Endpoint da API
+
+<ParamField method="POST" type="string">
+  Atribuir campos personalizados a um assinante específico no WhatsApp
+</ParamField>
+
+## Parâmetros
+
+<ParamField query="apiToken" type="string" required>
+  Sua chave de API
+</ParamField>
+
+<ParamField query="phone_number_id" type="string" required>
+  Seu número de telefone do WhatsApp
+</ParamField>
+
+<ParamField query="phone_number" type="string" required>
+  Número de telefone do assinante
+</ParamField>
+
+<ParamField query="custom_fields" type="json" required>
+  Nome e valor de campos personalizados no formato JSON
+</ParamField>
+
+## Exemplo de Solicitação
+
+<CodeGroup>
+```bash POST
+curl -X POST \ 
+'https://app.wizebot.com.br/api/v1/whatsapp/subscriber/chat/assign-custom-fields' \
+-d 'apiToken=API-KEY' \
+-d 'phone_number_id=PHONE-NUMBER-ID' \
+-d 'phone_number=PHONE-NUMBER' \
+-d 'custom_fields={"custom_filed_name1": "custom_field_value1","custom_filed_name2": "custom_field_value2"}'
+```
+</CodeGroup>
+
+## Exemplo de Resposta
+
+<CodeGroup>
+```json Sucesso
+{
+  "status": "1",
+  "message": "Subscriber changes have been saved successfully."
+}
+```
+
+```json Erro
+{
+  "status": "0",
+  "message": "Subscriber not found."
+}
+```
+</CodeGroup>
+
+## Teste a API
+
+<Note>
+  Para testar esta API, você precisará de sua chave API (apiToken) que pode ser encontrada no painel da WizeBot em Configurações > API.
+</Note>
+
+<Playground
+  method="POST"
+  endpoint="https://app.wizebot.com.br/api/v1/whatsapp/subscriber/chat/assign-custom-fields"
+>
+  ```json
+  {
+    "apiToken": "SUA_API_KEY_AQUI",
+    "phone_number_id": "SEU_PHONE_NUMBER_ID",
+    "phone_number": "5511999999999",
+    "custom_fields": {
+      "cidade": "São Paulo",
+      "interesse": "Marketing Digital"
+    }
+  }
+  ```
+</Playground>
+
+<RequestExample>
+  ```bash cURL
+  curl -X POST \
+    'https://app.wizebot.com.br/api/v1/whatsapp/subscriber/chat/assign-custom-fields' \
+    -d 'apiToken=SUA_API_KEY_AQUI' \
+    -d 'phone_number_id=SEU_PHONE_NUMBER_ID' \
+    -d 'phone_number=5511999999999' \
+    -d 'custom_fields={"cidade": "São Paulo", "interesse": "Marketing Digital"}'
+  ```
+
+  ```javascript Node.js
+  const axios = require('axios');
+
+  const data = {
+    apiToken: 'SUA_API_KEY_AQUI',
+    phone_number_id: 'SEU_PHONE_NUMBER_ID',
+    phone_number: '5511999999999',
+    custom_fields: {
+      cidade: 'São Paulo',
+      interesse: 'Marketing Digital'
+    }
+  };
+
+  axios.post('https://app.wizebot.com.br/api/v1/whatsapp/subscriber/chat/assign-custom-fields', data)
+  .then(response => {
+    console.log(response.data);
+  })
+  .catch(error => {
+    console.error('Erro:', error);
+  });
+  ```
+
+  ```php PHP
+  <?php
+  $url = 'https://app.wizebot.com.br/api/v1/whatsapp/subscriber/chat/assign-custom-fields';
+  
+  $data = array(
+    'apiToken' => 'SUA_API_KEY_AQUI',
+    'phone_number_id' => 'SEU_PHONE_NUMBER_ID',
+    'phone_number' => '5511999999999',
+    'custom_fields' => json_encode(array(
+      'cidade' => 'São Paulo',
+      'interesse' => 'Marketing Digital'
+    ))
+  );
+  
+  $options = array(
+    'http' => array(
+      'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
+      'method'  => 'POST',
+      'content' => http_build_query($data)
+    )
+  );
+  
+  $context  = stream_context_create($options);
+  $result = file_get_contents($url, false, $context);
+  
+  echo $result;
+  ?>
+  ```
+</RequestExample>
+
+<ResponseExample>
+  ```json Sucesso
+  {
+    "status": "1",
+    "message": "Subscriber changes have been saved successfully."
+  }
+  ```
+
+  ```json Erro - API Key Inválida
+  {
+    "status": "0",
+    "message": "Invalid API Key."
+  }
+  ```
+
+  ```json Erro - Assinante Não Encontrado
+  {
+    "status": "0",
+    "message": "Subscriber not found."
+  }
+  ```
+
+  ```json Erro - Formato JSON Inválido
+  {
+    "status": "0",
+    "message": "Invalid JSON format for custom fields."
+  }
+  ```
+</ResponseExample>
