@@ -1,17 +1,17 @@
 ---
-title: 'Obter Assinante WhatsApp'
-description: 'Obter Assinante Usando ID do Chat (Número de Telefone)'
-api: 'POST https://app.wizebot.com.br/api/v1/whatsapp/subscriber/get'
+title: 'Listar Etiquetas WhatsApp'
+description: 'Obter lista de etiquetas do WhatsApp'
+api: 'POST https://app.wizebot.com.br/api/v1/whatsapp/label/list'
 ---
 
-# Obter Assinante
+# Listar Etiquetas
 
-Esta API permite obter informações de um assinante específico usando seu número de telefone.
+Esta API permite obter uma lista de todas as etiquetas disponíveis na sua conta do WhatsApp Business.
 
 ## Endpoint da API
 
 <ParamField method="POST" type="string">
-  Obter informações de um assinante específico via WhatsApp
+  Obter lista de etiquetas da sua conta do WhatsApp
 </ParamField>
 
 ## Parâmetros
@@ -21,11 +21,7 @@ Esta API permite obter informações de um assinante específico usando seu núm
 </ParamField>
 
 <ParamField query="phone_number_id" type="string" required>
-  Número de telefone da conta do WhatsApp ID
-</ParamField>
-
-<ParamField query="phone_number" type="string" required>
-  Número de telefone do assinante
+  Seu número de telefone do WhatsApp
 </ParamField>
 
 ## Exemplo de Solicitação
@@ -33,10 +29,9 @@ Esta API permite obter informações de um assinante específico usando seu núm
 <CodeGroup>
 ```bash POST
 curl -X POST \ 
-'https://app.wizebot.com.br/api/v1/whatsapp/subscriber/get' \
+'https://app.wizebot.com.br/api/v1/whatsapp/label/list' \
 -d 'apiToken=API-KEY' \
--d 'phone_number_id=PHONE-NUMBER-ID' \
--d 'phone_number=PHONE-NUMBER'
+-d 'phone_number_id=PHONE-NUMBER-ID'
 ```
 </CodeGroup>
 
@@ -48,13 +43,9 @@ curl -X POST \
   "status": "1",
   "message": [
     {
-      "subscriber_id": 144,
-      "chat_id": "8801521455XXX",
-      "first_name": "Md Ronok",
-      "last_name": "Ronok",
-      "email": "test@gmail.com",
-      "gender": "Male",
-      "label_names": "Label1,Label2"
+      "id": 1,
+      "label_name": "Your label name",
+      "status": "1"
     }
   ]
 }
@@ -63,7 +54,7 @@ curl -X POST \
 ```json Erro
 {
   "status": "0",
-  "message": "Subscriber not found."
+  "message": "Invalid API Key."
 }
 ```
 </CodeGroup>
@@ -76,13 +67,12 @@ curl -X POST \
 
 <Playground
   method="POST"
-  endpoint="https://app.wizebot.com.br/api/v1/whatsapp/subscriber/get"
+  endpoint="https://app.wizebot.com.br/api/v1/whatsapp/label/list"
 >
   ```json
   {
     "apiToken": "SUA_API_KEY_AQUI",
-    "phone_number_id": "SEU_PHONE_NUMBER_ID",
-    "phone_number": "5511999999999"
+    "phone_number_id": "SEU_PHONE_NUMBER_ID"
   }
   ```
 </Playground>
@@ -90,10 +80,9 @@ curl -X POST \
 <RequestExample>
   ```bash cURL
   curl -X POST \
-    'https://app.wizebot.com.br/api/v1/whatsapp/subscriber/get' \
+    'https://app.wizebot.com.br/api/v1/whatsapp/label/list' \
     -d 'apiToken=SUA_API_KEY_AQUI' \
-    -d 'phone_number_id=SEU_PHONE_NUMBER_ID' \
-    -d 'phone_number=5511999999999'
+    -d 'phone_number_id=SEU_PHONE_NUMBER_ID'
   ```
 
   ```javascript Node.js
@@ -101,11 +90,10 @@ curl -X POST \
 
   const data = {
     apiToken: 'SUA_API_KEY_AQUI',
-    phone_number_id: 'SEU_PHONE_NUMBER_ID',
-    phone_number: '5511999999999'
+    phone_number_id: 'SEU_PHONE_NUMBER_ID'
   };
 
-  axios.post('https://app.wizebot.com.br/api/v1/whatsapp/subscriber/get', data)
+  axios.post('https://app.wizebot.com.br/api/v1/whatsapp/label/list', data)
   .then(response => {
     console.log(response.data);
   })
@@ -116,12 +104,11 @@ curl -X POST \
 
   ```php PHP
   <?php
-  $url = 'https://app.wizebot.com.br/api/v1/whatsapp/subscriber/get';
+  $url = 'https://app.wizebot.com.br/api/v1/whatsapp/label/list';
   
   $data = array(
     'apiToken' => 'SUA_API_KEY_AQUI',
-    'phone_number_id' => 'SEU_PHONE_NUMBER_ID',
-    'phone_number' => '5511999999999'
+    'phone_number_id' => 'SEU_PHONE_NUMBER_ID'
   );
   
   $options = array(
@@ -146,13 +133,19 @@ curl -X POST \
     "status": "1",
     "message": [
       {
-        "subscriber_id": 144,
-        "chat_id": "8801521455XXX",
-        "first_name": "Jonas",
-        "last_name": "Souza",
-        "email": "jonas@gmail.com",
-        "gender": "Male",
-        "label_names": "Label1,Label2"
+        "id": 1,
+        "label_name": "Clientes VIP",
+        "status": "1"
+      },
+      {
+        "id": 2,
+        "label_name": "Suporte",
+        "status": "1"
+      },
+      {
+        "id": 3,
+        "label_name": "Vendas",
+        "status": "1"
       }
     ]
   }
@@ -165,10 +158,10 @@ curl -X POST \
   }
   ```
 
-  ```json Erro - Assinante Não Encontrado
+  ```json Erro - Parâmetros Inválidos
   {
     "status": "0",
-    "message": "Subscriber not found."
+    "message": "Missing required parameters."
   }
   ```
 </ResponseExample>

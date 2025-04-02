@@ -120,6 +120,7 @@
             "group": "API WhatsApp",
             "icon": "code",
             "pages": [
+              "tutoriais/api/introducao-api-whatsapp",
               {
                 "group": "Mensagens",
                 "icon": "message",
@@ -132,7 +133,7 @@
               },
               {
                 "group": "Fluxo de Conversa",
-                "icon": "flow-chart",
+                "icon": "sparkles",
                 "pages": [
                   "tutoriais/api/acionar-fluxo-bot-whatsapp"
                 ]
@@ -149,6 +150,14 @@
                   "tutoriais/api/atribuir-chat-equipe-whatsapp",
                   "tutoriais/api/atribuir-campos-personalizados-whatsapp"
                 ]
+              },
+              {
+                "group": "Etiquetas",
+                "icon": "tag",
+                "pages": [
+                  "tutoriais/api/listar-etiquetas-whatsapp",
+                  "tutoriais/api/criar-etiqueta-whatsapp"
+                ]
               }
             ]
           },
@@ -156,8 +165,7 @@
             "group": "Suporte",
             "icon": "wrench",
             "pages": [
-              "tutoriais/solucao-problemas/problemas-comuns",
-              "tutoriais/solucao-problemas/faq"
+              "tutoriais/solucao-problemas/suporte"
             ]
           }
         ]

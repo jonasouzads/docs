@@ -1,17 +1,17 @@
 ---
-title: 'Listar Assinantes WhatsApp'
-description: 'Obter lista de assinantes do WhatsApp'
-api: 'POST https://app.wizebot.com.br/api/v1/whatsapp/subscriber/list'
+title: 'Criar Etiqueta WhatsApp'
+description: 'Criar uma nova etiqueta no WhatsApp'
+api: 'POST https://app.wizebot.com.br/api/v1/whatsapp/label/create'
 ---
 
-# Listar Assinantes
+# Criar Etiqueta
 
-Esta API permite obter uma lista de assinantes da sua conta do WhatsApp Business.
+Esta API permite criar uma nova etiqueta na sua conta do WhatsApp Business.
 
 ## Endpoint da API
 
 <ParamField method="POST" type="string">
-  Obter lista de assinantes da sua conta do WhatsApp
+  Criar uma nova etiqueta na sua conta do WhatsApp
 </ParamField>
 
 ## Parâmetros
@@ -24,12 +24,8 @@ Esta API permite obter uma lista de assinantes da sua conta do WhatsApp Business
   Seu número de telefone do WhatsApp
 </ParamField>
 
-<ParamField query="limit" type="number" required>
-  Obter número de assinantes
-</ParamField>
-
-<ParamField query="offset" type="number">
-  Deslocamento de paginação
+<ParamField query="label_name" type="string" required>
+  Nome da etiqueta
 </ParamField>
 
 ## Exemplo de Solicitação
@@ -37,11 +33,10 @@ Esta API permite obter uma lista de assinantes da sua conta do WhatsApp Business
 <CodeGroup>
 ```bash POST
 curl -X POST \ 
-'https://app.wizebot.com.br/api/v1/whatsapp/subscriber/list' \
+'https://app.wizebot.com.br/api/v1/whatsapp/label/create' \
 -d 'apiToken=API-KEY' \
 -d 'phone_number_id=PHONE-NUMBER-ID' \
--d 'limit=10' \
--d 'offset=1'
+-d 'label_name=LABEL-NAME'
 ```
 </CodeGroup>
 
@@ -51,26 +46,7 @@ curl -X POST \
 ```json Sucesso
 {
   "status": "1",
-  "message": [
-    {
-      "subscriber_id": 144,
-      "chat_id": "880152145XXX",
-      "first_name": "Jonas",
-      "last_name": "Souza",
-      "email": "jonas@gmail.com",
-      "gender": "male",
-      "label_names": "One ,two"
-    },
-    {
-      "subscriber_id": 157,
-      "chat_id": "8801518951XXX",
-      "first_name": "Rahim",
-      "last_name": "Karim",
-      "email": "null",
-      "gender": "Male",
-      "label_names": "ChatTest,remove tag,One"
-    }
-  ]
+  "message": "Label has been created successfully."
 }
 ```
 
@@ -90,14 +66,13 @@ curl -X POST \
 
 <Playground
   method="POST"
-  endpoint="https://app.wizebot.com.br/api/v1/whatsapp/subscriber/list"
+  endpoint="https://app.wizebot.com.br/api/v1/whatsapp/label/create"
 >
   ```json
   {
     "apiToken": "SUA_API_KEY_AQUI",
     "phone_number_id": "SEU_PHONE_NUMBER_ID",
-    "limit": 10,
-    "offset": 0
+    "label_name": "Nova Etiqueta"
   }
   ```
 </Playground>
@@ -105,11 +80,10 @@ curl -X POST \
 <RequestExample>
   ```bash cURL
   curl -X POST \
-    'https://app.wizebot.com.br/api/v1/whatsapp/subscriber/list' \
+    'https://app.wizebot.com.br/api/v1/whatsapp/label/create' \
     -d 'apiToken=SUA_API_KEY_AQUI' \
     -d 'phone_number_id=SEU_PHONE_NUMBER_ID' \
-    -d 'limit=10' \
-    -d 'offset=0'
+    -d 'label_name=Nova Etiqueta'
   ```
 
   ```javascript Node.js
@@ -118,11 +92,10 @@ curl -X POST \
   const data = {
     apiToken: 'SUA_API_KEY_AQUI',
     phone_number_id: 'SEU_PHONE_NUMBER_ID',
-    limit: 10,
-    offset: 0
+    label_name: 'Nova Etiqueta'
   };
 
-  axios.post('https://app.wizebot.com.br/api/v1/whatsapp/subscriber/list', data)
+  axios.post('https://app.wizebot.com.br/api/v1/whatsapp/label/create', data)
   .then(response => {
     console.log(response.data);
   })
@@ -133,13 +106,12 @@ curl -X POST \
 
   ```php PHP
   <?php
-  $url = 'https://app.wizebot.com.br/api/v1/whatsapp/subscriber/list';
+  $url = 'https://app.wizebot.com.br/api/v1/whatsapp/label/create';
   
   $data = array(
     'apiToken' => 'SUA_API_KEY_AQUI',
     'phone_number_id' => 'SEU_PHONE_NUMBER_ID',
-    'limit' => 10,
-    'offset' => 0
+    'label_name' => 'Nova Etiqueta'
   );
   
   $options = array(
@@ -162,26 +134,7 @@ curl -X POST \
   ```json Sucesso
   {
     "status": "1",
-    "message": [
-      {
-        "subscriber_id": 144,
-        "chat_id": "880152145XXX",
-        "first_name": "Mamuduzzaman",
-        "last_name": "Ronok",
-        "email": "test@gmail.com",
-        "gender": "male",
-        "label_names": "One ,two"
-      },
-      {
-        "subscriber_id": 157,
-        "chat_id": "8801518951XXX",
-        "first_name": "Jonas",
-        "last_name": "Souza",
-        "email": "null",
-        "gender": "Male",
-        "label_names": "ChatTest,remove tag,One"
-      }
-    ]
+    "message": "Label has been created successfully."
   }
   ```
 
@@ -196,6 +149,13 @@ curl -X POST \
   {
     "status": "0",
     "message": "Missing required parameters."
+  }
+  ```
+
+  ```json Erro - Etiqueta Já Existe
+  {
+    "status": "0",
+    "message": "Label with this name already exists."
   }
   ```
 </ResponseExample>

@@ -1,0 +1,107 @@
+---
+title: 'Introdução à API WhatsApp'
+description: 'Guia de introdução para utilizar a API WhatsApp da WizeBot'
+---
+
+# Introdução à API WhatsApp
+
+A API WhatsApp da WizeBot permite que você integre os recursos da plataforma diretamente em seus sistemas e aplicativos. Com a API, você pode automatizar o envio de mensagens, gerenciar contatos, criar etiquetas, acionar fluxos de bot e muito mais.
+
+## Disponibilidade
+
+<Note type="warning">
+  A API da WizeBot está disponível **exclusivamente** para clientes do plano **Elite**. 
+  
+  Se você ainda não possui este plano, entre em contato com nossa equipe comercial para fazer um upgrade.
+</Note>
+
+## Obtendo sua Chave API
+
+Para utilizar a API da WizeBot, você precisará de uma chave API (apiToken). Siga os passos abaixo para gerar sua chave:
+
+1. Acesse o Console de Desenvolvedor da WizeBot em [https://app.wizebot.com.br/api/developer/console](https://app.wizebot.com.br/api/developer/console)
+2. Clique no botão "Gerar chave API"
+
+![Gerando chave API](/images/geral/key.png)
+
+<Warning>
+  **Importante**: Sua chave API é confidencial e não deve ser compartilhada. Ela concede acesso total à sua conta da WizeBot.
+  
+  Guarde sua chave em um local seguro e nunca a exponha em código-fonte público ou repositórios.
+</Warning>
+
+## Identificando seu Phone Number ID
+
+Todas as APIs do WhatsApp exigem o parâmetro `phone_number_id`, que é o identificador único do seu número de telefone na plataforma da WizeBot.
+
+Para encontrar seu Phone Number ID:
+
+1. Acesse [https://app.wizebot.com.br/whatsapp/bot/connect](https://app.wizebot.com.br/whatsapp/bot/connect)
+2. Localize o número na seção de identificação da conta
+
+![Identificação do Phone Number ID](/images/geral/identificação.png)
+
+## Estrutura das Requisições
+
+Todas as APIs da WizeBot seguem uma estrutura consistente:
+
+- **Método HTTP**: Principalmente POST
+- **URL Base**: `https://app.wizebot.com.br/api/v1/whatsapp/`
+- **Autenticação**: Via parâmetro `apiToken` no corpo da requisição
+- **Formato de Resposta**: JSON
+
+### Parâmetros Obrigatórios em Todas as Requisições
+
+| Parâmetro | Descrição | Tipo |
+|-----------|-----------|------|
+| apiToken | Sua chave de API | String |
+| phone_number_id | ID do seu número de WhatsApp | String |
+
+### Exemplo de Requisição Básica
+
+```bash
+curl -X POST \
+  'https://app.wizebot.com.br/api/v1/whatsapp/send' \
+  -d 'apiToken=SUA_API_KEY_AQUI' \
+  -d 'phone_number_id=SEU_PHONE_NUMBER_ID' \
+  -d 'phone_number=5511999999999' \
+  -d 'message=Olá, esta é uma mensagem de teste!'
+```
+
+## Formato das Respostas
+
+As respostas da API seguem um formato padrão:
+
+```json
+{
+  "status": "1",  // 1 para sucesso, 0 para erro
+  "message": "..." // Mensagem de sucesso ou erro
+}
+```
+
+Em caso de erros, a API retornará um status "0" com uma mensagem descritiva do problema.
+
+## Categorias de APIs Disponíveis
+
+A WizeBot oferece diversas categorias de APIs para o WhatsApp:
+
+1. **Mensagens** - Envio de mensagens de texto, modelos e obtenção de conversas
+2. **Fluxo de Conversa** - Acionamento de fluxos de bot
+3. **Contatos** - Gerenciamento de assinantes e atribuições
+4. **Etiquetas** - Criação e listagem de etiquetas
+
+## Limites de Uso
+
+O uso da API está sujeito aos mesmos limites da sua conta do WhatsApp Business. Recomendamos seguir as diretrizes do WhatsApp para evitar bloqueios ou suspensões.
+
+## Playground Interativo
+
+Cada endpoint da API possui um playground interativo que permite testar as requisições diretamente na documentação. Utilize-o para verificar o funcionamento da API antes de implementar em seu sistema.
+
+## Suporte
+
+Em caso de dúvidas ou problemas com a API, entre em contato com nosso suporte técnico através do chat na plataforma ou pelo e-mail suporte@wizebot.com.br.
+
+<Note>
+  Lembre-se de sempre manter suas integrações atualizadas conforme as novas versões da API são lançadas.
+</Note>
