@@ -79,8 +79,7 @@
                 "icon": "users",
                 "pages": [
                   "tutoriais/gerenciador-contatos/visao-geral",
-                  "tutoriais/gerenciador-contatos/importar",
-                  "tutoriais/subscribers"
+                  "tutoriais/gerenciador-contatos/importar"
                 ]
               },
               {
