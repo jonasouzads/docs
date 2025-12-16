@@ -1,0 +1,355 @@
+---
+title: 'Wizebot'
+description: 'Documentação do nó Wizebot para integração com a API WhatsApp'
+---
+
+# Nó Wizebot
+
+<img className="block dark:hidden" src="/images/wizebot-logo-light.png" alt="Logo Wizebot" />
+<img className="hidden dark:block" src="/images/wizebot-logo-dark.png" alt="Logo Wizebot" />
+
+O nó Wizebot permite integrar a API WhatsApp da Wizebot com seus fluxos de trabalho no n8n, possibilitando enviar mensagens, gerenciar assinantes, trabalhar com etiquetas e muito mais.
+
+## Pré-requisitos
+
+- Uma conta Wizebot com acesso à API WhatsApp
+- Um token de API válido da Wizebot
+
+## Instalação
+
+Você pode instalar este nó comunitário usando o npm:
+
+```bash
+npm install n8n-nodes-wizebot
+```
+
+Após a instalação, reinicie seu servidor n8n para que o nó seja reconhecido.
+
+## Configuração
+
+Para usar o nó Wizebot, você precisa configurar as credenciais da API:
+
+1. No n8n, vá para **Configurações** > **Credenciais** > **Criar Nova**
+2. Selecione **API Wizebot**
+3. Insira seu token de API da Wizebot
+4. Salve as credenciais
+
+<img src="/images/wizebot-credentials.png" alt="Configuração de Credenciais" />
+
+## Operações Disponíveis
+
+O nó Wizebot oferece as seguintes operações:
+
+### Enviar Mensagem
+
+Envie uma mensagem de texto para qualquer número de celular via WhatsApp.
+
+<img src="/images/wizebot-enviar-mensagem.png" alt="Enviar Mensagem" />
+
+**Parâmetros:**
+
+| Parâmetro | Descrição |
+|-----------|-----------|
+| ID do Número de Telefone | ID do número de telefone da conta do WhatsApp |
+| Mensagem | Conteúdo da mensagem de texto |
+| Número de Telefone | Número do destinatário (com código do país) |
+
+**Exemplo de Resposta:**
+
+```json
+{
+  "status": "1",
+  "message": "Message sent successfully."
+}
+```
+
+### Obter Conversa
+
+Recupera o histórico de conversa com um assinante específico.
+
+<img src="/images/wizebot-obter-conversa.png" alt="Obter Conversa" />
+
+**Parâmetros:**
+
+| Parâmetro | Descrição |
+|-----------|-----------|
+| ID do Número de Telefone | ID do número de telefone da conta do WhatsApp |
+| Número de Telefone | Número do assinante (com código do país) |
+| Limite | Número de mensagens a serem recuperadas |
+| Deslocamento | Deslocamento para paginação (opcional) |
+
+### Listar Modelos
+
+Lista os modelos de mensagem disponíveis para sua conta WhatsApp.
+
+<img src="/images/wizebot-listar-modelos.png" alt="Listar Modelos" />
+
+**Parâmetros:**
+
+| Parâmetro | Descrição |
+|-----------|-----------|
+| ID do Número de Telefone | ID do número de telefone da conta do WhatsApp |
+
+### Acionar Bot
+
+Aciona um fluxo de bot para um número de celular específico.
+
+<img src="/images/wizebot-acionar-bot.png" alt="Acionar Bot" />
+
+**Parâmetros:**
+
+| Parâmetro | Descrição |
+|-----------|-----------|
+| ID do Número de Telefone | ID do número de telefone da conta do WhatsApp |
+| ID Único do Fluxo do Bot | Identificador único do fluxo do bot |
+| Número de Telefone | Número do destinatário (com código do país) |
+
+### Obter Assinante
+
+Recupera informações de um assinante específico usando seu número de telefone.
+
+<img src="/images/wizebot-obter-assinante.png" alt="Obter Assinante" />
+
+**Parâmetros:**
+
+| Parâmetro | Descrição |
+|-----------|-----------|
+| ID do Número de Telefone | ID do número de telefone da conta do WhatsApp |
+| Número de Telefone | Número do assinante (com código do país) |
+
+### Listar Assinantes
+
+Lista todos os assinantes da sua conta WhatsApp.
+
+<img src="/images/wizebot-listar-assinantes.png" alt="Listar Assinantes" />
+
+**Parâmetros:**
+
+| Parâmetro | Descrição |
+|-----------|-----------|
+| ID do Número de Telefone | ID do número de telefone da conta do WhatsApp |
+| Limite | Número de assinantes a serem recuperados |
+| Deslocamento | Deslocamento para paginação (opcional) |
+
+### Criar Assinante
+
+Cria um novo assinante/contato na sua conta WhatsApp.
+
+<img src="/images/wizebot-criar-assinante.png" alt="Criar Assinante" />
+
+**Parâmetros:**
+
+| Parâmetro | Descrição |
+|-----------|-----------|
+| ID do Número de Telefone | ID do número de telefone da conta do WhatsApp |
+| Nome | Nome do assinante |
+| Número de Telefone | Número do assinante (com código do país) |
+
+### Atualizar Assinante
+
+Atualiza as informações de um assinante existente.
+
+<img src="/images/wizebot-atualizar-assinante.png" alt="Atualizar Assinante" />
+
+**Parâmetros:**
+
+| Parâmetro | Descrição |
+|-----------|-----------|
+| ID do Número de Telefone | ID do número de telefone da conta do WhatsApp |
+| Número de Telefone | Número do assinante (com código do país) |
+| Primeiro Nome | Primeiro nome do assinante (opcional) |
+| Sobrenome | Sobrenome do assinante (opcional) |
+| Gênero | Gênero do assinante (opcional) |
+| IDs de Etiquetas | IDs das etiquetas separados por vírgula (opcional) |
+
+### Redefinir Fluxo de Entrada
+
+Redefine o fluxo de entrada do usuário.
+
+<img src="/images/wizebot-redefinir-fluxo.png" alt="Redefinir Fluxo de Entrada" />
+
+**Parâmetros:**
+
+| Parâmetro | Descrição |
+|-----------|-----------|
+| ID do Número de Telefone | ID do número de telefone da conta do WhatsApp |
+| Número de Telefone | Número do assinante (com código do país) |
+
+### Atribuir Chat à Equipe
+
+Atribui o chat de um assinante a um membro específico da equipe.
+
+<img src="/images/wizebot-atribuir-chat-equipe.png" alt="Atribuir Chat à Equipe" />
+
+**Parâmetros:**
+
+| Parâmetro | Descrição |
+|-----------|-----------|
+| ID do Número de Telefone | ID do número de telefone da conta do WhatsApp |
+| Número de Telefone | Número do assinante (com código do país) |
+| ID do Membro da Equipe | ID do membro da equipe |
+
+### Atribuir Campos Personalizados
+
+Atribui campos personalizados a um assinante.
+
+<img src="/images/wizebot-atribuir-campos.png" alt="Atribuir Campos Personalizados" />
+
+**Parâmetros:**
+
+| Parâmetro | Descrição |
+|-----------|-----------|
+| ID do Número de Telefone | ID do número de telefone da conta do WhatsApp |
+| Número de Telefone | Número do assinante (com código do país) |
+| Campos Personalizados | JSON com nomes e valores dos campos personalizados |
+
+**Exemplo de Campos Personalizados:**
+
+```json
+{
+  "custom_field_name1": "custom_field_value1",
+  "custom_field_name2": "custom_field_value2"
+}
+```
+
+### Atribuir Etiquetas
+
+Atribui etiquetas a um assinante.
+
+<img src="/images/wizebot-atribuir-etiquetas.png" alt="Atribuir Etiquetas" />
+
+**Parâmetros:**
+
+| Parâmetro | Descrição |
+|-----------|-----------|
+| ID do Número de Telefone | ID do número de telefone da conta do WhatsApp |
+| Número de Telefone | Número do assinante (com código do país) |
+| IDs de Etiquetas | IDs das etiquetas separados por vírgula |
+
+### Remover Etiquetas
+
+Remove etiquetas de um assinante.
+
+<img src="/images/wizebot-remover-etiquetas.png" alt="Remover Etiquetas" />
+
+**Parâmetros:**
+
+| Parâmetro | Descrição |
+|-----------|-----------|
+| ID do Número de Telefone | ID do número de telefone da conta do WhatsApp |
+| Número de Telefone | Número do assinante (com código do país) |
+| IDs de Etiquetas | IDs das etiquetas separados por vírgula |
+
+### Listar Etiquetas
+
+Lista todas as etiquetas disponíveis.
+
+<img src="/images/wizebot-listar-etiquetas.png" alt="Listar Etiquetas" />
+
+**Parâmetros:**
+
+| Parâmetro | Descrição |
+|-----------|-----------|
+| ID do Número de Telefone | ID do número de telefone da conta do WhatsApp |
+
+### Criar Etiqueta
+
+Cria uma nova etiqueta.
+
+<img src="/images/wizebot-criar-etiqueta.png" alt="Criar Etiqueta" />
+
+**Parâmetros:**
+
+| Parâmetro | Descrição |
+|-----------|-----------|
+| ID do Número de Telefone | ID do número de telefone da conta do WhatsApp |
+| Nome da Etiqueta | Nome da nova etiqueta |
+
+### Listar Catálogos
+
+Lista os catálogos disponíveis.
+
+<img src="/images/wizebot-listar-catalogos.png" alt="Listar Catálogos" />
+
+**Parâmetros:**
+
+| Parâmetro | Descrição |
+|-----------|-----------|
+| Token da API | Sua chave de API (preenchido automaticamente) |
+
+### Listar Pedidos de Catálogo
+
+Lista os pedidos de catálogo.
+
+<img src="/images/wizebot-listar-pedidos.png" alt="Listar Pedidos de Catálogo" />
+
+**Parâmetros:**
+
+| Parâmetro | Descrição |
+|-----------|-----------|
+| ID do Catálogo WhatsApp | ID do catálogo do WhatsApp (opcional) |
+
+### Alterar Status do Pedido
+
+Altera o status de um pedido de catálogo.
+
+<img src="/images/wizebot-alterar-status.png" alt="Alterar Status do Pedido" />
+
+**Parâmetros:**
+
+| Parâmetro | Descrição |
+|-----------|-----------|
+| ID Único do Pedido | ID único do pedido |
+| Status do Carrinho | Status do pedido (Aprovado, Concluído, Enviado, Entregue ou Reembolsado) |
+
+## Exemplos de Uso
+
+### Enviar mensagem de boas-vindas para novos contatos
+
+<img src="/images/wizebot-exemplo-boas-vindas.png" alt="Exemplo de Boas-vindas" />
+
+Este workflow envia uma mensagem de boas-vindas para novos contatos adicionados ao seu WhatsApp:
+
+1. Use um trigger de "Webhook" para receber notificações de novos contatos
+2. Use o nó Wizebot com a operação "Enviar Mensagem" para enviar uma mensagem de boas-vindas
+3. Opcionalmente, adicione o contato a uma etiqueta "Novo Cliente" usando a operação "Atribuir Etiquetas"
+
+### Automação de atendimento ao cliente
+
+<img src="/images/wizebot-exemplo-atendimento.png" alt="Exemplo de Atendimento" />
+
+Este workflow automatiza o atendimento ao cliente:
+
+1. Use um trigger de "Webhook" para receber mensagens de clientes
+2. Use um nó "Switch" para analisar o conteúdo da mensagem
+3. Para perguntas comuns, use o nó Wizebot com a operação "Enviar Mensagem" para responder automaticamente
+4. Para consultas complexas, use a operação "Atribuir Chat à Equipe" para encaminhar para um atendente
+
+## Solução de Problemas
+
+### Mensagens não estão sendo enviadas
+
+- Verifique se o token da API está correto e ativo
+- Confirme se o número de telefone do destinatário está no formato correto (com código do país)
+- Verifique se você não excedeu o limite de assinantes da sua conta
+
+### Erros de autenticação
+
+- Verifique se o token da API está correto nas credenciais
+- Confirme se sua conta Wizebot está ativa e com pagamentos em dia
+
+### O nó não aparece no n8n
+
+- Certifique-se de que o pacote foi instalado corretamente
+- Reinicie o servidor n8n após a instalação
+- Verifique os logs do n8n para possíveis erros
+
+## Recursos Adicionais
+
+- [Documentação oficial da API Wizebot](https://app.wizebot.com.br/api/documentation)
+- [Repositório GitHub do nó Wizebot](https://github.com/jonasouzads/node-community-wizebot)
+- [Comunidade n8n](https://community.n8n.io/)
+
+## Suporte
+
+Para suporte com este nó comunitário, por favor abra uma issue no [repositório GitHub](https://github.com/jonasouzads/node-community-wizebot/issues).

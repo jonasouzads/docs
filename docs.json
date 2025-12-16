@@ -1,48 +1,29 @@
 {
   "$schema": "https://mintlify.com/docs.json",
-  "theme": "palm",
+  "theme": "mint",
   "name": "Central de Ajuda - Wizebot",
+  "description": "Documentação oficial da WizeBot - Plataforma de automação de WhatsApp Business com API Oficial da Meta. Aprenda a configurar, automatizar e integrar seu WhatsApp de forma profissional.",
   "colors": {
     "primary": "#1968f0",
-    "light": "#1968f0",
-    "dark": "#1968f0"
+    "light": "#4A90D9",
+    "dark": "#0D4F8B"
   },
   "favicon": "/favicon.svg",
   "navigation": {
     "anchors": [
       {
-        "anchor": "Documentation",
+        "anchor": "Documentação",
         "icon": "book-open",
         "groups": [
           {
             "group": "Primeiros Passos",
-            "icon": "rocket-launch",
+            "icon": "rocket",
             "pages": [
-              {
-                "group": "Introdução",
-                "icon": "book-open-cover",
-                "pages": ["tutoriais/visao-geral/introducao"]
-              },
-              {
-                "group": "Conectar seu número",
-                "icon": "phone",
-                "pages": ["tutoriais/configuracao/conectar-whatsapp"]
-              },
-              {
-                "group": "Nome de Exibição",
-                "icon": "signature",
-                "pages": ["tutoriais/visao-geral/nome-exibicao"]
-              },
-              {
-                "group": "Foto de Perfil",
-                "icon": "image",
-                "pages": ["tutoriais/visao-geral/foto-perfil"]
-              },
-              {
-                "group": "Adicionar forma de pagamento",
-                "icon": "credit-card",
-                "pages": ["tutoriais/configuracao/metodo-pagamento"]
-              }
+              "tutoriais/visao-geral/introducao",
+              "tutoriais/configuracao/conectar-whatsapp",
+              "tutoriais/visao-geral/nome-exibicao",
+              "tutoriais/visao-geral/foto-perfil",
+              "tutoriais/configuracao/metodo-pagamento"
             ]
           },
           {
@@ -55,15 +36,10 @@
                 "pages": [
                   "tutoriais/modelos-mensagem/visao-geral",
                   "tutoriais/modelos-mensagem/criacao",
-                  {
-                    "group": "Tipos de Modelo",
-                    "pages": [
-                      "tutoriais/modelos-mensagem/marketing",
-                      "tutoriais/modelos-mensagem/utilidade",
-                      "tutoriais/modelos-mensagem/autenticacao",
-                      "tutoriais/modelos-mensagem/atualizacoes-precos"
-                    ]
-                  }
+                  "tutoriais/modelos-mensagem/marketing",
+                  "tutoriais/modelos-mensagem/utilidade",
+                  "tutoriais/modelos-mensagem/autenticacao",
+                  "tutoriais/modelos-mensagem/atualizacoes-precos"
                 ]
               },
               {
@@ -98,7 +74,7 @@
               },
               {
                 "group": "Integrações",
-                "icon": "webhook",
+                "icon": "plug",
                 "pages": [
                   "tutoriais/integracoes/captura-formulario",
                   "tutoriais/integracoes/kirvano",
@@ -162,7 +138,7 @@
           },
           {
             "group": "Suporte",
-            "icon": "wrench",
+            "icon": "life-ring",
             "pages": [
               "tutoriais/solucao-problemas/suporte"
             ]
@@ -186,8 +162,8 @@
     }
   },
   "logo": {
-    "light": "/logo/light.svg",
-    "dark": "/logo/dark.svg",
+    "light": "/images/logo-wizebot-dark.png",
+    "dark": "/images/logo-wizebot-white.png",
     "href": "https://app.wizebot.com.br"
   },
   "api": {
@@ -199,14 +175,11 @@
     }
   },
   "appearance": {
-    "default": "dark",
+    "default": "light",
     "strict": false
   },
   "background": {
-    "image": "/background.png",
-    "color": {
-      "dark": "#181818"
-    }
+    "default": "#fff"
   },
   "navbar": {
     "links": [
@@ -225,6 +198,22 @@
       "instagram": "https://www.instagram.com/wizebotbr",
       "facebook": "https://www.facebook.com/wizebotbr",
       "linkedin": "https://www.linkedin.com/company/wizebot"
+    }
+  },
+  "seo": {
+    "metatags": {
+      "og:image": "https://app.wizebot.com.br/images/og-image.png",
+      "og:site_name": "Central de Ajuda - WizeBot",
+      "twitter:site": "@wizebotbr"
+    }
+  },
+  "contextual": {
+    "options": ["copy", "view", "chatgpt", "claude"]
+  },
+  "errors": {
+    "404": {
+      "title": "Página não encontrada",
+      "description": "A página que você procura não existe ou foi movida. Volte para a [página inicial](/) ou use a busca para encontrar o que precisa."
     }
   }
 }
