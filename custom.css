@@ -1,0 +1,7 @@
+[class*="group-title"],
+[class*="sidebar"] h3,
+[class*="sidebar"] h4,
+nav[aria-label="Sidebar"] h3,
+nav[aria-label="Sidebar"] h4 {
+  text-align: left !important;
+}
