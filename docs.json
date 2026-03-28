@@ -27,68 +27,65 @@
             ]
           },
           {
-            "group": "WhatsApp",
-            "icon": "messages",
+            "group": "Modelos de Mensagem",
+            "icon": "envelope",
             "pages": [
-              {
-                "group": "Modelos de Mensagem",
-                "icon": "envelope",
-                "pages": [
-                  "tutoriais/modelos-mensagem/visao-geral",
-                  "tutoriais/modelos-mensagem/criacao",
-                  "tutoriais/modelos-mensagem/marketing",
-                  "tutoriais/modelos-mensagem/utilidade",
-                  "tutoriais/modelos-mensagem/autenticacao",
-                  "tutoriais/modelos-mensagem/atualizacoes-precos"
-                ]
-              },
-              {
-                "group": "Automação",
-                "icon": "sparkles",
-                "pages": [
-                  "tutoriais/gerenciador-bots/sem-palavra-chave",
-                  "tutoriais/gerenciador-bots/fluxo"
-                ]
-              },
-              {
-                "group": "Gestão de Contatos",
-                "icon": "users",
-                "pages": [
-                  "tutoriais/gerenciador-contatos/visao-geral",
-                  "tutoriais/gerenciador-contatos/importar"
-                ]
-              },
-              {
-                "group": "Atendimento",
-                "icon": "headset",
-                "pages": [
-                  "tutoriais/bate-papo/caixa-entrada"
-                ]
-              },
-              {
-                "group": "Campanhas",
-                "icon": "megaphone",
-                "pages": [
-                  "tutoriais/campanha/mensagem-em-massa"
-                ]
-              },
-              {
-                "group": "Integrações",
-                "icon": "plug",
-                "pages": [
-                  "tutoriais/integracoes/captura-formulario",
-                  "tutoriais/integracoes/kirvano",
-                  "tutoriais/integracoes/kiwify",
-                  "tutoriais/integracoes/woocommerce"
-                ]
-              },
-              {
-                "group": "IA",
-                "icon": "brain",
-                "pages": [
-                  "tutoriais/ia/chatgpt"
-                ]
-              }
+              "tutoriais/modelos-mensagem/visao-geral",
+              "tutoriais/modelos-mensagem/criacao",
+              "tutoriais/modelos-mensagem/marketing",
+              "tutoriais/modelos-mensagem/utilidade",
+              "tutoriais/modelos-mensagem/autenticacao",
+              "tutoriais/modelos-mensagem/atualizacoes-precos"
+            ]
+          },
+          {
+            "group": "Automação e Bots",
+            "icon": "sparkles",
+            "pages": [
+              "tutoriais/gerenciador-bots/sem-palavra-chave",
+              "tutoriais/gerenciador-bots/fluxo"
+            ]
+          },
+          {
+            "group": "Contatos",
+            "icon": "users",
+            "pages": [
+              "tutoriais/gerenciador-contatos/visao-geral",
+              "tutoriais/gerenciador-contatos/importar"
+            ]
+          },
+          {
+            "group": "Atendimento",
+            "icon": "headset",
+            "pages": [
+              "tutoriais/bate-papo/caixa-entrada"
+            ]
+          },
+          {
+            "group": "Campanhas",
+            "icon": "megaphone",
+            "pages": [
+              "tutoriais/campanha/mensagem-em-massa"
+            ]
+          },
+          {
+            "group": "Automação",
+            "icon": "bolt",
+            "pages": [
+              "tutoriais/integracoes/webhooks"
+            ]
+          },
+          {
+            "group": "Agentes IA",
+            "icon": "robot",
+            "pages": [
+              "tutoriais/ia/agentes",
+              "tutoriais/ia/gerenciar-etiquetas",
+              "tutoriais/ia/mover-pipeline",
+              "tutoriais/ia/pausar-ia",
+              "tutoriais/ia/atribuir-conversa",
+              "tutoriais/ia/enviar-midias",
+              "tutoriais/ia/resposta-voz"
             ]
           },
           {
@@ -134,6 +131,13 @@
                   "tutoriais/api/criar-etiqueta-whatsapp"
                 ]
               }
+            ]
+          },
+          {
+            "group": "Novidades",
+            "icon": "sparkle",
+            "pages": [
+              "changelog/atualizacoes"
             ]
           },
           {

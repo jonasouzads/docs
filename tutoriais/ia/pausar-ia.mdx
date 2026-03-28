@@ -1,0 +1,40 @@
+---
+title: 'Pausar IA / Bot'
+sidebarTitle: 'Pausar IA / Bot'
+description: 'Transfira automaticamente a conversa para atendimento humano quando necessario'
+icon: 'pause'
+---
+
+**O que faz:** Para a IA e transfere a conversa para atendimento humano. O agente envia uma ultima mensagem e depois para de responder, aguardando um atendente assumir.
+
+## Configuracao
+
+Apenas ative a ferramenta na aba Ferramentas — nao precisa configurar nada adicional.
+
+## Exemplo de prompt
+
+```
+Voce e a assistente virtual da clinica Sorriso Perfeito.
+
+Regras de transferencia:
+- Se o cliente pedir para falar com um atendente humano, transfira imediatamente
+- Se o cliente tiver uma reclamacao grave, transfira para atendimento humano
+- Se voce nao souber responder uma pergunta tecnica sobre procedimentos, transfira
+- Se o cliente mencionar urgencia medica, transfira imediatamente
+
+Ao transferir, use a ferramenta /Pausar IA e diga ao cliente: "Vou transferir voce para um de nossos atendentes. Aguarde um momento, por favor."
+
+Situacoes que voce pode resolver sozinha (NAO transfira):
+- Informacoes sobre horario de funcionamento
+- Agendamento de consultas
+- Valores de procedimentos comuns
+- Localizacao da clinica
+```
+
+## Dicas
+
+<Tip>
+- O agente envia a mensagem de despedida ANTES de pausar — o cliente sempre recebe a resposta
+- Apos a pausa, a IA so volta a responder quando um atendente reativar
+- Use criterios claros no prompt para evitar transferencias desnecessarias
+</Tip>

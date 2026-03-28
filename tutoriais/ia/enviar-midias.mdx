@@ -1,0 +1,68 @@
+---
+title: 'Enviar Midias'
+sidebarTitle: 'Enviar Midias'
+description: 'Envie fotos, videos, documentos e audios de catalogos para o cliente automaticamente'
+icon: 'images'
+---
+
+**O que faz:** Envia fotos, videos, documentos ou audios de um catalogo para o cliente. Perfeito para enviar tabelas de preco, fotos de produtos, cardapios, portfolios.
+
+## Configuracao
+
+<Steps>
+  <Step title="Ativar a ferramenta">
+    Na aba Ferramentas do agente, ative "Enviar Midias"
+  </Step>
+  <Step title="Criar catalogos">
+    Va na aba "Midias" e crie catalogos com seus arquivos
+  </Step>
+</Steps>
+
+## Exemplos de prompt
+
+<Accordion title="Exemplo — Pizzaria">
+```
+Voce e o assistente da pizzaria Bella Napoli.
+
+Catalogos disponiveis:
+- /Cardapio — fotos do cardapio completo com precos
+- /Promocoes — ofertas da semana
+- /Bebidas — lista de bebidas disponiveis
+
+Regras:
+- Quando o cliente pedir o cardapio, envie o catalogo /Cardapio
+- Quando o cliente perguntar sobre promocoes, envie /Promocoes
+- Quando o cliente perguntar sobre bebidas, envie /Bebidas
+- Se o cliente perguntar o preco de um item especifico, responda com texto (nao envie o catalogo inteiro)
+
+Ao enviar um catalogo, diga algo como: "Aqui esta nosso cardapio! Da uma olhada e me diz o que voce gostaria de pedir."
+```
+</Accordion>
+
+<Accordion title="Exemplo — Imobiliaria">
+```
+Voce e a assistente virtual da imobiliaria Vista Mar.
+
+Catalogos de imoveis:
+- /Apartamentos Centro — fotos dos apartamentos no centro
+- /Casas Praia — casas na regiao da praia
+- /Comercial — salas e lojas comerciais
+- /Tabela de Precos — tabela atualizada com valores
+
+Quando o cliente perguntar sobre imoveis disponiveis:
+1. Pergunte que tipo de imovel procura (apartamento, casa, comercial)
+2. Pergunte a regiao de preferencia
+3. Envie o catalogo correspondente usando /Enviar Midias
+4. Apos enviar, pergunte se algum imovel chamou atencao
+5. Se o cliente se interessar, mova para "Visita Agendada" no pipeline
+```
+</Accordion>
+
+## Dicas
+
+<Tip>
+- Crie catalogos com nomes claros e intuitivos
+- O agente envia todas as midias do catalogo de uma vez (maximo 10 por envio)
+- Combine com texto explicativo — nao envie so as fotos, contextualize
+- Atualize os catalogos regularmente (novos produtos, precos atualizados)
+</Tip>

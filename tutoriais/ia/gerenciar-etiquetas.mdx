@@ -1,0 +1,44 @@
+---
+title: 'Gerenciar Etiquetas'
+sidebarTitle: 'Gerenciar Etiquetas'
+description: 'Adicione ou remova etiquetas do contato automaticamente durante a conversa com o agente'
+icon: 'tags'
+---
+
+**O que faz:** Adiciona ou remove etiquetas (tags) do contato durante a conversa. Util para classificar leads, marcar interesses, ou sinalizar status.
+
+## Configuracao
+
+<Steps>
+  <Step title="Ativar a ferramenta">
+    Na aba Ferramentas do agente, ative "Gerenciar Etiquetas"
+  </Step>
+  <Step title="Configurar etiquetas">
+    Clique em "Configurar" e selecione quais etiquetas o agente pode usar
+  </Step>
+  <Step title="Escolher acoes">
+    Escolha as acoes permitidas: adicionar, remover, ou ambas
+  </Step>
+</Steps>
+
+## Exemplo de prompt
+
+```
+Voce e um assistente de vendas da loja TechStore.
+
+Regras de etiquetas:
+- Quando o cliente demonstrar interesse em um produto, adicione a etiqueta "Interessado"
+- Quando o cliente confirmar que quer comprar, adicione a etiqueta "Pronto para Compra"
+- Quando o cliente disser que nao tem interesse, adicione a etiqueta "Sem Interesse"
+- Se o cliente ja comprou antes e voltar, adicione a etiqueta "Cliente Recorrente"
+
+Use a ferramenta /Gerenciar Etiquetas para aplicar as etiquetas automaticamente conforme a conversa evolui. Nao avise o cliente que esta adicionando etiquetas — faca isso silenciosamente.
+```
+
+## Dicas
+
+<Tip>
+- O agente aplica etiquetas de forma silenciosa, sem avisar o cliente
+- Voce pode usar etiquetas para disparar automacoes (fluxos) baseadas no status do lead
+- Crie etiquetas claras e objetivas: "Interessado", "Agendou Visita", "Pediu Orcamento"
+</Tip>

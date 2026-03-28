@@ -1,0 +1,41 @@
+---
+title: 'Mover no Pipeline'
+sidebarTitle: 'Mover no Pipeline'
+description: 'Mova contatos automaticamente entre etapas do seu funil de vendas durante a conversa'
+icon: 'diagram-project'
+---
+
+**O que faz:** Move o contato para uma etapa do seu funil de vendas (pipeline/kanban). Se o contato ainda nao tem um deal no pipeline, cria automaticamente.
+
+## Configuracao
+
+<Steps>
+  <Step title="Ativar a ferramenta">
+    Na aba Ferramentas do agente, ative "Mover no Pipeline"
+  </Step>
+  <Step title="Configurar pipelines">
+    Clique em "Configurar" e selecione quais pipelines e etapas o agente pode usar
+  </Step>
+</Steps>
+
+## Exemplo de prompt
+
+```
+Voce e o assistente comercial da imobiliaria Casa Nova.
+
+Fluxo de atendimento:
+1. Quando o cliente perguntar sobre imoveis, mova para a etapa "Primeiro Contato"
+2. Quando o cliente agendar uma visita, mova para "Visita Agendada"
+3. Quando o cliente pedir proposta de financiamento, mova para "Proposta Enviada"
+4. Quando o cliente disser que nao tem interesse, mova para "Perdido"
+
+Use a ferramenta /Mover no Pipeline automaticamente conforme o cliente avanca no processo. Nao mencione o pipeline na conversa com o cliente.
+```
+
+## Dicas
+
+<Tip>
+- O agente cria o deal automaticamente se o contato ainda nao tiver um
+- As etapas do pipeline devem corresponder ao seu processo de vendas real
+- Combine com etiquetas para ter visibilidade completa do funil
+</Tip>

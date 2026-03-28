@@ -1,0 +1,191 @@
+---
+title: 'Como Criar Automações com Webhooks'
+sidebarTitle: 'Webhooks'
+description: 'Aprenda a criar automações que disparam mensagens automaticamente via webhook quando eventos acontecem em plataformas externas'
+icon: 'globe'
+---
+
+<Frame>
+  <img src="/images/webhooks/capa.png" alt="Automação com Webhooks na WizeBot" />
+</Frame>
+
+Webhooks permitem que plataformas externas (como Hotmart, Kiwify, Kirvano, WooCommerce, ou qualquer sistema) enviem dados para a WizeBot e disparem mensagens automaticas no WhatsApp.
+
+Por exemplo: quando um cliente compra um produto na sua loja, o webhook envia os dados da compra para a WizeBot, que automaticamente envia uma mensagem de confirmacao no WhatsApp do cliente.
+
+---
+
+## Passo 1 — Criar um novo Webhook
+
+Acesse o menu **Automação** e clique em **Criar Webhook**.
+
+<Frame>
+  <img src="/images/webhooks/01-criar-webhook.png" alt="Tela de criação de webhook" />
+</Frame>
+
+Defina um **nome** para identificar sua automação (ex: "Venda Kiwify", "Lead Formulário", "Pedido WooCommerce").
+
+---
+
+## Passo 2 — Configurar o Gatilho (Trigger)
+
+Aqui voce define **quais dados** o webhook vai receber. Existem duas formas:
+
+### Opcao A: Usar um preset de plataforma
+
+Se voce usa **Hotmart**, **Kiwify**, **Kirvano** ou **GestorPay**, clique no botao da plataforma para carregar automaticamente o payload de exemplo.
+
+<Frame>
+  <img src="/images/webhooks/02-preset-plataforma.png" alt="Seleção de preset de plataforma" />
+</Frame>
+
+### Opcao B: Colar o JSON manualmente
+
+Cole o JSON de exemplo que sua plataforma envia. A WizeBot detecta automaticamente todos os campos disponiveis.
+
+<Frame>
+  <img src="/images/webhooks/03-payload-json.png" alt="Colando payload JSON no editor" />
+</Frame>
+
+### Opcao C: Captura ao vivo
+
+Clique em **Capturar Payload** — a WizeBot gera uma URL temporaria. Dispare um evento de teste na sua plataforma e os dados serao capturados automaticamente.
+
+<Frame>
+  <img src="/images/webhooks/04-captura-payload.png" alt="Captura ao vivo de payload" />
+</Frame>
+
+<Note>
+A captura ao vivo tem um tempo limite de 2 minutos. Dispare o evento de teste antes que expire.
+</Note>
+
+---
+
+## Passo 3 — Definir Condições
+
+Escolha **quando** a mensagem deve ser enviada:
+
+| Modo | Descrição |
+|------|-----------|
+| **Sempre** | Envia em todo webhook recebido |
+| **Qualquer condição (OU)** | Envia se pelo menos UMA condição for verdadeira |
+| **Todas condições (E)** | Envia somente se TODAS as condições forem verdadeiras |
+| **Apenas criar contato** | Não envia mensagem, apenas cria/atualiza o contato |
+
+<Frame>
+  <img src="/images/webhooks/05-condicoes.png" alt="Configuração de condições do webhook" />
+</Frame>
+
+**Exemplo prático:** Para enviar mensagem apenas quando o status da compra for "aprovado":
+- Campo: `status`
+- Operador: `Igual a`
+- Valor: `approved`
+
+---
+
+## Passo 4 — Selecionar o Modelo de Mensagem
+
+Escolha qual **modelo de mensagem** (template) sera enviado ao cliente. O modelo precisa estar aprovado pelo WhatsApp.
+
+<Frame>
+  <img src="/images/webhooks/06-modelo-mensagem.png" alt="Seleção do modelo de mensagem" />
+</Frame>
+
+---
+
+## Passo 5 — Mapear Campos
+
+Conecte os dados do webhook com os campos da mensagem:
+
+- **Telefone** — selecione qual campo do webhook contem o numero do cliente
+- **Nome** — selecione o campo com o nome do cliente
+- **Variáveis do template** — mapeie cada variavel (\{\{1\}\}, \{\{2\}\}, etc.) para um campo do webhook ou valor fixo
+
+<Frame>
+  <img src="/images/webhooks/07-mapeamento.png" alt="Mapeamento de campos webhook para template" />
+</Frame>
+
+### Formatadores disponiveis
+
+Voce pode aplicar formatadores aos valores antes do envio:
+
+| Formatador | O que faz |
+|------------|-----------|
+| `Maiúsculas` | Converte para MAIÚSCULAS |
+| `Minúsculas` | Converte para minúsculas |
+| `Capitalizar` | Primeira Letra Maiúscula |
+| `Formato telefone` | Formata número de telefone |
+| `Formato data` | Formata data para exibição |
+| `Formato moeda` | Formata valor monetário (R$) |
+
+---
+
+## Passo 6 — Ações Pós-Envio (Opcional)
+
+Configure ações que acontecem **após** a mensagem ser enviada:
+
+<Frame>
+  <img src="/images/webhooks/08-acoes.png" alt="Configuração de ações pós-envio" />
+</Frame>
+
+**Ações disponíveis:**
+
+<CardGroup cols={3}>
+  <Card title="Adicionar Etiqueta" icon="tag">
+    Classifique o contato automaticamente
+  </Card>
+  <Card title="Atribuir Atendente" icon="user">
+    Direcione para um membro da equipe
+  </Card>
+  <Card title="Iniciar Fluxo" icon="diagram-project">
+    Dispare um fluxo de conversa
+  </Card>
+  <Card title="Remover Etiqueta" icon="tag">
+    Remova uma etiqueta existente
+  </Card>
+  <Card title="Atribuir Equipe" icon="users">
+    Direcione para um setor
+  </Card>
+  <Card title="Chamar Webhook" icon="globe">
+    Notifique outro sistema externo
+  </Card>
+</CardGroup>
+
+---
+
+## Passo 7 — Ativar e Copiar a URL
+
+Após configurar tudo, **ative** o webhook e copie a **URL gerada**.
+
+<Frame>
+  <img src="/images/webhooks/09-url-webhook.png" alt="URL do webhook gerada" />
+</Frame>
+
+Cole essa URL na plataforma de origem (Hotmart, Kiwify, seu sistema, etc.) como destino do webhook.
+
+---
+
+## Acompanhando os Resultados
+
+Na listagem de webhooks, voce pode ver as métricas de cada automação:
+
+- **Total de disparos** — quantas vezes o webhook foi acionado
+- **Taxa de envio** — mensagens enviadas com sucesso
+- **Taxa de entrega** — mensagens entregues ao destinatário
+- **Taxa de leitura** — mensagens lidas pelo cliente
+
+<Frame>
+  <img src="/images/webhooks/11-relatorios.png" alt="Relatórios de execução do webhook" />
+</Frame>
+
+---
+
+## Dicas
+
+<Tip>
+- **Teste sempre** antes de ativar em produção
+- Use **condições** para evitar envios desnecessários (ex: só enviar para compras aprovadas)
+- Combine **ações pós-envio** para organizar seus contatos automaticamente
+- Use **formatadores** para garantir que os dados cheguem bonitos na mensagem
+- Monitore os **relatórios** regularmente para identificar falhas
+</Tip>

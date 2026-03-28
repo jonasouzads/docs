@@ -1,0 +1,47 @@
+---
+title: 'Atribuir Conversa'
+sidebarTitle: 'Atribuir Conversa'
+description: 'Direcione a conversa automaticamente para um setor ou atendente especifico'
+icon: 'user-group'
+---
+
+**O que faz:** Transfere a conversa para um setor (equipe) ou atendente especifico. Mais poderoso que o "Pausar IA" porque voce pode direcionar para a pessoa certa.
+
+## Configuracao
+
+<Steps>
+  <Step title="Ativar a ferramenta">
+    Na aba Ferramentas do agente, ative "Atribuir Conversa"
+  </Step>
+  <Step title="Configurar setores">
+    Clique em "Configurar" e selecione quais setores e atendentes o agente pode usar
+  </Step>
+</Steps>
+
+## Exemplo de prompt
+
+```
+Voce e o assistente virtual da empresa SoluTech.
+
+Direcionamento por assunto:
+- Duvidas sobre cobranca ou pagamento → transfira para o setor "Financeiro"
+- Problemas tecnicos com o produto → transfira para o setor "Suporte Tecnico"
+- Interesse em novos produtos ou upgrade → transfira para "Comercial"
+- Solicitacao de cancelamento → transfira para a atendente "Maria Silva"
+- Assuntos juridicos → transfira para o "Juridico"
+
+Use a ferramenta /Atribuir Conversa para direcionar. Sempre informe o cliente para qual setor esta sendo transferido e peca para aguardar.
+
+Antes de transferir, tente resolver voce mesmo:
+- Perguntas frequentes (FAQ)
+- Status de pedidos
+- Informacoes gerais sobre a empresa
+```
+
+## Dicas
+
+<Tip>
+- O agente consegue identificar o setor correto pelo contexto da conversa
+- Voce pode combinar setor + atendente especifico para casos criticos
+- Os nomes dos setores e atendentes devem ser exatamente como cadastrados no sistema
+</Tip>

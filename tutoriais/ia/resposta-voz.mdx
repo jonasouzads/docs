@@ -1,0 +1,49 @@
+---
+title: 'Resposta por Voz'
+sidebarTitle: 'Resposta por Voz'
+description: 'Configure o agente para responder com audio usando Text-to-Speech'
+icon: 'microphone'
+---
+
+Alem das ferramentas, o agente pode responder com audio ao inves de texto. Isso e configurado na aba "Voz" do agente.
+
+## Modos disponiveis
+
+<CardGroup cols={3}>
+  <Card title="Automatico" icon="wand-magic-sparkles">
+    Responde com audio apenas quando o cliente envia audio
+  </Card>
+  <Card title="Sempre" icon="volume-high">
+    Todas as respostas sao em audio
+  </Card>
+  <Card title="Aleatorio" icon="shuffle">
+    Uma porcentagem das respostas sao em audio
+  </Card>
+</CardGroup>
+
+## Quando o agente NAO envia audio
+
+Mesmo com voz ativada, o agente automaticamente envia como texto nos seguintes casos:
+
+- Mensagens com links (o cliente precisa clicar)
+- Mensagens com numeros longos (CPF, telefone, valores)
+- Mensagens com listas longas (mais de 3 itens numerados)
+- Mensagens com tabelas ou codigo formatado
+- Mensagens muito curtas (menos de 10 caracteres)
+- Mensagens muito longas (mais de 2000 caracteres)
+- Mensagens com valores monetarios (R$ 100,00)
+- Mensagens com emails
+
+Nesses casos, o agente envia como texto para que o cliente consiga ler e interagir com a informacao.
+
+## Dica para o prompt
+
+```
+Quando responder com informacoes que o cliente precisa anotar (numeros, links, valores),
+escreva de forma clara e organizada. Se possivel, envie dados importantes
+em mensagens separadas do texto conversacional.
+```
+
+<Tip>
+Use o modo **Automatico** — e o mais natural, responde com audio apenas quando o cliente manda audio.
+</Tip>

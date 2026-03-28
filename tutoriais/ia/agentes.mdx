@@ -1,0 +1,140 @@
+---
+title: 'Agentes WizeBot — Ferramentas e Prompts'
+sidebarTitle: 'Visão Geral'
+description: 'Entenda como funcionam os agentes inteligentes da WizeBot e aprenda a montar prompts eficientes'
+icon: 'robot'
+---
+
+Este guia foi criado para ajudar voce a tirar o maximo das ferramentas disponiveis nos agentes da WizeBot. Aqui voce vai encontrar o que cada ferramenta faz, como configurar, e exemplos prontos de prompts que voce pode copiar e adaptar pro seu negocio.
+
+---
+
+## Como funciona
+
+Quando voce cria um agente na WizeBot, ele responde as mensagens dos seus clientes usando inteligencia artificial. Alem de responder com texto, o agente pode **executar acoes automaticamente** usando ferramentas. Por exemplo: adicionar uma etiqueta no contato, enviar um catalogo de fotos, ou transferir a conversa pra um atendente humano.
+
+Para o agente usar uma ferramenta, voce precisa de duas coisas:
+1. **Ativar a ferramenta** na aba Ferramentas do agente
+2. **Mencionar a ferramenta no prompt** (instrucoes) do agente, explicando quando usar
+
+<Note>
+No editor de prompt, digite `/` para ver todas as ferramentas e midias disponiveis.
+</Note>
+
+---
+
+## Ferramentas Disponiveis
+
+<CardGroup cols={2}>
+  <Card title="Gerenciar Etiquetas" icon="tags" href="/tutoriais/ia/gerenciar-etiquetas">
+    Adicione ou remova etiquetas do contato automaticamente durante a conversa
+  </Card>
+  <Card title="Mover no Pipeline" icon="diagram-project" href="/tutoriais/ia/mover-pipeline">
+    Mova contatos entre etapas do seu funil de vendas
+  </Card>
+  <Card title="Pausar IA / Bot" icon="pause" href="/tutoriais/ia/pausar-ia">
+    Transfira a conversa para atendimento humano
+  </Card>
+  <Card title="Atribuir Conversa" icon="user-group" href="/tutoriais/ia/atribuir-conversa">
+    Direcione a conversa para um setor ou atendente especifico
+  </Card>
+  <Card title="Enviar Midias" icon="images" href="/tutoriais/ia/enviar-midias">
+    Envie fotos, videos e documentos de catalogos para o cliente
+  </Card>
+  <Card title="Resposta por Voz" icon="microphone" href="/tutoriais/ia/resposta-voz">
+    Configure o agente para responder com audio
+  </Card>
+</CardGroup>
+
+---
+
+## Montando seu Prompt — Boas Praticas
+
+### Estrutura recomendada
+
+```
+[IDENTIDADE]
+Voce e [nome/papel] da [empresa].
+Seu tom e [profissional/amigavel/informal].
+
+[OBJETIVO PRINCIPAL]
+Sua funcao e [descrever o objetivo principal].
+
+[FERRAMENTAS E QUANDO USAR]
+- Quando [situacao], use /[Ferramenta]
+- Quando [situacao], use /[Ferramenta]
+
+[REGRAS DO NEGOCIO]
+- [Regra 1]
+- [Regra 2]
+
+[O QUE VOCE NAO DEVE FAZER]
+- Nao [restricao 1]
+- Nao [restricao 2]
+
+[INFORMACOES DA EMPRESA]
+- Horario: [horarios]
+- Endereco: [endereco]
+- Contato: [contatos]
+```
+
+<Accordion title="Exemplo completo — Pet Shop">
+```
+Voce e a Luna, assistente virtual do Pet Shop Patinhas Felizes.
+Seu tom e amigavel e carinhoso, usando emojis com moderacao.
+
+Sua funcao e atender clientes no WhatsApp, agendar banho e tosa,
+tirar duvidas sobre produtos e servicos, e direcionar para o setor
+correto quando necessario.
+
+Ferramentas:
+- Quando o cliente demonstrar interesse em um servico, adicione a etiqueta
+  correspondente usando /Gerenciar Etiquetas (ex: "Banho e Tosa", "Racao", "Consulta Vet")
+- Quando o cliente agendar um servico, mova para "Agendado" usando /Mover no Pipeline
+- Quando o cliente pedir tabela de precos, envie o catalogo /Tabela de Precos
+- Quando o cliente pedir fotos dos espacos, envie /Fotos Pet Shop
+- Se o cliente tiver emergencia veterinaria, transfira para "Veterinario" usando /Atribuir Conversa
+- Se o cliente pedir para falar com atendente, use /Pausar IA
+
+Servicos e precos:
+- Banho pequeno porte: R$ 45
+- Banho medio porte: R$ 65
+- Banho grande porte: R$ 85
+- Tosa higienica: R$ 30
+- Banho + Tosa: desconto de 10%
+- Consulta veterinaria: R$ 120
+
+Horario de funcionamento:
+- Segunda a Sexta: 8h as 18h
+- Sabado: 8h as 14h
+- Domingo: Fechado
+
+O que voce NAO deve fazer:
+- Nao diagnosticar doencas — sempre encaminhe para o veterinario
+- Nao prometer horarios sem confirmar disponibilidade
+- Nao dar desconto alem dos ja cadastrados
+- Nao compartilhar informacoes de outros clientes
+```
+</Accordion>
+
+---
+
+## Dicas Gerais
+
+<Steps>
+  <Step title="Seja especifico no prompt">
+    Quanto mais claro voce for sobre quando usar cada ferramenta, melhor o agente vai performar.
+  </Step>
+  <Step title="Teste com cenarios reais">
+    Envie mensagens como se fosse um cliente e veja se o agente usa as ferramentas corretamente.
+  </Step>
+  <Step title="Combine ferramentas">
+    Um bom fluxo usa varias ferramentas juntas (etiqueta + pipeline + midia).
+  </Step>
+  <Step title="Atualize regularmente">
+    Conforme seu negocio muda, atualize o prompt e os catalogos.
+  </Step>
+  <Step title="Defina limites claros">
+    Diga ao agente o que ele NAO deve fazer, nao apenas o que deve fazer.
+  </Step>
+</Steps>
