@@ -4,17 +4,13 @@
   "name": "Central de Ajuda - Wizebot",
   "description": "Documentação oficial da WizeBot - Plataforma de automação de WhatsApp Business com API Oficial da Meta. Aprenda a configurar, automatizar e integrar seu WhatsApp de forma profissional.",
   "colors": {
-    "primary": "#166534",
-    "light": "#22c55e",
-    "dark": "#15803d"
+    "primary": "#2563eb",
+    "light": "#3b82f6",
+    "dark": "#1d4ed8"
   },
   "favicon": "/favicon.svg",
   "navigation": {
-    "anchors": [
-      {
-        "anchor": "Documentação",
-        "icon": "book-open",
-        "groups": [
+    "groups": [
           {
             "group": "Primeiros Passos",
             "icon": "rocket",
@@ -147,14 +143,12 @@
               "tutoriais/solucao-problemas/suporte"
             ]
           }
-        ]
-      }
     ],
     "global": {
       "anchors": [
         {
           "anchor": "Blog",
-          "href": "https://blog.wizebot.com.br/",
+          "href": "https://wizebot.com.br/blog",
           "icon": "newspaper"
         },
         {
