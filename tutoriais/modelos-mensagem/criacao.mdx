@@ -5,27 +5,20 @@ description: 'Como criar modelos de mensagem para disparos em massa ou iniciar c
 icon: 'plus'
 ---
 
-<Frame>
-  <img src="/images/geral/capa02.png" alt="Modelos de Mensagem WhatsApp" />
-</Frame>
-
-<iframe
+<video
+  controls
   width="100%"
-  height="422"
-  src="https://www.youtube.com/embed/Mh3Yx-Cal0s"
-  title="Como criar modelos de mensagem na Wizebot"
-  frameborder="0"
-  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-  allowfullscreen
-></iframe>
+  preload="metadata"
+  src="https://cdn.wizebot.com.br/tutoriais/MODELO%20DE%20MENSAGEM.mp4"
+></video>
 
 ## Introdução
+
+Neste tutorial, você vai aprender a criar modelos de mensagem para realizar disparos em massa ou iniciar conversas com seus clientes através da plataforma Wizebot.
 
 <Tip>
   Antes de começar, certifique-se de que sua conta está verificada e seu número do WhatsApp está conectado à plataforma.
 </Tip>
-
-Neste tutorial, você vai aprender a criar modelos de mensagem para realizar disparos em massa ou iniciar conversas com seus clientes através da plataforma Wizebot.
 
 ## Passo a Passo
 
@@ -36,98 +29,61 @@ Neste tutorial, você vai aprender a criar modelos de mensagem para realizar dis
     3. Clique em "Modelo de Mensagem"
   </Step>
 
-  <Step title="Criação do Modelo">
+  <Step title="Criar o Modelo">
     1. Clique em "Criar"
     2. Dê um nome para o modelo (exemplo: "promocao_final_de_ano")
 
     <Note>
-      O nome deve estar em letras minúsculas e não pode conter números ou caracteres especiais, apenas o caractere underscore (_)
+      O nome deve estar em letras minúsculas, sem espaços e sem caracteres especiais — apenas o underscore (_) é permitido.
     </Note>
   </Step>
 
-  <Step title="Configuração do Modelo">
-    <Tabs>
-      <Tab title="Configurações Básicas">
-        <AccordionGroup>
-          <Accordion title="Idioma">
-            Selecione o idioma da mensagem
-          </Accordion>
-          
-          <Accordion title="Tipo de Modelo">
-            Escolha entre:
-            - Utilidade
-            - Marketing
-            - Autenticação
+  <Step title="Escolher Idioma e Categoria">
+    1. Selecione o idioma da mensagem (ex: Português - BR)
+    2. Escolha a categoria do modelo:
+       - **Marketing** — promoções, ofertas e novidades
+       - **Utilidade** — confirmações e atualizações de pedidos ou conta
+       - **Autenticação** — códigos de verificação
 
-            <Note>
-              [Saiba mais sobre os tipos de modelos](/tutorials/message-templates/overview)
-            </Note>
-          </Accordion>
-        </AccordionGroup>
-      </Tab>
+    <Warning>
+      A categoria define o custo por mensagem. Se o conteúdo for promocional, a Meta aprova o modelo como Marketing mesmo que você selecione Utilidade. [Entenda as categorias](/tutoriais/modelos-mensagem/visao-geral).
+    </Warning>
+  </Step>
 
-      <Tab title="Componentes da Mensagem">
-        <AccordionGroup>
-          <Accordion title="Cabeçalho">
-            Escolha se deseja enviar:
-            - Arquivos
-            - Vídeo
-            - Imagem
-          </Accordion>
+  <Step title="Montar o Conteúdo">
+    Configure os componentes da mensagem:
 
-          <Accordion title="Corpo da Mensagem">
-            Adicione o texto principal da mensagem
-          </Accordion>
-
-          <Accordion title="Texto do Rodapé">
-            Adicione instruções ou avisos adicionais
-          </Accordion>
-        </AccordionGroup>
-      </Tab>
-
-      <Tab title="Opções de Botão">
-        <AccordionGroup>
-          <Accordion title="Chamada para Ação">
-            Adicione o link do seu site ou link de vendas do produto
-          </Accordion>
-
-          <Accordion title="Resposta Rápida">
-            - Adicione até 3 botões
-            - Pode direcionar para fluxos de chatbots
-          </Accordion>
-        </AccordionGroup>
-      </Tab>
-    </Tabs>
+    - **Cabeçalho** (opcional): texto, imagem, vídeo ou arquivo
+    - **Corpo**: o texto principal da mensagem. Use variáveis como \{\{1\}\} e \{\{2\}\} para personalizar com nome, valores, links etc.
+    - **Rodapé** (opcional): instruções ou avisos adicionais
+    - **Botões** (opcional):
+      - **Chamada para ação**: link do seu site ou página de vendas
+      - **Resposta rápida**: até 3 botões que podem acionar fluxos do chatbot
   </Step>
 
   <Step title="Salvar e Sincronizar">
-    1. Clique em "Salvar" para criar o modelo
-    2. Clique em "Sicronizar Modelo" para verificar a aprovação pela Meta
+    1. Clique em "Salvar" para enviar o modelo para análise da Meta
+    2. Clique em "Sincronizar Modelo" para atualizar o status de aprovação
 
-    <Warning>
-      É importante sincronizar o modelo para garantir que ele foi aprovado e está pronto para uso
-    </Warning>
+    <Note>
+      A aprovação costuma sair em poucos minutos, mas pode levar até 24 horas. Só modelos com status **APPROVED** podem ser usados em campanhas.
+    </Note>
   </Step>
 </Steps>
 
 ## Próximos Passos
 
 <CardGroup cols={2}>
-  <Card title="Criar Campanha" icon="bullhorn">
-    [Iniciar campanha de disparo](/tutorials/campaign/broadcast)
+  <Card title="Criar Campanha" icon="paper-plane" href="/tutoriais/campanha/mensagem-em-massa">
+    Dispare o modelo aprovado para sua lista de contatos
   </Card>
-  <Card title="Gerenciar Contatos" icon="address-book">
-    [Organizar lista de contatos](/tutorials/contact-manager/bulk-upload)
+  <Card title="Importar Contatos" icon="address-book" href="/tutoriais/gerenciador-contatos/importar">
+    Organize sua lista de contatos com etiquetas
   </Card>
-</CardGroup>
-
-## Suporte
-
-<CardGroup cols={2}>
-  <Card title="Central de Ajuda" icon="question">
-    [Acessar FAQ](/suporte/faq)
+  <Card title="Simular Custos" icon="calculator" href="https://wizebot.com.br/custo-por-mensagens">
+    Calcule o custo da sua campanha antes de enviar
   </Card>
-  <Card title="Contato" icon="headset">
-    [Falar com suporte](/suporte/contato)
+  <Card title="Falar com Suporte" icon="headset" href="/tutoriais/solucao-problemas/suporte">
+    Precisa de ajuda? Fale com a gente
   </Card>
 </CardGroup>

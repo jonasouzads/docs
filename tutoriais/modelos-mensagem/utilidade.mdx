@@ -7,112 +7,101 @@ icon: "wrench"
 
 ## Modelos de Utilidade
 
-Os modelos de utilidade são disparados por uma ação ou solicitação do usuário. Eles devem incluir informações específicas sobre a transação, conta, assinatura ou interação ativa ou em andamento a que se referem. Por exemplo, uma confirmação de compra precisa conter o número do pedido.
+Os modelos de utilidade são disparados por uma ação ou solicitação do cliente. Eles devem incluir informações específicas sobre a transação, conta, assinatura ou interação em andamento a que se referem. Por exemplo, uma confirmação de compra precisa conter o número do pedido.
+
+Para ser aprovado como utilidade, o modelo precisa atender a dois critérios:
+
+1. **Não promocional** — sem ofertas, upsell, venda cruzada ou qualquer intenção persuasiva
+2. **Específico do usuário** — relacionado a uma transação ou interação concreta daquele cliente
 
 <Note>
-Os exemplos apresentados são meramente ilustrativos. Modelos com conteúdo similar podem ser categorizados de modo diferente dependendo do contexto e conteúdo específico.
+  Modelos de utilidade têm tarifa muito menor que marketing, contam com **desconto por volume** e são **gratuitos quando enviados dentro da janela de atendimento de 24 horas**. Veja os valores na página de [Preços](/tutoriais/modelos-mensagem/atualizacoes-precos).
 </Note>
 
+## Tipos de Uso
+
 <AccordionGroup>
-  <Accordion title="Gerenciamento de Aceitação no WhatsApp">
-    **Objetivo da Mensagem:** Confirme que o cliente concordou em receber mensagens no WhatsApp como um acompanhamento da aceitação coletada por meio de outros canais (como site ou email). Também é preciso confirmar a recusa do recebimento de mensagens.
-
-    **Meta de Negócios:** Garantir conformidade e transparência na comunicação.
-
-    **Exemplos:**
-    
-    "Agradecemos por confirmar a aceitação! Boas-vindas. Agora, você receberá notificações via WhatsApp."
-
-    "Agradecemos por confirmar sua preferência de cancelamento. Você não receberá mais mensagens nossas no WhatsApp."
-  </Accordion>
-
   <Accordion title="Gerenciamento de Pedidos">
-    **Objetivo da Mensagem:** Confirme, atualize ou cancele um pedido ou uma transação com um cliente usando detalhes específicos no corpo da mensagem.
-
-    **Meta de Negócios:** Manter o cliente informado sobre o status do pedido.
+    **Objetivo da Mensagem:** Confirme, atualize ou cancele um pedido ou uma transação usando detalhes específicos no corpo da mensagem.
 
     **Exemplos:**
-    
+
     "Agradecemos! Seu pedido \{\{1\}\} foi confirmado. Avisaremos assim que seu pacote estiver a caminho."
 
-    "Viva! Seu pedido \{\{1\}\} está a caminho. Número de rastreamento do pacote: \{\{2\}\}. O prazo estimado para entrega é \{\{3\}\}."
-
-    "Um item do seu pedido \{\{1\}\} está aguardando estoque. Entraremos em contato novamente com uma data estimada de envio. Se você quiser cancelar o pedido e receber um reembolso, clique aqui: \{\{2\}\}"
+    "Seu pedido \{\{1\}\} está a caminho. Número de rastreamento: \{\{2\}\}. O prazo estimado para entrega é \{\{3\}\}."
 
     "Recebemos o item do seu pedido \{\{1\}\}. O reembolso referente a \{\{2\}\} foi processado. Agradecemos por usar nossos serviços."
   </Accordion>
 
-  <Accordion title="Alertas ou Atualizações da Conta">
-    **Objetivo da Mensagem:** Envie atualizações importantes da conta, incluindo alertas urgentes, informações de segurança, lembretes de pagamento e outras informações relevantes sobre produtos e serviços já adquiridos ou assinados.
-
-    **Meta de Negócios:** Manter o cliente informado sobre sua conta e serviços.
+  <Accordion title="Alertas e Atualizações da Conta">
+    **Objetivo da Mensagem:** Envie atualizações importantes da conta, incluindo alertas, informações de segurança, lembretes de pagamento e informações sobre produtos e serviços já adquiridos.
 
     <Warning>
-    Essas mensagens não devem ter a intenção de fazer o upsell nem vendas cruzadas de novos produtos ou serviços.
+      Essas mensagens não devem tentar vender produtos ou serviços novos (upsell ou venda cruzada) — isso reclassifica o modelo como marketing.
     </Warning>
 
     **Exemplos:**
-    
-    "A atualização diária da conta com final \{\{1\}\}: seu saldo é \{\{2\}\}."
 
     "Lembrete: seu pagamento mensal pela assinatura do serviço \{\{1\}\} será faturado em \{\{2\}\} no cartão salvo nos nossos registros."
 
-    "Para terminar de configurar seu perfil, você precisa carregar uma foto. Clique aqui para enviar o arquivo: \{\{1\}\}."
-
-    "O produto do pedido \{\{1\}\} feito em \{\{2\}\} foi recolhido. Clique aqui \{\{3\}\} para saber mais."
-
-    "Há um alerta de tornado na sua área. Recomendamos que você permaneça em casa até as \{\{1\}\} horas de hoje."
+    "A atualização diária da conta com final \{\{1\}\}: seu saldo é \{\{2\}\}."
   </Accordion>
 
   <Accordion title="Pesquisas de Feedback">
-    **Objetivo da Mensagem:** Colete feedback sobre pedidos anteriores, além de interações ou relacionamentos atuais com clientes.
-
-    **Meta de Negócios:** Melhorar a qualidade do serviço através do feedback dos clientes.
-
-    <Warning>
-    Essas mensagens não devem exibir uma solicitação de feedback relacionado a possíveis oportunidades de upsell ou vendas cruzadas.
-    </Warning>
+    **Objetivo da Mensagem:** Colete feedback sobre pedidos ou interações anteriores com o cliente.
 
     **Exemplos:**
-    
+
     "Entregamos seu pedido \{\{1\}\}! Se houver algum problema, entre em contato conosco aqui: \{\{2\}\}."
 
-    "Com seu feedback, podemos aprimorar nossos serviços. Clique aqui \{\{1\}\} para fazer uma avaliação sobre sua última visita à nossa loja \{\{2\}\}. Desde já, agradecemos sua participação."
+    "Recentemente, você conversou conosco sobre o pedido \{\{1\}\}. Como foi sua experiência? Clique aqui para responder a uma breve pesquisa: \{\{2\}\}."
+  </Accordion>
 
-    "Recentemente, você conversou conosco online sobre o pedido \{\{1\}\}. Como foi sua experiência? Clique aqui para responder a uma breve pesquisa: \{\{2\}\}."
+  <Accordion title="Confirmação de Aceitação (Opt-in)">
+    **Objetivo da Mensagem:** Confirme que o cliente concordou em receber mensagens no WhatsApp, quando a aceitação foi coletada em outro canal (site, email etc.).
+
+    **Exemplos:**
+
+    "Agradecemos por confirmar a aceitação! Agora, você receberá notificações via WhatsApp."
+
+    "Agradecemos por confirmar sua preferência de cancelamento. Você não receberá mais mensagens nossas no WhatsApp."
   </Accordion>
 
   <Accordion title="Continuar uma Conversa no WhatsApp">
-    **Objetivo da Mensagem:** Envie uma mensagem para iniciar uma interação no WhatsApp que começou em outro canal.
-
-    **Meta de Negócios:** Oferecer continuidade no atendimento através do WhatsApp.
-
-    <Warning>
-    Essas mensagens não devem ser iniciadas sem que o usuário tenha solicitado que a conversa seja movida para o WhatsApp.
-    </Warning>
+    **Objetivo da Mensagem:** Mova para o WhatsApp uma interação que começou em outro canal — desde que o cliente tenha solicitado.
 
     **Exemplos:**
-    
+
     "Olá. Vejo que você solicitou suporte por meio do nosso bate-papo online. Sou o assistente virtual do WhatsApp. Posso ajudar você?"
 
-    "Olá, \{\{1\}\}, estamos respondendo à sua ligação com o atendimento ao cliente ocorrida em \{\{2\}\}. Encaminhamos seu caso para a próxima etapa. Entre na sua conta para continuar: \{\{3\}\}."
+    "Olá, \{\{1\}\}, estamos respondendo à sua ligação com o atendimento ao cliente em \{\{2\}\}. Encaminhamos seu caso para a próxima etapa. Entre na sua conta para continuar: \{\{3\}\}."
   </Accordion>
 </AccordionGroup>
 
-## Considerações Importantes
+## Cuidado com a Recategorização
+
+Desde abril de 2025, se a Meta entender que seu modelo de utilidade tem conteúdo promocional, ele é **aprovado automaticamente como Marketing** — sem rejeição e sem aviso prévio. Você paga a tarifa de marketing em cada envio sem perceber.
+
+Exemplos do que reclassifica um modelo:
+
+- "Seu pedido foi entregue! **Aproveite 10% off na próxima compra**" → Marketing
+- "Sua assinatura vence amanhã. **Renove com desconto**" → Marketing
+- Texto genérico sem referência a uma transação específica → Marketing
+
+<Tip>
+  Depois da aprovação, confira a categoria final do modelo. Se discordar, você tem até 60 dias para pedir revisão no Gerenciador do WhatsApp, em **Modelos de Mensagem** > **Atualizações de Categoria de Modelo**.
+</Tip>
+
+## Boas Práticas
 
 <CardGroup>
   <Card title="Especificidade" icon="bullseye">
-    Sempre inclua informações específicas sobre a transação ou interação em questão.
+    Sempre inclua dados da transação: número do pedido, valor, data, código de rastreio.
   </Card>
   <Card title="Contexto" icon="circle-info">
-    As mensagens devem ser relevantes para uma ação ou solicitação do usuário.
+    A mensagem deve responder a uma ação ou solicitação do cliente, não iniciar uma venda.
   </Card>
-  <Card title="Propósito" icon="check">
-    Foque em fornecer informações úteis e atualizações, não em promoções.
+  <Card title="Aproveite a Janela" icon="clock">
+    Modelos de utilidade enviados dentro da janela de atendimento de 24h são gratuitos — priorize enviá-los enquanto a conversa está aberta.
   </Card>
 </CardGroup>
-
-<Warning>
-Lembre-se: modelos de utilidade não devem ser usados para marketing ou promoções. Seu objetivo principal é fornecer informações úteis e relevantes sobre interações existentes.
-</Warning>

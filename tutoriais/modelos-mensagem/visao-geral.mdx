@@ -1,109 +1,94 @@
 ---
 title: "Visão Geral dos Modelos de Mensagem"
 sidebarTitle: "Visão Geral"
-description: "Entenda o processo de validação e aprovação dos modelos de mensagem do WhatsApp"
+description: "Entenda as categorias, o processo de aprovação e como a escolha da categoria afeta o custo das suas mensagens"
 icon: "list"
 ---
 
+## O que são Modelos de Mensagem
+
+Modelos de mensagem (templates) são mensagens pré-aprovadas pela Meta que permitem iniciar conversas com seus clientes no WhatsApp — seja para campanhas em massa, notificações ou códigos de verificação. Toda mensagem enviada fora da janela de atendimento de 24 horas precisa usar um modelo aprovado.
+
 ## Categorias de Modelos
 
-O WhatsApp oferece três categorias principais de modelos de mensagem, cada uma com seu propósito específico:
+O WhatsApp classifica os modelos em três categorias, e cada uma tem uma tarifa diferente por mensagem entregue:
 
 <CardGroup>
-  <Card title="Marketing" icon="bullhorn">
-    Modelos flexíveis para promoções, vendas e engajamento com clientes.
+  <Card title="Marketing" icon="bullhorn" href="/tutoriais/modelos-mensagem/marketing">
+    Promoções, ofertas e engajamento. A categoria mais flexível — e a mais cara.
   </Card>
-  <Card title="Utilidade" icon="wrench">
-    Mensagens disparadas por ações do usuário, como confirmações de pedido e atualizações de conta.
+  <Card title="Utilidade" icon="wrench" href="/tutoriais/modelos-mensagem/utilidade">
+    Confirmações de pedido, atualizações de conta e notificações de transações já iniciadas pelo cliente.
   </Card>
-  <Card title="Autenticação" icon="shield-check">
-    Exclusivamente para envio de códigos de verificação e senhas descartáveis.
+  <Card title="Autenticação" icon="shield-check" href="/tutoriais/modelos-mensagem/autenticacao">
+    Exclusivamente para códigos de verificação e senhas de uso único.
   </Card>
 </CardGroup>
 
+<Tip>
+  A categoria define quanto você paga por mensagem. Use nossa [calculadora de custos](https://wizebot.com.br/custo-por-mensagens) para simular o valor das suas campanhas, e veja os detalhes na página de [Preços](/tutoriais/modelos-mensagem/atualizacoes-precos).
+</Tip>
+
 ## Processo de Validação
 
-Quando você envia uma solicitação de criação ou edição de modelo, o WhatsApp valida a categoria indicada com base nas diretrizes e no conteúdo do modelo.
+Quando você envia um modelo para aprovação, a Meta valida o conteúdo e a categoria escolhida. Após a validação, o modelo recebe um destes status:
 
-<AccordionGroup>
-  <Accordion title="Status Possíveis" icon="circle-check">
-    Após a validação, seu modelo receberá um dos seguintes status:
+<CardGroup>
+  <Card title="APPROVED" icon="check">
+    Aprovado — pode ser usado imediatamente em campanhas e envios.
+  </Card>
+  <Card title="PENDING" icon="clock">
+    Em análise — aguarde o resultado (geralmente em alguns minutos, podendo levar até 24h).
+  </Card>
+  <Card title="REJECTED" icon="xmark">
+    Rejeitado — o conteúdo viola alguma diretriz ou a categoria não pôde ser confirmada.
+  </Card>
+</CardGroup>
 
-    <CardGroup>
-      <Card title="APPROVED" icon="check">
-        O modelo foi aprovado e pode ser usado imediatamente.
-      </Card>
-      <Card title="PENDING" icon="clock">
-        O modelo está em análise e aguarda aprovação.
-      </Card>
-      <Card title="REJECTED" icon="xmark">
-        A categoria foi considerada incorreta para o conteúdo do modelo.
-      </Card>
-    </CardGroup>
-  </Accordion>
+<Note>
+  Modelos de autenticação costumam ser aprovados imediatamente, pois usam texto predefinido da Meta.
+</Note>
 
-  <Accordion title="Aprovação (APPROVED)" icon="check-double">
-    - Indica concordância com a categoria escolhida
-    - Modelo está pronto para uso em mensagens
-    - Notificação enviada por email e no Gerenciador do WhatsApp
-    - Webhook `message_template_status_update` disparado com `event: APPROVED`
-    
-    <Note>
-    Normalmente, apenas modelos de autenticação são aprovados imediatamente, devido ao seu conteúdo predefinido.
-    </Note>
-  </Accordion>
+## Recategorização Automática
 
-  <Accordion title="Pendente (PENDING)" icon="hourglass">
-    - Indica concordância inicial com a categoria
-    - Modelo está em processo de análise
-    - Resultado será comunicado por:
-      - Email
-      - Alerta no Gerenciador do WhatsApp
-      - Webhook `message_template_status_update` com `event: APPROVED` ou `REJECTED`
-  </Accordion>
+Desde abril de 2025, a Meta não rejeita mais modelos apenas por categoria incorreta — ela **recategoriza automaticamente**:
 
-  <Accordion title="Rejeitado (REJECTED)" icon="triangle-exclamation">
-    - Indica discordância com a categoria designada
-    - Notificação enviada por:
-      - Email
-      - Alerta no Gerenciador do WhatsApp
-      - Webhook `message_template_status_update` com:
-        - `event: REJECTED`
-        - `reason: INCORRECT_CATEGORY`
-  </Accordion>
-</AccordionGroup>
+- Se você marcar um modelo como **Utilidade** e a Meta entender que é **Marketing**, ele será aprovado como **Marketing** (e cobrado pela tarifa de marketing, que é maior).
+- Modelos com **conteúdo misto** (ex: atualização de pedido + cupom de desconto) são classificados como **Marketing**.
+- Modelos com conteúdo vago ou genérico demais também caem em **Marketing**.
+
+<Warning>
+  Fique atento à categoria final do modelo depois da aprovação. Um modelo que você criou como "utilidade" pode ter sido aprovado como "marketing" — e isso muda o custo de cada envio.
+</Warning>
+
+### Discorda da categoria?
+
+Você tem até **60 dias** para solicitar a revisão da categoria. O pedido é feito no Gerenciador do WhatsApp da Meta, em **Modelos de Mensagem** > **Atualizações de Categoria de Modelo**.
 
 ## Em Caso de Rejeição
 
-Se seu modelo for rejeitado, você tem três opções:
-
 <Steps>
-  <Step title="Criar Novo Modelo">
-    Crie um novo modelo com a categoria desejada e conteúdo adequado às diretrizes.
+  <Step title="Revise o conteúdo">
+    Verifique se o texto segue as diretrizes da categoria — sem conteúdo promocional em modelos de utilidade, sem URLs ou emojis em autenticação.
   </Step>
-  <Step title="Atualizar Categoria">
-    Atualize manualmente a categoria do modelo para uma mais apropriada ao conteúdo.
+  <Step title="Ajuste e reenvie">
+    Corrija o modelo e envie novamente para análise, ou crie um novo modelo com a categoria adequada.
   </Step>
-  <Step title="Solicitar Análise">
-    Se você acredita que a rejeição foi um erro, solicite uma nova análise do modelo.
+  <Step title="Solicite nova análise">
+    Se você acredita que a rejeição foi um erro, solicite a revisão pelo Gerenciador do WhatsApp.
   </Step>
 </Steps>
-
-
-<Warning>
-É importante escolher a categoria correta ao criar seu modelo. Uma categorização incorreta resultará em rejeição e atraso na aprovação do seu modelo.
-</Warning>
 
 ## Melhores Práticas
 
 <CardGroup>
-  <Card title="Análise Prévia" icon="magnifying-glass">
-    Revise cuidadosamente as diretrizes de cada categoria antes de submeter seu modelo.
+  <Card title="Categoria Certa" icon="bullseye">
+    Escolha a categoria pelo conteúdo real da mensagem. Misturar promoção em modelo de utilidade só faz você pagar tarifa de marketing.
   </Card>
-  <Card title="Conteúdo Adequado" icon="file-lines">
-    Certifique-se que o conteúdo do modelo está alinhado com os requisitos da categoria escolhida.
+  <Card title="Conteúdo Específico" icon="file-lines">
+    Evite textos genéricos. Modelos vagos são classificados como marketing ou rejeitados.
   </Card>
-  <Card title="Monitoramento" icon="bell">
-    Configure webhooks para receber atualizações automáticas sobre o status dos seus modelos.
+  <Card title="Simule o Custo" icon="calculator">
+    Antes de disparar campanhas, use a [calculadora de custos](https://wizebot.com.br/custo-por-mensagens) para estimar o investimento.
   </Card>
 </CardGroup>
