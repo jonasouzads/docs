@@ -46,7 +46,6 @@
             "group": "Contatos",
             "icon": "users",
             "pages": [
-              "tutoriais/gerenciador-contatos/visao-geral",
               "tutoriais/gerenciador-contatos/importar"
             ]
           },

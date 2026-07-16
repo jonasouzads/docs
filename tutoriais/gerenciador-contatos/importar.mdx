@@ -5,91 +5,48 @@ description: 'Aprenda a importar sua lista de contatos para o WhatsApp usando a 
 icon: 'file-import'
 ---
 
-<Frame>
-  <img src="/images/geral/capa07.jpg" alt="Importação de Contatos na Wizebot" />
-</Frame>
-
-<iframe
+<video
+  controls
   width="100%"
-  height="422"
-  src="https://www.youtube.com/embed/H5RFs9Mpx7w"
-  title="Como Importar Lista de Contatos na Wizebot"
-  frameborder="0"
-  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-  allowfullscreen
-></iframe>
+  preload="metadata"
+  src="https://cdn.wizebot.com.br/tutoriais/IMPORTAR%20LISTA%20DE%20CONTATOS.mp4"
+></video>
 
-# Como Importar sua Lista de Contatos para o WhatsApp
+## Introdução
 
-Neste tutorial, você aprenderá como importar sua lista de contatos para o WhatsApp usando a Wizebot. Vamos mostrar o passo a passo para preparar sua planilha, fazer o upload e gerenciar seus contatos de forma eficiente.
+Importe sua lista de contatos para o WhatsApp em poucos passos: crie uma etiqueta para identificar a lista, prepare sua planilha e faça o upload.
 
-## Preparando sua Lista de Contatos
+## Passo 1: Criar uma Etiqueta
 
-### 1. Formatação da Planilha
-1. Abra uma planilha do Excel ou Google Sheets
-2. Configure as colunas necessárias:
-   - Número do WhatsApp (obrigatório)
-   - Nome do contato
-   - Etiquetas
-   - Campos personalizados
+Antes de importar, crie uma etiqueta para marcar essa lista de contatos. Assim, na hora de disparar uma campanha, você seleciona a etiqueta e envia só para essa base.
 
-### 2. Formatação dos Números
-1. Use o formato internacional: 55DDD9XXXXXXXX
-2. Não inclua caracteres especiais como +, -, () ou espaços
-3. Exemplo correto: 5591988887777
+1. Acesse **Configurações** > **Etiquetas** > **Nova Etiqueta**
+2. Dê um nome para a etiqueta e, se quiser, escolha uma cor
+3. Clique em **Criar**
 
-### 3. Salvando a Planilha
-1. Salve no formato CSV (valores separados por vírgula)
-2. Verifique a codificação UTF-8 para caracteres especiais
+## Passo 2: Preparar a Planilha
 
-## Importando os Contatos
+1. Crie uma coluna **telefone** com o número completo, incluindo o DDI do país (ex: `55` para o Brasil) — este é o único campo obrigatório
+2. Crie uma coluna **nome** (opcional)
+3. Salve o arquivo no formato **CSV separado por vírgulas**
 
-### 1. Acesso ao Gerenciador de Contatos
-1. Faça login na plataforma Wizebot
-2. Acesse o menu "Gerenciador de Contatos"
-3. Clique em "Importar Contatos"
+<Tip>
+No Google Planilhas: **Arquivo** > **Baixar** > **Valores separados por vírgula (.csv)**
+</Tip>
 
-### 2. Upload do Arquivo
-1. Selecione o arquivo CSV preparado
-2. Mapeie as colunas do seu arquivo com os campos da Wizebot
-3. Confirme a importação
+Você também pode clicar em **Baixar modelo** na tela de importação para ver um exemplo pronto.
 
-### 3. Verificação dos Contatos
-1. Aguarde a validação dos números
-2. Verifique se há números inválidos
-3. Confirme a quantidade de contatos importados
+## Passo 3: Importar os Contatos
 
-## Gerenciando os Contatos Importados
+1. Na plataforma, acesse **Contatos** > **Opções** > **Importar Contatos**
+2. Selecione o arquivo CSV da sua lista
+3. Confira o mapeamento das colunas — a Wizebot detecta automaticamente colunas como telefone, nome, e-mail e observações
+4. Selecione a etiqueta criada no Passo 1
+5. Selecione a conta de WhatsApp para a qual os contatos serão importados
+6. Clique em **Iniciar Importação**
 
-### 1. Organização por Etiquetas
-1. Crie etiquetas para segmentar seus contatos
-2. Aplique etiquetas em massa
-3. Use filtros para encontrar contatos específicos
+<Note>
+Quer importar mais de uma etiqueta por contato? Adicione uma coluna extra na planilha com os nomes das etiquetas separados por vírgula (ex: `etiqueta 01, etiqueta 02`). A Wizebot cria automaticamente cada etiqueta que ainda não existir.
+</Note>
 
-### 2. Campos Personalizados
-1. Adicione informações extras com campos personalizados
-2. Use para personalizar mensagens
-3. Organize contatos por características específicas
-
-### 3. Manutenção da Lista
-1. Mantenha sua lista atualizada
-2. Remova números inválidos
-3. Atualize informações periodicamente
-
-## Dicas Importantes
-
-1. **Limite de Contatos**
-   - Verifique o limite do seu plano
-   - Faça importações em lotes se necessário
-
-2. **Validação de Números**
-   - Números são validados automaticamente
-   - Apenas números ativos no WhatsApp são importados
-
-3. **Backup**
-   - Mantenha um backup da sua lista original
-   - Exporte periodicamente sua lista atualizada
-
-## Conclusão
-
-Com sua lista de contatos importada, você está pronto para começar a enviar mensagens, criar campanhas e automatizar seu atendimento no WhatsApp. Mantenha sua lista organizada e atualizada para maximizar os resultados.
+Ao concluir, atualize a tela de Contatos para ver a lista importada. Clique em um contato para conferir suas informações e etiquetas, ou use a etiqueta na hora de montar uma campanha.
