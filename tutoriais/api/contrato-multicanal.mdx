@@ -23,6 +23,10 @@ O contrato multicanal é a camada neutra da API: os mesmos três endpoints falam
 
 Os tipos aceitos agora são `text`, `image`, `document`, `audio` e `video`.
 
+<Note>
+  **SMS não faz parte deste contrato.** Ele é de mão única — não tem conta de canal nem conversa — e um contrato cujo remetente é uma conta e cuja regra é responder a conversas existentes não consegue descrevê-lo com honestidade. Ele entra quando essas duas peças existirem.
+</Note>
+
 ## Listar os canais conectados
 
 <ParamField path="GET https://api.wizebot.com.br/v1/channels" />
