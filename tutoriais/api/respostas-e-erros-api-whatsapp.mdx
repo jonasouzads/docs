@@ -19,36 +19,39 @@ Toda resposta desta API — de sucesso ou de erro — vem dentro de um envelope.
 
 O conteúdo útil está sempre em `data`.
 
-<Warning>
-  **Endpoints de leitura trazem um nível a mais.** Os endpoints que devolvem registros aninham o resultado num segundo `data`, de forma que o caminho completo é `data.data`. É o comportamento real do servidor e os exemplos desta documentação o refletem. Confira o exemplo de cada endpoint antes de escrever o acesso ao campo.
-</Warning>
+O conteúdo útil está sempre em `data`, em uma única camada.
 
 <CodeGroup>
-```json Envio (um nível)
+```json Registro único
 {
   "success": true,
   "data": {
-    "message_id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
-    "message": "Message queued successfully."
+    "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+    "phone_number": "5511999999999",
+    "name": "João Silva"
   },
-  "timestamp": "2026-09-08T19:30:00.000Z"
+  "timestamp": "2026-09-09T02:30:00.000Z"
 }
 ```
 
-```json Leitura (dois níveis)
+```json Lista
 {
   "success": true,
   "data": {
-    "data": [
-      { "id": "...", "phone_number": "5511999999999", "name": "João Silva" }
+    "items": [
+      { "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890", "name": "João Silva" }
     ],
     "limit": 20,
     "offset": 0
   },
-  "timestamp": "2026-09-08T19:30:00.000Z"
+  "timestamp": "2026-09-09T02:30:00.000Z"
 }
 ```
 </CodeGroup>
+
+<Note>
+  Listas vêm em `items`. Quando o endpoint pagina, `limit` e `offset` acompanham `items` dentro de `data`.
+</Note>
 
 ## Resposta de erro
 

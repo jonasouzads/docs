@@ -8,7 +8,7 @@ icon: 'key'
 Toda requisição precisa apresentar a chave de API em um **cabeçalho HTTP**. Não há autenticação por corpo da requisição nem por query string.
 
 <Warning>
-  **Se você seguiu uma versão anterior desta documentação, sua integração não funciona.** Aquela versão instruía a enviar a chave como parâmetro `apiToken` no corpo da requisição. Esse parâmetro **nunca foi aceito pela API** — requisições nesse formato sempre receberam `401`. Migre para o cabeçalho abaixo.
+  **Se você seguiu uma versão anterior desta documentação, sua integração não funciona.** Aquela versão instruía a enviar a chave no corpo da requisição, num formato que **nunca foi aceito pela API** — requisições assim sempre receberam `401`. Use o cabeçalho abaixo. Os detalhes da mudança estão em [Migração das rotas antigas](/tutoriais/api/migracao-v2-api-whatsapp).
 </Warning>
 
 ## Forma padrão
