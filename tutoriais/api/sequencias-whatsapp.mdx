@@ -9,7 +9,7 @@ Sequências são mensagens agendadas que a plataforma dispara automaticamente. E
 
 ## Consultar sequência
 
-<ParamField path="GET https://api.wizebot.com.br/api/v1/whatsapp/sequences/status" />
+<ParamField path="GET https://api.wizebot.com.br/v1/whatsapp/sequences/status" />
 
 <ParamField query="phone_number" type="string" required>
   Telefone do contato, com código do país e apenas dígitos.
@@ -20,7 +20,7 @@ Sequências são mensagens agendadas que a plataforma dispara automaticamente. E
 </ParamField>
 
 ```bash
-curl 'https://api.wizebot.com.br/api/v1/whatsapp/sequences/status?phone_number=5511999999999' \
+curl 'https://api.wizebot.com.br/v1/whatsapp/sequences/status?phone_number=5511999999999' \
   -H 'Authorization: Bearer API-KEY'
 ```
 
@@ -48,7 +48,7 @@ curl 'https://api.wizebot.com.br/api/v1/whatsapp/sequences/status?phone_number=5
 
 ## Cancelar sequência
 
-<ParamField path="POST https://api.wizebot.com.br/api/v1/whatsapp/sequences/cancel" />
+<ParamField path="POST https://api.wizebot.com.br/v1/whatsapp/sequences/cancel" />
 
 <ParamField body="phone_number" type="string" required>
   Telefone do contato, com código do país e apenas dígitos.
@@ -63,7 +63,7 @@ curl 'https://api.wizebot.com.br/api/v1/whatsapp/sequences/status?phone_number=5
 </ParamField>
 
 ```bash
-curl -X POST 'https://api.wizebot.com.br/api/v1/whatsapp/sequences/cancel' \
+curl -X POST 'https://api.wizebot.com.br/v1/whatsapp/sequences/cancel' \
   -H 'Authorization: Bearer API-KEY' \
   -H 'Content-Type: application/json' \
   -d '{

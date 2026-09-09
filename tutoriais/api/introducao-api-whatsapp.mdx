@@ -24,8 +24,12 @@ Esta API tem limites que definem se ela serve para o seu caso. Vale conhecê-los
 Todos os endpoints ficam sob a mesma base:
 
 ```
-https://api.wizebot.com.br/api/v1/whatsapp
+https://api.wizebot.com.br/v1/whatsapp
 ```
+
+<Note>
+  Integrações que já usam `https://api.wizebot.com.br/api/v1/whatsapp` continuam funcionando, sem prazo de desligamento. Não é preciso migrar nada; a base acima é apenas mais curta.
+</Note>
 
 <Info>
   **Sobre o domínio antigo.** Versões anteriores desta documentação usavam `app.wizebot.com.br` nos exemplos. Aquele domínio **nunca serviu esta API** — ele responde apenas pelo painel, e as requisições ali sempre retornaram erro de rota não encontrada. Não existe transição de domínio a fazer nem prazo de desligamento: há apenas a base acima, que é a correta desde agora.
@@ -51,7 +55,7 @@ A maioria dos endpoints exige o parâmetro `phone_number_id`, que identifica de 
 O endpoint de teste de conexão confirma que a chave funciona, sem produzir nenhum efeito:
 
 ```bash
-curl 'https://api.wizebot.com.br/api/v1/whatsapp/ping' \
+curl 'https://api.wizebot.com.br/v1/whatsapp/ping' \
   -H 'Authorization: Bearer API-KEY'
 ```
 

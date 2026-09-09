@@ -5,7 +5,7 @@ description: 'Buscar um contato pelo número de telefone'
 icon: 'user'
 ---
 
-<ParamField path="GET https://api.wizebot.com.br/api/v1/whatsapp/contacts/lookup" />
+<ParamField path="GET https://api.wizebot.com.br/v1/whatsapp/contacts/lookup" />
 
 Busca um contato específico pelo telefone.
 
@@ -26,7 +26,7 @@ Busca um contato específico pelo telefone.
 ## Exemplo
 
 ```bash
-curl 'https://api.wizebot.com.br/api/v1/whatsapp/contacts/lookup?phone_number_id=119153661148976&phone_number=5511999999999' \
+curl 'https://api.wizebot.com.br/v1/whatsapp/contacts/lookup?phone_number_id=119153661148976&phone_number=5511999999999' \
   -H 'Authorization: Bearer API-KEY'
 ```
 

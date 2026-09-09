@@ -14,7 +14,7 @@ Toda requisição precisa apresentar a chave de API em um **cabeçalho HTTP**. N
 ## Forma padrão
 
 ```bash
-curl 'https://api.wizebot.com.br/api/v1/whatsapp/ping' \
+curl 'https://api.wizebot.com.br/v1/whatsapp/ping' \
   -H 'Authorization: Bearer API-KEY'
 ```
 
@@ -26,12 +26,12 @@ As duas formas abaixo também são aceitas e produzem exatamente o mesmo resulta
 
 <CodeGroup>
 ```bash Cabeçalho dedicado
-curl 'https://api.wizebot.com.br/api/v1/whatsapp/ping' \
+curl 'https://api.wizebot.com.br/v1/whatsapp/ping' \
   -H 'x-api-key: API-KEY'
 ```
 
 ```bash Esquema ApiKey
-curl 'https://api.wizebot.com.br/api/v1/whatsapp/ping' \
+curl 'https://api.wizebot.com.br/v1/whatsapp/ping' \
   -H 'Authorization: ApiKey API-KEY'
 ```
 </CodeGroup>
@@ -100,6 +100,6 @@ Falha de autenticação segue o mesmo envelope de erro de qualquer outro problem
 O endpoint `GET /ping` confirma que a chave é válida sem produzir efeito nenhum. Ele tem limite de 5 requisições por minuto, então serve para verificação pontual e para monitoramento em intervalos de 30 segundos ou mais — não para verificação a cada poucos segundos.
 
 ```bash
-curl 'https://api.wizebot.com.br/api/v1/whatsapp/ping' \
+curl 'https://api.wizebot.com.br/v1/whatsapp/ping' \
   -H 'Authorization: Bearer API-KEY'
 ```

@@ -5,7 +5,7 @@ description: 'Consultar o estado de entrega de uma mensagem enviada'
 icon: 'circle-check'
 ---
 
-<ParamField path="GET https://api.wizebot.com.br/api/v1/whatsapp/messages/{message_id}/status" />
+<ParamField path="GET https://api.wizebot.com.br/v1/whatsapp/messages/{message_id}/status" />
 
 Devolve o estado de entrega de uma mensagem enviada por esta API.
 
@@ -26,7 +26,7 @@ Aguarde **pelo menos 5 segundos** entre o envio e a primeira consulta. Se ainda 
 ## Exemplo
 
 ```bash
-curl 'https://api.wizebot.com.br/api/v1/whatsapp/messages/a1b2c3d4-e5f6-7890-abcd-ef1234567890/status' \
+curl 'https://api.wizebot.com.br/v1/whatsapp/messages/a1b2c3d4-e5f6-7890-abcd-ef1234567890/status' \
   -H 'Authorization: Bearer API-KEY'
 ```
 

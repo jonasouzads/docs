@@ -5,7 +5,7 @@ description: 'Atualizar nome, gênero e etiquetas de um contato existente'
 icon: 'user-pen'
 ---
 
-<ParamField path="PATCH https://api.wizebot.com.br/api/v1/whatsapp/contacts" />
+<ParamField path="PATCH https://api.wizebot.com.br/v1/whatsapp/contacts" />
 
 Atualiza os dados de um contato e, opcionalmente, atribui etiquetas.
 
@@ -42,7 +42,7 @@ Atualiza os dados de um contato e, opcionalmente, atribui etiquetas.
 ## Exemplo
 
 ```bash
-curl -X PATCH 'https://api.wizebot.com.br/api/v1/whatsapp/contacts' \
+curl -X PATCH 'https://api.wizebot.com.br/v1/whatsapp/contacts' \
   -H 'Authorization: Bearer API-KEY' \
   -H 'Content-Type: application/json' \
   -d '{

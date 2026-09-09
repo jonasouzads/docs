@@ -179,7 +179,7 @@
       "display": "simple"
     },
     "mdx": {
-      "server": "https://api.wizebot.com.br/api/v1"
+      "server": "https://api.wizebot.com.br/v1"
     }
   },
   "appearance": {

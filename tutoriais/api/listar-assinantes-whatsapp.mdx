@@ -5,7 +5,7 @@ description: 'Listar os contatos de um número de WhatsApp, com paginação'
 icon: 'users'
 ---
 
-<ParamField path="GET https://api.wizebot.com.br/api/v1/whatsapp/contacts" />
+<ParamField path="GET https://api.wizebot.com.br/v1/whatsapp/contacts" />
 
 Lista os contatos vinculados a um dos seus números de WhatsApp.
 
@@ -30,7 +30,7 @@ Lista os contatos vinculados a um dos seus números de WhatsApp.
 ## Exemplo
 
 ```bash
-curl 'https://api.wizebot.com.br/api/v1/whatsapp/contacts?phone_number_id=119153661148976&limit=20&offset=0' \
+curl 'https://api.wizebot.com.br/v1/whatsapp/contacts?phone_number_id=119153661148976&limit=20&offset=0' \
   -H 'Authorization: Bearer API-KEY'
 ```
 

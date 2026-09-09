@@ -5,7 +5,7 @@ description: 'Remover permanentemente um contato e todo o histórico ligado a el
 icon: 'user-minus'
 ---
 
-<ParamField path="DELETE https://api.wizebot.com.br/api/v1/whatsapp/contacts" />
+<ParamField path="DELETE https://api.wizebot.com.br/v1/whatsapp/contacts" />
 
 Remove um contato de forma permanente.
 
@@ -32,7 +32,7 @@ Remove um contato de forma permanente.
 ## Exemplo
 
 ```bash
-curl -X DELETE 'https://api.wizebot.com.br/api/v1/whatsapp/contacts' \
+curl -X DELETE 'https://api.wizebot.com.br/v1/whatsapp/contacts' \
   -H 'Authorization: Bearer API-KEY' \
   -H 'Content-Type: application/json' \
   -d '{

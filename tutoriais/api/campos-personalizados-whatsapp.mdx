@@ -7,12 +7,12 @@ icon: 'list-check'
 
 ## Listar definições
 
-<ParamField path="GET https://api.wizebot.com.br/api/v1/whatsapp/custom-fields" />
+<ParamField path="GET https://api.wizebot.com.br/v1/whatsapp/custom-fields" />
 
 Lista os campos personalizados configurados na empresa.
 
 ```bash
-curl 'https://api.wizebot.com.br/api/v1/whatsapp/custom-fields' \
+curl 'https://api.wizebot.com.br/v1/whatsapp/custom-fields' \
   -H 'Authorization: Bearer API-KEY'
 ```
 
@@ -31,7 +31,7 @@ curl 'https://api.wizebot.com.br/api/v1/whatsapp/custom-fields' \
 
 ## Gravar valores num contato
 
-<ParamField path="PATCH https://api.wizebot.com.br/api/v1/whatsapp/contacts/custom-fields" />
+<ParamField path="PATCH https://api.wizebot.com.br/v1/whatsapp/contacts/custom-fields" />
 
 <Warning>
   **Os valores gravados por este endpoint não aparecem no painel.** Eles vão para uma área de dados do contato que é separada da que a plataforma usa para campos personalizados.
@@ -64,7 +64,7 @@ curl 'https://api.wizebot.com.br/api/v1/whatsapp/custom-fields' \
 ### Exemplo
 
 ```bash
-curl -X PATCH 'https://api.wizebot.com.br/api/v1/whatsapp/contacts/custom-fields' \
+curl -X PATCH 'https://api.wizebot.com.br/v1/whatsapp/contacts/custom-fields' \
   -H 'Authorization: Bearer API-KEY' \
   -H 'Content-Type: application/json' \
   -d '{

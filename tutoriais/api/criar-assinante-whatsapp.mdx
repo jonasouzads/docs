@@ -5,7 +5,7 @@ description: 'Criar um contato vinculado a um número de WhatsApp'
 icon: 'user-plus'
 ---
 
-<ParamField path="POST https://api.wizebot.com.br/api/v1/whatsapp/contacts" />
+<ParamField path="POST https://api.wizebot.com.br/v1/whatsapp/contacts" />
 
 Cria um contato. Responde `201 Created`.
 
@@ -34,7 +34,7 @@ Cria um contato. Responde `201 Created`.
 ## Exemplo
 
 ```bash
-curl -X POST 'https://api.wizebot.com.br/api/v1/whatsapp/contacts' \
+curl -X POST 'https://api.wizebot.com.br/v1/whatsapp/contacts' \
   -H 'Authorization: Bearer API-KEY' \
   -H 'Content-Type: application/json' \
   -d '{

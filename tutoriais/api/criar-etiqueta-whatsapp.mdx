@@ -5,7 +5,7 @@ description: 'Criar uma etiqueta na empresa'
 icon: 'tag'
 ---
 
-<ParamField path="POST https://api.wizebot.com.br/api/v1/whatsapp/tags" />
+<ParamField path="POST https://api.wizebot.com.br/v1/whatsapp/tags" />
 
 Cria uma etiqueta. Responde `201 Created`.
 
@@ -20,7 +20,7 @@ A operação é idempotente pelo nome: se já existir etiqueta com o mesmo nome,
 ## Exemplo
 
 ```bash
-curl -X POST 'https://api.wizebot.com.br/api/v1/whatsapp/tags' \
+curl -X POST 'https://api.wizebot.com.br/v1/whatsapp/tags' \
   -H 'Authorization: Bearer API-KEY' \
   -H 'Content-Type: application/json' \
   -d '{ "name": "Lead quente" }'

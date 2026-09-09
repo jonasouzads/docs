@@ -5,7 +5,7 @@ description: 'Enviar mensagem de texto ou mídia para um contato com conversa em
 icon: 'paper-plane'
 ---
 
-<ParamField path="POST https://api.wizebot.com.br/api/v1/whatsapp/messages" />
+<ParamField path="POST https://api.wizebot.com.br/v1/whatsapp/messages" />
 
 Envia uma mensagem de texto ou de mídia. A resposta é `201 Created` assim que a mensagem é aceita para envio.
 
@@ -79,7 +79,7 @@ Os limites de tamanho são os do WhatsApp: 5 MB para imagem, 16 MB para vídeo e
 
 <CodeGroup>
 ```bash Texto
-curl -X POST 'https://api.wizebot.com.br/api/v1/whatsapp/messages' \
+curl -X POST 'https://api.wizebot.com.br/v1/whatsapp/messages' \
   -H 'Authorization: Bearer API-KEY' \
   -H 'Content-Type: application/json' \
   -d '{
@@ -90,7 +90,7 @@ curl -X POST 'https://api.wizebot.com.br/api/v1/whatsapp/messages' \
 ```
 
 ```bash Imagem
-curl -X POST 'https://api.wizebot.com.br/api/v1/whatsapp/messages' \
+curl -X POST 'https://api.wizebot.com.br/v1/whatsapp/messages' \
   -H 'Authorization: Bearer API-KEY' \
   -H 'Content-Type: application/json' \
   -d '{
@@ -103,7 +103,7 @@ curl -X POST 'https://api.wizebot.com.br/api/v1/whatsapp/messages' \
 ```
 
 ```bash Documento
-curl -X POST 'https://api.wizebot.com.br/api/v1/whatsapp/messages' \
+curl -X POST 'https://api.wizebot.com.br/v1/whatsapp/messages' \
   -H 'Authorization: Bearer API-KEY' \
   -H 'Content-Type: application/json' \
   -d '{
