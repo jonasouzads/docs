@@ -12,7 +12,7 @@ A API externa permite que o seu sistema envie mensagens de WhatsApp, consulte o 
 Esta API tem limites que definem se ela serve para o seu caso. Vale conhecê-los antes de escrever a primeira linha de código.
 
 <Warning>
-  **Só é possível responder a conversas existentes.** O envio exige que o contato já tenha falado com o seu número antes. Não há como iniciar uma conversa pela API, porque o envio de modelo de mensagem não está disponível aqui. Veja [Enviar mensagem](/tutoriais/api/enviar-mensagem-whatsapp).
+  **Só é possível responder a conversas existentes.** O envio exige que o contato já tenha falado com o seu número antes. Não há como iniciar uma conversa pela API, porque o envio de modelo de mensagem não está disponível aqui. Veja [Enviar mensagem](/api-reference/whatsapp/enviar-mensagem).
 </Warning>
 
 <Note>
@@ -88,7 +88,7 @@ Resposta:
 |---|---|
 | Mensagens | Enviar texto e mídia, consultar status de entrega |
 | Contatos | Listar, buscar, criar, atualizar, excluir |
-| Etiquetas | Listar, criar, atribuir a um contato |
+| Etiquetas | Listar, criar, atribuir e remover de um contato |
 | Campos personalizados | Listar definições, gravar valores no contato |
 | Modelos | Listar os modelos aprovados da conta |
 | Sequências | Consultar e cancelar sequência agendada |
@@ -104,7 +104,6 @@ Resposta:
 | Chave de idempotência | Reenvio por timeout entrega duas mensagens |
 | Histórico de conversa | Endpoint indisponível |
 | Disparo de fluxo | Endpoint indisponível |
-| Remoção de etiqueta do contato | Endpoint indisponível |
 | Notificação de mudança de status | Só por consulta ao status |
 
 ## Próximos passos
@@ -119,8 +118,8 @@ Resposta:
   <Card title="Limites de uso" icon="gauge" href="/tutoriais/api/limites-de-uso-api-whatsapp">
     Quantas requisições por minuto cada endpoint aceita
   </Card>
-  <Card title="Enviar mensagem" icon="paper-plane" href="/tutoriais/api/enviar-mensagem-whatsapp">
-    O endpoint principal, com as regras que valem no envio
+  <Card title="Referência da API" icon="terminal" href="/api-reference/introducao">
+    Todos os endpoints, com playground para testar cada um
   </Card>
 </CardGroup>
 

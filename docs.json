@@ -268,5 +268,72 @@
       "title": "Página não encontrada",
       "description": "A página que você procura não existe ou foi movida. Volte para a [página inicial](/) ou use a busca para encontrar o que precisa."
     }
-  }
+  },
+  "redirects": [
+    {
+      "source": "/tutoriais/api/enviar-mensagem-whatsapp",
+      "destination": "/api-reference/whatsapp/enviar-mensagem",
+      "permanent": true
+    },
+    {
+      "source": "/tutoriais/api/status-mensagem-whatsapp",
+      "destination": "/api-reference/whatsapp/status-da-mensagem",
+      "permanent": true
+    },
+    {
+      "source": "/tutoriais/api/listar-modelos-whatsapp",
+      "destination": "/api-reference/whatsapp/listar-modelos",
+      "permanent": true
+    },
+    {
+      "source": "/tutoriais/api/listar-assinantes-whatsapp",
+      "destination": "/api-reference/whatsapp/listar-contatos",
+      "permanent": true
+    },
+    {
+      "source": "/tutoriais/api/obter-assinante-whatsapp",
+      "destination": "/api-reference/whatsapp/buscar-contato",
+      "permanent": true
+    },
+    {
+      "source": "/tutoriais/api/criar-assinante-whatsapp",
+      "destination": "/api-reference/whatsapp/criar-contato",
+      "permanent": true
+    },
+    {
+      "source": "/tutoriais/api/atualizar-assinante-whatsapp",
+      "destination": "/api-reference/whatsapp/atualizar-contato",
+      "permanent": true
+    },
+    {
+      "source": "/tutoriais/api/excluir-contato-whatsapp",
+      "destination": "/api-reference/whatsapp/excluir-contato",
+      "permanent": true
+    },
+    {
+      "source": "/tutoriais/api/campos-personalizados-whatsapp",
+      "destination": "/api-reference/whatsapp/listar-campos-personalizados",
+      "permanent": true
+    },
+    {
+      "source": "/tutoriais/api/listar-etiquetas-whatsapp",
+      "destination": "/api-reference/whatsapp/listar-etiquetas",
+      "permanent": true
+    },
+    {
+      "source": "/tutoriais/api/criar-etiqueta-whatsapp",
+      "destination": "/api-reference/whatsapp/criar-etiqueta",
+      "permanent": true
+    },
+    {
+      "source": "/tutoriais/api/etiquetas-do-contato-whatsapp",
+      "destination": "/api-reference/whatsapp/atribuir-etiquetas",
+      "permanent": true
+    },
+    {
+      "source": "/tutoriais/api/sequencias-whatsapp",
+      "destination": "/api-reference/whatsapp/cancelar-sequencia",
+      "permanent": true
+    }
+  ]
 }

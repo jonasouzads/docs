@@ -27,25 +27,25 @@ As rotas antigas continuam respondendo, mas com ressalvas importantes. Esta pág
 
 | Rota antiga | Verbo aceito | Rota atual |
 |---|---|---|
-| `/send` | `POST` | [`POST /messages`](/tutoriais/api/enviar-mensagem-whatsapp) |
-| `/get/message-status` | `GET` | [`GET /messages/{id}/status`](/tutoriais/api/status-mensagem-whatsapp) |
-| `/subscriber/list` | `GET` | [`GET /contacts`](/tutoriais/api/listar-assinantes-whatsapp) |
-| `/subscriber/get` | `GET` | [`GET /contacts/lookup`](/tutoriais/api/obter-assinante-whatsapp) |
-| `/subscriber/create` | `GET` | [`POST /contacts`](/tutoriais/api/criar-assinante-whatsapp) |
-| `/subscriber/update` | `GET` | [`PATCH /contacts`](/tutoriais/api/atualizar-assinante-whatsapp) |
-| `/subscriber/delete` | `GET` | [`DELETE /contacts`](/tutoriais/api/excluir-contato-whatsapp) |
-| `/label/list` | `GET` | [`GET /tags`](/tutoriais/api/listar-etiquetas-whatsapp) |
-| `/label/create` | `GET` | [`POST /tags`](/tutoriais/api/criar-etiqueta-whatsapp) |
-| `/subscriber/chat/assign-labels` | `GET` | [`POST /contacts/tags`](/tutoriais/api/etiquetas-do-contato-whatsapp) |
-| `/template/list` | `GET` | [`GET /templates`](/tutoriais/api/listar-modelos-whatsapp) |
-| `/subscriber/custom-fields/list` | `GET` | [`GET /custom-fields`](/tutoriais/api/campos-personalizados-whatsapp) |
-| `/subscriber/chat/assign-custom-fields` | `POST` | [`PATCH /contacts/custom-fields`](/tutoriais/api/campos-personalizados-whatsapp) |
+| `/send` | `POST` | [`POST /messages`](/api-reference/whatsapp/enviar-mensagem) |
+| `/get/message-status` | `GET` | [`GET /messages/{id}/status`](/api-reference/whatsapp/status-da-mensagem) |
+| `/subscriber/list` | `GET` | [`GET /contacts`](/api-reference/whatsapp/listar-contatos) |
+| `/subscriber/get` | `GET` | [`GET /contacts/lookup`](/api-reference/whatsapp/buscar-contato) |
+| `/subscriber/create` | `GET` | [`POST /contacts`](/api-reference/whatsapp/criar-contato) |
+| `/subscriber/update` | `GET` | [`PATCH /contacts`](/api-reference/whatsapp/atualizar-contato) |
+| `/subscriber/delete` | `GET` | [`DELETE /contacts`](/api-reference/whatsapp/excluir-contato) |
+| `/label/list` | `GET` | [`GET /tags`](/api-reference/whatsapp/listar-etiquetas) |
+| `/label/create` | `GET` | [`POST /tags`](/api-reference/whatsapp/criar-etiqueta) |
+| `/subscriber/chat/assign-labels` | `GET` | [`POST /contacts/tags`](/api-reference/whatsapp/atribuir-etiquetas) |
+| `/template/list` | `GET` | [`GET /templates`](/api-reference/whatsapp/listar-modelos) |
+| `/subscriber/custom-fields/list` | `GET` | [`GET /custom-fields`](/api-reference/whatsapp/listar-campos-personalizados) |
+| `/subscriber/chat/assign-custom-fields` | `POST` | [`PATCH /contacts/custom-fields`](/api-reference/whatsapp/listar-campos-personalizados) |
 | `/webhook/test` | `POST` | `GET /ping` |
-| `/remarketing/cancel` | `GET` | [`POST /sequences/cancel`](/tutoriais/api/sequencias-whatsapp) |
-| `/remarketing/status` | `GET` | [`GET /sequences/status`](/tutoriais/api/sequencias-whatsapp) |
+| `/remarketing/cancel` | `GET` | [`POST /sequences/cancel`](/api-reference/whatsapp/cancelar-sequencia) |
+| `/remarketing/status` | `GET` | [`GET /sequences/status`](/api-reference/whatsapp/cancelar-sequencia) |
 
 <Warning>
-  `GET /subscriber/delete` apaga o contato **e todo o histórico de conversas dele**, por `GET`. Um link acionado por engano executa a exclusão. Migre essa chamada com prioridade — veja [Excluir contato](/tutoriais/api/excluir-contato-whatsapp).
+  `GET /subscriber/delete` apaga o contato **e todo o histórico de conversas dele**, por `GET`. Um link acionado por engano executa a exclusão. Migre essa chamada com prioridade — veja [Excluir contato](/api-reference/whatsapp/excluir-contato).
 </Warning>
 
 ## Rotas sem equivalente atual

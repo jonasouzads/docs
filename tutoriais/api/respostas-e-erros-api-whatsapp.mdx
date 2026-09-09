@@ -91,7 +91,7 @@ Todo erro carrega um `errorId` único. Ele é a referência que permite ao supor
 | 403 | — | Limite de contatos do plano atingido | Liberar espaço ou fazer upgrade do plano |
 | 404 | `CHANNEL_NOT_FOUND` | O `phone_number_id` não pertence à sua empresa | Conferir o identificador no painel |
 | 404 | `CONTACT_NOT_FOUND` | O contato não existe nesse número | Criar o contato antes |
-| 404 | `MESSAGE_NOT_FOUND` | A mensagem não existe, ou ainda não foi gravada | Ver [Status da mensagem](/tutoriais/api/status-mensagem-whatsapp) |
+| 404 | `MESSAGE_NOT_FOUND` | A mensagem não existe, ou ainda não foi gravada | Ver [Status da mensagem](/api-reference/whatsapp/status-da-mensagem) |
 | 409 | `CONTACT_EXISTS` | Já existe contato com esse telefone | Usar a atualização em vez da criação |
 | 429 | — | Limite de requisições excedido | Aguardar o `Retry-After` |
 | 500 | `SEND_FAILED` | O envio não pôde ser aceito | Ver a observação abaixo |
@@ -132,4 +132,4 @@ Os cabeçalhos da resposta dizem quanto esperar. Veja [Limites de uso](/tutoriai
 
 O envio é assíncrono: a API responde `201` assim que aceita a mensagem, **antes** de falar com o WhatsApp. Por isso, uma recusa do WhatsApp nunca aparece na resposta do envio.
 
-Ela aparece depois, no campo `failed_reason` da consulta de status, já traduzida para português. Veja [Status da mensagem](/tutoriais/api/status-mensagem-whatsapp).
+Ela aparece depois, no campo `failed_reason` da consulta de status, já traduzida para português. Veja [Status da mensagem](/api-reference/whatsapp/status-da-mensagem).
