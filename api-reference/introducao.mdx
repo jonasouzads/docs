@@ -1,0 +1,44 @@
+---
+title: 'Referência da API'
+sidebarTitle: 'Como usar esta referência'
+description: 'Endpoints gerados da especificação, com playground para testar cada um'
+icon: 'terminal'
+---
+
+Cada página desta seção descreve um endpoint e traz um **playground**: você preenche os campos, executa e vê a resposta real, sem sair da documentação.
+
+As páginas são geradas a partir da especificação OpenAPI da API. Os parâmetros, os códigos de erro e os formatos de resposta que você lê aqui são os que o servidor aplica.
+
+## As duas camadas
+
+<CardGroup cols={2}>
+  <Card title="Contrato multicanal" icon="share-nodes" href="/tutoriais/api/contrato-multicanal">
+    A camada neutra. Os mesmos endpoints falam com WhatsApp e Telegram — o canal vem da conta remetente.
+  </Card>
+  <Card title="API de WhatsApp" icon="whatsapp" href="/tutoriais/api/introducao-api-whatsapp">
+    A camada específica do canal. Continua existindo e não muda.
+  </Card>
+</CardGroup>
+
+Ambas ficam sobre a mesma base, `https://api.wizebot.com.br/v1`, e usam a mesma chave.
+
+## Antes de testar por aqui
+
+<Warning>
+  **Use uma chave criada só para testar, com validade curta, e revogue-a ao terminar.**
+
+  O playground executa chamadas **de verdade**, contra os seus dados de produção: uma mensagem enviada aqui chega ao destinatário, e um contato excluído aqui não volta.
+</Warning>
+
+<Note>
+  As requisições do playground não saem do seu navegador direto para a API: elas passam pelo **proxy do Mintlify**, que é quem fala com `api.wizebot.com.br`. A chave que você digitar trafega por esse intermediário — mais uma razão para usar uma chave de teste descartável, e não a chave da sua integração em produção.
+</Note>
+
+A chave é criada e revogada no painel, em **Configurações → API Keys**. A revogação é imediata: a requisição seguinte já recebe `401`.
+
+## Endpoints que não estão aqui
+
+Esta referência cobre o que está **vigente e disponível**. Ficam de fora, deliberadamente:
+
+- As **rotas antigas** de compatibilidade, que continuam funcionando mas não devem ser usadas em integrações novas. Elas estão descritas em [Migração das rotas antigas](/tutoriais/api/migracao-v2-api-whatsapp).
+- Endpoints que o servidor expõe mas que não entregam o que o nome promete. Documentá-los seria convidar a integrar com algo que não funciona.

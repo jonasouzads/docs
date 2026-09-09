@@ -75,6 +75,18 @@ A chave é gerada no painel, em **Configurações → API Keys**. Ela é exibida
   Se a chave vazar, revogue-a no painel e gere outra. Não existe rotação parcial: a chave antiga para de funcionar assim que é revogada.
 </Note>
 
+## Testar pelo playground
+
+A [referência da API](/api-reference/introducao) traz um playground em cada endpoint, que executa a chamada de verdade contra os seus dados.
+
+<Warning>
+  **Crie uma chave só para o teste, com validade curta, e revogue-a ao terminar.** Não use no playground a chave da sua integração em produção.
+</Warning>
+
+<Note>
+  As requisições do playground passam pelo **proxy do Mintlify** — é ele que fala com `api.wizebot.com.br`, não o seu navegador. A chave digitada ali trafega por esse intermediário.
+</Note>
+
 ## Erros de autenticação
 
 Falha de autenticação segue o mesmo envelope de erro de qualquer outro problema. Veja [Respostas e erros](/tutoriais/api/respostas-e-erros-api-whatsapp).

@@ -107,6 +107,7 @@
         "icon": "terminal",
         "openapi": "openapi.json",
         "pages": [
+          "api-reference/introducao",
           {
             "group": "Contrato multicanal",
             "icon": "share-nodes",
