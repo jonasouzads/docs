@@ -21,7 +21,7 @@ Sequências são mensagens agendadas que a plataforma dispara automaticamente. E
 
 ```bash
 curl 'https://api.wizebot.com.br/api/v1/whatsapp/sequences/status?phone_number=5511999999999' \
-  -H 'x-api-key: wz_live_sua_chave_aqui'
+  -H 'Authorization: Bearer API-KEY'
 ```
 
 <CodeGroup>
@@ -69,7 +69,7 @@ curl 'https://api.wizebot.com.br/api/v1/whatsapp/sequences/status?phone_number=5
 
 ```bash
 curl -X POST 'https://api.wizebot.com.br/api/v1/whatsapp/sequences/cancel' \
-  -H 'x-api-key: wz_live_sua_chave_aqui' \
+  -H 'Authorization: Bearer API-KEY' \
   -H 'Content-Type: application/json' \
   -d '{
     "phone_number": "5511999999999",

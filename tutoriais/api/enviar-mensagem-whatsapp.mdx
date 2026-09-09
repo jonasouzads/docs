@@ -81,7 +81,7 @@ A `media_url` precisa ser um endereço **público** em `http` ou `https`. URLs q
 <CodeGroup>
 ```bash Texto
 curl -X POST 'https://api.wizebot.com.br/api/v1/whatsapp/messages' \
-  -H 'x-api-key: wz_live_sua_chave_aqui' \
+  -H 'Authorization: Bearer API-KEY' \
   -H 'Content-Type: application/json' \
   -d '{
     "phone_number_id": "119153661148976",
@@ -92,7 +92,7 @@ curl -X POST 'https://api.wizebot.com.br/api/v1/whatsapp/messages' \
 
 ```bash Imagem
 curl -X POST 'https://api.wizebot.com.br/api/v1/whatsapp/messages' \
-  -H 'x-api-key: wz_live_sua_chave_aqui' \
+  -H 'Authorization: Bearer API-KEY' \
   -H 'Content-Type: application/json' \
   -d '{
     "phone_number_id": "119153661148976",
@@ -105,7 +105,7 @@ curl -X POST 'https://api.wizebot.com.br/api/v1/whatsapp/messages' \
 
 ```bash Documento
 curl -X POST 'https://api.wizebot.com.br/api/v1/whatsapp/messages' \
-  -H 'x-api-key: wz_live_sua_chave_aqui' \
+  -H 'Authorization: Bearer API-KEY' \
   -H 'Content-Type: application/json' \
   -d '{
     "phone_number_id": "119153661148976",

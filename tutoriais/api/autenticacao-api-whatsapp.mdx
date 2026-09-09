@@ -1,35 +1,44 @@
 ---
 title: 'Autenticação'
 sidebarTitle: 'Autenticação'
-description: 'Como enviar a chave de API, quais formatos são aceitos e qual não é'
+description: 'Como enviar a chave de API nas requisições'
 icon: 'key'
 ---
 
 Toda requisição precisa apresentar a chave de API em um **cabeçalho HTTP**. Não há autenticação por corpo da requisição nem por query string.
 
 <Warning>
-  **Se você seguiu uma versão anterior desta documentação, sua integração não funciona.** Aquela versão instruía a enviar a chave como parâmetro `apiToken` no corpo da requisição. Esse parâmetro **nunca foi aceito pela API** — requisições nesse formato sempre receberam `401`. Migre para um dos cabeçalhos abaixo.
+  **Se você seguiu uma versão anterior desta documentação, sua integração não funciona.** Aquela versão instruía a enviar a chave como parâmetro `apiToken` no corpo da requisição. Esse parâmetro **nunca foi aceito pela API** — requisições nesse formato sempre receberam `401`. Migre para o cabeçalho abaixo.
 </Warning>
 
-## Formatos aceitos
+## Forma padrão
 
-Os dois formatos abaixo são equivalentes. Escolha um.
-
-<CodeGroup>
-```bash Cabeçalho x-api-key
+```bash
 curl 'https://api.wizebot.com.br/api/v1/whatsapp/ping' \
-  -H 'x-api-key: wz_live_sua_chave_aqui'
+  -H 'Authorization: Bearer API-KEY'
 ```
 
-```bash Cabeçalho Authorization
+É a forma usada em todos os exemplos desta documentação, e a que a maioria dos clientes HTTP monta por padrão quando você configura um token.
+
+## Formas alternativas
+
+As duas formas abaixo também são aceitas e produzem exatamente o mesmo resultado. Use-as se o seu cliente já estiver montado assim.
+
+<CodeGroup>
+```bash Cabeçalho dedicado
 curl 'https://api.wizebot.com.br/api/v1/whatsapp/ping' \
-  -H 'Authorization: ApiKey wz_live_sua_chave_aqui'
+  -H 'x-api-key: API-KEY'
+```
+
+```bash Esquema ApiKey
+curl 'https://api.wizebot.com.br/api/v1/whatsapp/ping' \
+  -H 'Authorization: ApiKey API-KEY'
 ```
 </CodeGroup>
 
-<Warning>
-  **`Authorization: Bearer` não é aceito.** É uma recusa deliberada, para não misturar o mecanismo de chave de API com o de sessão de usuário. Muitos clientes HTTP montam `Bearer` por padrão quando você configura "token" — confira o cabeçalho gerado se estiver recebendo `401` sem motivo aparente.
-</Warning>
+<Note>
+  As três formas são equivalentes, inclusive para o limite de requisições: a mesma chave consome o mesmo saldo, independentemente do cabeçalho escolhido. Não há ganho em alternar entre elas.
+</Note>
 
 ## A API é de servidor para servidor
 
@@ -40,16 +49,23 @@ curl 'https://api.wizebot.com.br/api/v1/whatsapp/ping' \
 Há duas razões:
 
 1. **A chave dá acesso total à sua conta.** Exposta no navegador, ela pode ser lida por qualquer visitante.
-2. **Tecnicamente não funciona.** A política de CORS do servidor não libera o cabeçalho `x-api-key` para origens de navegador, então a requisição de verificação prévia falha antes mesmo de a chamada sair.
+2. **Tecnicamente não funciona.** A política de CORS do servidor não libera os cabeçalhos de autenticação para origens de navegador, então a requisição de verificação prévia falha antes mesmo de a chamada sair.
 
 O caminho correto é o seu servidor chamar a API e o seu front-end chamar o seu servidor.
+
+## Obter a chave
+
+A chave é gerada no painel, em **Configurações → API Keys**. Ela é exibida uma única vez, no momento da criação.
+
+<Warning>
+  Guarde a chave em local seguro e nunca a coloque em código-fonte público, aplicativo móvel ou página web.
+</Warning>
 
 ## Ciclo de vida da chave
 
 | Propriedade | Comportamento |
 |---|---|
-| Formato | `wz_live_` seguido de caracteres aleatórios |
-| Armazenamento | Guardamos apenas o resumo criptográfico. A chave em claro não é recuperável |
+| Armazenamento | Guardamos apenas o resumo criptográfico. A chave não é recuperável depois de criada |
 | Exibição | Apenas uma vez, no momento da criação |
 | Expiração | Opcional, definida na criação |
 | Revogação | Imediata. Uma chave revogada passa a receber `401` na requisição seguinte |
@@ -85,5 +101,5 @@ O endpoint `GET /ping` confirma que a chave é válida sem produzir efeito nenhu
 
 ```bash
 curl 'https://api.wizebot.com.br/api/v1/whatsapp/ping' \
-  -H 'x-api-key: wz_live_sua_chave_aqui'
+  -H 'Authorization: Bearer API-KEY'
 ```

@@ -35,7 +35,7 @@ Cria um contato. Responde `201 Created`.
 
 ```bash
 curl -X POST 'https://api.wizebot.com.br/api/v1/whatsapp/contacts' \
-  -H 'x-api-key: wz_live_sua_chave_aqui' \
+  -H 'Authorization: Bearer API-KEY' \
   -H 'Content-Type: application/json' \
   -d '{
     "phone_number_id": "119153661148976",

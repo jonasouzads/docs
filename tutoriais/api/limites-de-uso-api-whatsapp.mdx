@@ -47,7 +47,7 @@ Use `X-RateLimit-Remaining` para desacelerar antes de bater no teto, em vez de e
 
 ```bash
 curl -i 'https://api.wizebot.com.br/api/v1/whatsapp/ping' \
-  -H 'x-api-key: wz_live_sua_chave_aqui'
+  -H 'Authorization: Bearer API-KEY'
 
 # X-RateLimit-Limit: 5
 # X-RateLimit-Remaining: 4

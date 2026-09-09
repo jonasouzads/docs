@@ -21,7 +21,7 @@ A operação é idempotente pelo nome: se já existir etiqueta com o mesmo nome,
 
 ```bash
 curl -X POST 'https://api.wizebot.com.br/api/v1/whatsapp/tags' \
-  -H 'x-api-key: wz_live_sua_chave_aqui' \
+  -H 'Authorization: Bearer API-KEY' \
   -H 'Content-Type: application/json' \
   -d '{ "name": "Lead quente" }'
 ```

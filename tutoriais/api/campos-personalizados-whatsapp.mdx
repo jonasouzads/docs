@@ -13,7 +13,7 @@ Lista os campos personalizados configurados na empresa.
 
 ```bash
 curl 'https://api.wizebot.com.br/api/v1/whatsapp/custom-fields' \
-  -H 'x-api-key: wz_live_sua_chave_aqui'
+  -H 'Authorization: Bearer API-KEY'
 ```
 
 ```json
@@ -65,7 +65,7 @@ curl 'https://api.wizebot.com.br/api/v1/whatsapp/custom-fields' \
 
 ```bash
 curl -X PATCH 'https://api.wizebot.com.br/api/v1/whatsapp/contacts/custom-fields' \
-  -H 'x-api-key: wz_live_sua_chave_aqui' \
+  -H 'Authorization: Bearer API-KEY' \
   -H 'Content-Type: application/json' \
   -d '{
     "phone_number_id": "119153661148976",
