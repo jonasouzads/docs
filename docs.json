@@ -88,6 +88,7 @@
         "icon": "code",
         "pages": [
           "tutoriais/api/introducao-api-whatsapp",
+          "tutoriais/api/contrato-multicanal",
           "tutoriais/api/autenticacao-api-whatsapp",
           "tutoriais/api/respostas-e-erros-api-whatsapp",
           "tutoriais/api/limites-de-uso-api-whatsapp",

@@ -1,0 +1,248 @@
+---
+title: 'Contrato multicanal'
+sidebarTitle: 'Contrato multicanal'
+description: 'Enviar por qualquer canal conectado com um só conjunto de endpoints'
+icon: 'share-nodes'
+---
+
+O contrato multicanal é a camada neutra da API: os mesmos três endpoints falam com WhatsApp e com Telegram, e com os canais que vierem depois. O canal não aparece na URL nem no corpo — ele vem da conta que você escolhe como remetente.
+
+<Note>
+  A [API de WhatsApp](/tutoriais/api/introducao-api-whatsapp) continua existindo e não muda. Ela é a camada específica do canal, com o que só o WhatsApp tem. Quem já integrou com ela não precisa migrar.
+</Note>
+
+## O que esta fase ainda não faz
+
+<Warning>
+  **Não inicia conversa.** Todo envio exige uma conversa já existente com o destinatário. Se não houver, a resposta é `409 NO_OPEN_CONVERSATION`.
+</Warning>
+
+<Warning>
+  **Não envia modelo de mensagem.** Como o modelo é o único jeito de falar com quem está fora da janela de atendimento no WhatsApp, iniciar conversa chega junto com o endpoint de modelo, numa fase seguinte.
+</Warning>
+
+Os tipos aceitos agora são `text`, `image`, `document`, `audio` e `video`.
+
+## Listar os canais conectados
+
+<ParamField path="GET https://api.wizebot.com.br/v1/channels" />
+
+É por aqui que se começa: o `id` de cada conta é o que vai em `channel_id` no envio.
+
+```bash
+curl 'https://api.wizebot.com.br/v1/channels' \
+  -H 'Authorization: Bearer API-KEY'
+```
+
+```json
+{
+  "success": true,
+  "data": {
+    "items": [
+      {
+        "id": "0ed136ae-1881-4df0-a07a-3f08d5c5bfff",
+        "channel": "whatsapp",
+        "display_name": "+1 555-085-0964",
+        "provider_identifier": "119153661148976",
+        "status": "connected",
+        "capabilities": {
+          "message_types": ["text", "image", "document", "audio", "video"],
+          "max_text_length": 4096,
+          "max_caption_length": null,
+          "session_window_hours": 24,
+          "requires_template_outside_window": true
+        }
+      }
+    ]
+  },
+  "timestamp": "2026-09-09T16:30:24.202Z"
+}
+```
+
+O bloco `capabilities` descreve o que aquele canal aceita. Vale ler antes de montar o envio: ele é a mesma fonte que o servidor consulta para aceitar ou recusar.
+
+| Campo | O que diz |
+|---|---|
+| `message_types` | Tipos que o canal aceita nesta fase |
+| `max_text_length` | Teto do corpo de uma mensagem de texto |
+| `max_caption_length` | Teto da legenda de mídia; `null` quando o canal não a limita à parte |
+| `session_window_hours` | Duração da janela de atendimento; `null` quando o canal não tem janela |
+| `requires_template_outside_window` | Se falar fora da janela exige modelo aprovado |
+
+`provider_identifier` é o identificador na plataforma de origem — o `phone_number_id` da Meta, por exemplo. Serve para conferência humana; **não** é o que vai no envio.
+
+## Enviar mensagem
+
+<ParamField path="POST https://api.wizebot.com.br/v1/messages" />
+
+<ParamField body="channel_id" type="string" required>
+  O `id` da conta de canal, vindo de `GET /v1/channels`. É ele que define o canal.
+</ParamField>
+
+<ParamField body="contact_id" type="string">
+  Identificador do contato na WizeBot. Use este **ou** `to`, nunca os dois.
+</ParamField>
+
+<ParamField body="to" type="string">
+  Endereço nativo no canal — telefone no WhatsApp, identificador de chat no Telegram.
+</ParamField>
+
+<ParamField body="type" type="string" default="text">
+  Um de `text`, `image`, `document`, `audio`, `video`.
+</ParamField>
+
+<ParamField body="text" type="string">
+  Texto da mensagem. Obrigatório quando `type` é `text`.
+</ParamField>
+
+<ParamField body="media_url" type="string">
+  URL pública da mídia. Obrigatório nos tipos de mídia.
+</ParamField>
+
+<ParamField body="caption" type="string">
+  Legenda da mídia, onde o canal a aceita.
+</ParamField>
+
+<ParamField body="filename" type="string" default="document">
+  Nome do arquivo, para `document`.
+</ParamField>
+
+<ParamField body="client_message_id" type="string">
+  Seu identificador do envio. Ver [Idempotência](#idempotencia).
+</ParamField>
+
+<CodeGroup>
+```bash Por contato
+curl -X POST 'https://api.wizebot.com.br/v1/messages' \
+  -H 'Authorization: Bearer API-KEY' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "channel_id": "0ed136ae-1881-4df0-a07a-3f08d5c5bfff",
+    "contact_id": "ae884a82-dcc4-435d-8b23-c882578b3906",
+    "text": "Seu pedido saiu para entrega.",
+    "client_message_id": "pedido-8842"
+  }'
+```
+
+```bash Por endereço
+curl -X POST 'https://api.wizebot.com.br/v1/messages' \
+  -H 'Authorization: Bearer API-KEY' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "channel_id": "0ed136ae-1881-4df0-a07a-3f08d5c5bfff",
+    "to": "559185999993",
+    "text": "Seu pedido saiu para entrega."
+  }'
+```
+
+```bash Mídia
+curl -X POST 'https://api.wizebot.com.br/v1/messages' \
+  -H 'Authorization: Bearer API-KEY' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "channel_id": "0ed136ae-1881-4df0-a07a-3f08d5c5bfff",
+    "contact_id": "ae884a82-dcc4-435d-8b23-c882578b3906",
+    "type": "image",
+    "media_url": "https://exemplo.com/comprovante.jpg",
+    "caption": "Comprovante do pedido"
+  }'
+```
+</CodeGroup>
+
+```json Resposta
+{
+  "success": true,
+  "data": {
+    "message_id": "c255fdeb-d14c-467a-b2f9-d66ea4c01d08",
+    "channel": "whatsapp",
+    "status": "queued"
+  },
+  "timestamp": "2026-09-09T16:31:20.453Z"
+}
+```
+
+### As duas formas de destinatário
+
+**Por `contact_id`** o endereço é resolvido pela identidade que o contato tem **naquele canal**. Um contato que existe na sua base mas nunca falou pelo Telegram não tem endereço de Telegram — e a resposta diz isso, com `422 RECIPIENT_NOT_ON_CHANNEL`, em vez de fingir que o contato não existe.
+
+**Por `to`** o endereço vai direto ao canal. No WhatsApp o número é normalizado antes de casar com a base, então `+55 11 99999-9999` e `5511999999999` levam ao mesmo lugar.
+
+<Note>
+  Se o endereço tiver forma inequívoca de outro canal — um `+` de telefone numa conta de Telegram, um `@usuario` numa conta de WhatsApp — a resposta é `400 CHANNEL_MISMATCH`. Uma sequência de dígitos sem sinal não é considerada telefone: identificador de chat do Telegram também é numérico.
+</Note>
+
+### Quando o canal não faz o que você pediu
+
+<ParamField path="422 Unprocessable Entity" />
+
+Esse status é diferente do `400`. `400` quer dizer "corrija o pedido"; `422` quer dizer "o pedido está correto e este canal não atende". O corpo traz o que o canal suporta, para você não precisar consultar a documentação em tempo de execução:
+
+```json
+{
+  "success": false,
+  "statusCode": 422,
+  "message": {
+    "error": "UNSUPPORTED_CAPABILITY",
+    "message": "Channel 'telegram' does not support messages of type 'image'.",
+    "details": {
+      "channel": "telegram",
+      "requested": "image",
+      "supported": ["text"]
+    }
+  }
+}
+```
+
+### Idempotência
+
+`client_message_id` é o seu identificador do envio. Duas requisições com o mesmo valor viram **um** envio só — é o que torna seguro repetir depois de um timeout, sem o destinatário receber a mensagem duas vezes.
+
+Escolha um valor estável e ligado ao seu domínio (o número do pedido, o id da notificação), não um aleatório por tentativa. Sem o campo, cada requisição é um envio novo.
+
+## Consultar o status
+
+<ParamField path="GET https://api.wizebot.com.br/v1/messages/{message_id}" />
+
+```bash
+curl 'https://api.wizebot.com.br/v1/messages/c255fdeb-d14c-467a-b2f9-d66ea4c01d08' \
+  -H 'Authorization: Bearer API-KEY'
+```
+
+```json
+{
+  "success": true,
+  "data": {
+    "message_id": "71025042-3fe1-42b1-b49b-d7a203eed703",
+    "channel": "whatsapp",
+    "status": "read",
+    "status_updated_at": "2026-09-04T19:17:52.000Z",
+    "sent_at": "2026-09-04T19:17:38.238Z",
+    "delivered_at": "2026-09-04T19:17:52.000Z",
+    "read_at": "2026-09-04T19:32:24.000Z",
+    "failure_reason": null
+  },
+  "timestamp": "2026-09-09T16:31:20.965Z"
+}
+```
+
+<Note>
+  O `201` do envio diz que a mensagem foi **aceita para envio**, não que chegou. A entrega se confirma aqui — é o único jeito de saber.
+</Note>
+
+## Erros
+
+| HTTP | Código | Causa |
+|---|---|---|
+| 400 | `MISSING_PARAM` | Falta `channel_id`, ou o texto, ou a mídia; ou vieram `contact_id` e `to` juntos |
+| 400 | `INVALID_TYPE` | `type` fora dos aceitos nesta fase |
+| 400 | `INVALID_MEDIA_URL` | `media_url` não é endereço público válido |
+| 400 | `CHANNEL_MISMATCH` | O endereço tem forma de outro canal |
+| 404 | `CHANNEL_NOT_FOUND` | `channel_id` não pertence à sua empresa |
+| 404 | `CONTACT_NOT_FOUND` | `contact_id` não pertence à sua empresa |
+| 404 | `MESSAGE_NOT_FOUND` | `message_id` não pertence à sua empresa |
+| 409 | `NO_OPEN_CONVERSATION` | Não há conversa existente com o destinatário |
+| 422 | `RECIPIENT_NOT_ON_CHANNEL` | O contato não tem identidade naquele canal |
+| 422 | `UNSUPPORTED_CAPABILITY` | O canal não aceita o tipo pedido |
+| 500 | `SEND_FAILED` | Falha inesperada ao enfileirar |
+
+Os códigos e as mensagens de erro são em inglês, como o resto do contrato.
