@@ -67,11 +67,13 @@ Envie **apenas dígitos, com código do país**: `5511999999999`.
 
 A `media_url` precisa ser um endereço **público** em `http` ou `https`. URLs que apontam para rede interna, endereço de loopback ou serviço de metadados de nuvem são recusadas com `400 INVALID_MEDIA_URL`, antes de qualquer download.
 
-Em todos os tipos de mídia — `image`, `document`, `video` e `audio` — a URL é repassada ao WhatsApp, que faz o download do arquivo direto do seu servidor.
+Em todos os tipos de mídia — `image`, `document`, `video` e `audio` — o arquivo é baixado da sua URL e **copiado para a plataforma** no momento do envio. É a nossa cópia que segue para o WhatsApp, e é ela que fica visível no histórico do atendimento, junto com o restante da conversa.
 
 <Note>
-  A URL precisa continuar acessível por alguns minutos depois do envio. Links assinados com validade muito curta podem expirar antes do download.
+  A URL precisa estar acessível no momento do envio. Depois que o arquivo é copiado, ela pode expirar ou sair do ar sem afetar a mensagem — nem a entrega, nem o histórico.
 </Note>
+
+Os limites de tamanho são os do WhatsApp: 5 MB para imagem, 16 MB para vídeo e áudio, 100 MB para documento. Acima disso a mídia não é copiada, e o envio segue com a sua URL original.
 
 ## Exemplos
 
