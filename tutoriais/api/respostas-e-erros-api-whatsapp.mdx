@@ -117,10 +117,14 @@ O `429` também não traz código nomeado:
   "timestamp": "2026-09-08T19:30:00.000Z",
   "path": "/api/v1/whatsapp/messages",
   "method": "POST",
-  "message": { "message": "Limite de requisições excedido" },
+  "message": "Limite de requisições excedido",
   "errorId": "ERR-MTT63UVL-5TEY00"
 }
 ```
+
+<Note>
+  Repare que neste caso `message` é um texto, e não um objeto. Erros com código nomeado trazem `message` como objeto (`{ "error": …, "message": … }`); erros sem código nomeado, como o `429` e o `401`, podem trazê-lo como texto. Trate os dois formatos ao ler o campo.
+</Note>
 
 Os cabeçalhos da resposta dizem quanto esperar. Veja [Limites de uso](/tutoriais/api/limites-de-uso-api-whatsapp).
 
