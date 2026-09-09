@@ -1,0 +1,4287 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "API WizeBot",
+    "version": "3.0.0",
+    "description": "A API da WizeBot tem duas camadas sobre a **mesma base** `https://api.wizebot.com.br/v1`.\n\n**Contrato multicanal** — a camada neutra. Os mesmos endpoints falam com WhatsApp, com Telegram e com os canais que vierem depois. O canal não aparece na URL nem no corpo: ele vem da conta escolhida como remetente. Campos, códigos e mensagens em inglês.\n\n**API de WhatsApp** — a camada específica do canal, com o que só o WhatsApp tem. Continua existindo e não muda; quem já integrou com ela não precisa migrar.\n\nToda requisição se autentica por cabeçalho. Não há autenticação por corpo nem por query string."
+  },
+  "servers": [
+    {
+      "url": "https://api.wizebot.com.br/v1",
+      "description": "Produção"
+    }
+  ],
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ],
+  "tags": [
+    {
+      "name": "Canais",
+      "description": "Contas de canal conectadas e o que cada uma aceita."
+    },
+    {
+      "name": "Mensagens",
+      "description": "Envio e status pelo contrato neutro, em qualquer canal."
+    },
+    {
+      "name": "WhatsApp · Mensagens",
+      "description": "Envio, status e modelos na camada específica de WhatsApp."
+    },
+    {
+      "name": "WhatsApp · Contatos",
+      "description": "Contatos e campos personalizados."
+    },
+    {
+      "name": "WhatsApp · Etiquetas",
+      "description": "Etiquetas e sua atribuição a contatos."
+    },
+    {
+      "name": "WhatsApp · Sequências",
+      "description": "Sequências agendadas de um contato."
+    },
+    {
+      "name": "WhatsApp · Conta",
+      "description": "Verificação da chave de API."
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "description": "Chave de API no cabeçalho `Authorization: Bearer SUA-CHAVE`.\n\nA API também aceita `x-api-key: SUA-CHAVE` e `Authorization: ApiKey SUA-CHAVE` — as três formas são equivalentes, inclusive para o limite de requisições.\n\nA chave dá acesso total à conta e é de servidor para servidor: não a use em navegador ou aplicativo móvel."
+      }
+    },
+    "schemas": {
+      "ErroDaApi": {
+        "type": "object",
+        "description": "Corpo de erro da API. `message` é um **objeto** com o código nomeado — não uma string.",
+        "required": [
+          "success",
+          "statusCode",
+          "message"
+        ],
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "description": "Sempre `false`."
+          },
+          "statusCode": {
+            "type": "integer"
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "path": {
+            "type": "string",
+            "description": "Caminho interno da requisição. Traz o prefixo `/api/v1` mesmo quando você chamou por `/v1`: o apelido é reescrito antes do roteamento."
+          },
+          "method": {
+            "type": "string"
+          },
+          "message": {
+            "type": "object",
+            "required": [
+              "error",
+              "message"
+            ],
+            "properties": {
+              "error": {
+                "type": "string",
+                "description": "Código nomeado. É por ele que se trata o erro em código, nunca pelo texto."
+              },
+              "message": {
+                "type": "string",
+                "description": "Descrição em inglês, para leitura humana."
+              },
+              "details": {
+                "type": "object",
+                "additionalProperties": true,
+                "description": "Contexto estruturado, presente nos códigos que o emitem — `CHANNEL_MISMATCH`, `NO_OPEN_CONVERSATION`, `RECIPIENT_NOT_ON_CHANNEL` e `UNSUPPORTED_CAPABILITY`."
+              }
+            }
+          },
+          "errorId": {
+            "type": "string",
+            "description": "Identificador do erro. Cite-o ao falar com o suporte."
+          }
+        }
+      }
+    }
+  },
+  "paths": {
+    "/channels": {
+      "get": {
+        "tags": [
+          "Canais"
+        ],
+        "summary": "Listar canais conectados",
+        "description": "Lista as contas de canal da sua empresa que participam do contrato neutro, cada uma com o bloco de capacidades que o servidor consulta para aceitar ou recusar um envio.\n\nO `id` de cada conta é o que vai em `channel_id` no envio.\n\nSMS não aparece aqui: é de mão única, não tem conta de canal nem conversa, e um contrato cujo remetente é uma conta não consegue descrevê-lo com honestidade.",
+        "responses": {
+          "200": {
+            "description": "Contas de canal da empresa.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "success",
+                    "data",
+                    "timestamp"
+                  ],
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "description": "Sempre `true` nas respostas de sucesso."
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "items": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "string",
+                                "description": "Identificador **interno** da conta. É ele que vai em `channel_id` no envio."
+                              },
+                              "channel": {
+                                "type": "string",
+                                "description": "Canal da conta — `whatsapp`, `telegram`."
+                              },
+                              "display_name": {
+                                "type": "string",
+                                "description": "Nome legível da conta."
+                              },
+                              "provider_identifier": {
+                                "type": "string",
+                                "description": "Identificador na plataforma de origem (o `phone_number_id` da Meta, por exemplo). Serve para conferência humana; **não** é o que vai no envio."
+                              },
+                              "status": {
+                                "type": "string",
+                                "description": "Estado da conta."
+                              },
+                              "capabilities": {
+                                "type": "object",
+                                "description": "Servido a partir do descritor declarativo do canal — a mesma fonte que o motor de envio consulta.",
+                                "properties": {
+                                  "message_types": {
+                                    "type": "array",
+                                    "items": {
+                                      "type": "string"
+                                    },
+                                    "description": "Tipos que o canal aceita nesta fase."
+                                  },
+                                  "max_text_length": {
+                                    "type": [
+                                      "integer",
+                                      "null"
+                                    ],
+                                    "description": "Teto do corpo de uma mensagem de texto."
+                                  },
+                                  "max_caption_length": {
+                                    "type": [
+                                      "integer",
+                                      "null"
+                                    ],
+                                    "description": "Teto da legenda de mídia; `null` quando o canal não a limita à parte."
+                                  },
+                                  "session_window_hours": {
+                                    "type": [
+                                      "integer",
+                                      "null"
+                                    ],
+                                    "description": "Duração da janela de atendimento; `null` quando o canal não tem janela."
+                                  },
+                                  "requires_template_outside_window": {
+                                    "type": "boolean",
+                                    "description": "Se falar fora da janela exige modelo aprovado."
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "timestamp": {
+                      "type": "string",
+                      "format": "date-time"
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "data": {
+                    "items": [
+                      {
+                        "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+                        "channel": "whatsapp",
+                        "display_name": "+55 11 99999-9999",
+                        "provider_identifier": "102938475610293",
+                        "status": "connected",
+                        "capabilities": {
+                          "message_types": [
+                            "text",
+                            "image",
+                            "document",
+                            "audio",
+                            "video"
+                          ],
+                          "max_text_length": 4096,
+                          "max_caption_length": null,
+                          "session_window_hours": 24,
+                          "requires_template_outside_window": true
+                        }
+                      },
+                      {
+                        "id": "b21c0de4-9f77-4a10-8c3e-1d5f8a2b6c40",
+                        "channel": "telegram",
+                        "display_name": "@seu_bot",
+                        "provider_identifier": "@seu_bot",
+                        "status": "connected",
+                        "capabilities": {
+                          "message_types": [
+                            "text",
+                            "image",
+                            "document",
+                            "audio",
+                            "video"
+                          ],
+                          "max_text_length": 4096,
+                          "max_caption_length": 1024,
+                          "session_window_hours": null,
+                          "requires_template_outside_window": false
+                        }
+                      }
+                    ]
+                  },
+                  "timestamp": "2026-09-09T17:15:20.453Z"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "`UNAUTHORIZED` — Invalid or missing API key.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErroDaApi"
+                },
+                "examples": {
+                  "UNAUTHORIZED": {
+                    "summary": "UNAUTHORIZED",
+                    "value": {
+                      "success": false,
+                      "statusCode": 401,
+                      "timestamp": "2026-09-09T17:15:20.453Z",
+                      "path": "/api/v1/channels",
+                      "method": "GET",
+                      "message": {
+                        "error": "UNAUTHORIZED",
+                        "message": "Invalid or missing API key."
+                      },
+                      "errorId": "ERR-MTUD0DBO-KKRMP8"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "`RATE_LIMITED` — Too many requests.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErroDaApi"
+                },
+                "examples": {
+                  "RATE_LIMITED": {
+                    "summary": "RATE_LIMITED",
+                    "value": {
+                      "success": false,
+                      "statusCode": 429,
+                      "timestamp": "2026-09-09T17:15:20.453Z",
+                      "path": "/api/v1/channels",
+                      "method": "GET",
+                      "message": {
+                        "error": "RATE_LIMITED",
+                        "message": "Too many requests."
+                      },
+                      "errorId": "ERR-MTUD0DBO-KKRMP8"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "listarCanais",
+        "x-mint": {
+          "href": "/api-reference/canais/listar-canais"
+        }
+      }
+    },
+    "/messages": {
+      "post": {
+        "tags": [
+          "Mensagens"
+        ],
+        "summary": "Enviar mensagem",
+        "description": "Envia por qualquer canal conectado. O canal **deriva da conta remetente**, nunca do corpo: por isso não existe campo `channel` aqui.\n\nO destinatário vem em uma das duas formas — `contact_id` (resolvido pela identidade que o contato tem *naquele canal*) ou `to` (endereço nativo). Exatamente uma das duas.\n\n**Esta fase não inicia conversa.** Todo envio exige conversa existente com o destinatário; sem ela a resposta é `409 NO_OPEN_CONVERSATION`.",
+        "responses": {
+          "201": {
+            "description": "Mensagem aceita para envio.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "success",
+                    "data",
+                    "timestamp"
+                  ],
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "description": "Sempre `true` nas respostas de sucesso."
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "message_id": {
+                          "type": "string",
+                          "description": "Identificador da mensagem na WizeBot. Use-o na consulta de status."
+                        },
+                        "channel": {
+                          "type": "string",
+                          "description": "Canal por onde a mensagem sai, derivado da conta."
+                        },
+                        "status": {
+                          "type": "string",
+                          "description": "Sempre `queued`: o `201` diz que a mensagem foi **aceita para envio**, não que chegou."
+                        }
+                      }
+                    },
+                    "timestamp": {
+                      "type": "string",
+                      "format": "date-time"
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "data": {
+                    "message_id": "7f3e1a24-5b6c-4d8e-9f01-2a3b4c5d6e7f",
+                    "channel": "whatsapp",
+                    "status": "queued"
+                  },
+                  "timestamp": "2026-09-09T17:15:20.453Z"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Erro de cliente. Veja os exemplos por código nomeado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErroDaApi"
+                },
+                "examples": {
+                  "MISSING_PARAM": {
+                    "summary": "MISSING_PARAM",
+                    "value": {
+                      "success": false,
+                      "statusCode": 400,
+                      "timestamp": "2026-09-09T17:15:20.453Z",
+                      "path": "/api/v1/messages",
+                      "method": "POST",
+                      "message": {
+                        "error": "MISSING_PARAM",
+                        "message": "Exactly one of contact_id or to is required."
+                      },
+                      "errorId": "ERR-MTUD0DBO-KKRMP8"
+                    }
+                  },
+                  "INVALID_TYPE": {
+                    "summary": "INVALID_TYPE",
+                    "value": {
+                      "success": false,
+                      "statusCode": 400,
+                      "timestamp": "2026-09-09T17:15:20.453Z",
+                      "path": "/api/v1/messages",
+                      "method": "POST",
+                      "message": {
+                        "error": "INVALID_TYPE",
+                        "message": "Invalid type. Must be one of: text, image, document, audio, video."
+                      },
+                      "errorId": "ERR-MTUD0DBO-KKRMP8"
+                    }
+                  },
+                  "INVALID_MEDIA_URL": {
+                    "summary": "INVALID_MEDIA_URL",
+                    "value": {
+                      "success": false,
+                      "statusCode": 400,
+                      "timestamp": "2026-09-09T17:15:20.453Z",
+                      "path": "/api/v1/messages",
+                      "method": "POST",
+                      "message": {
+                        "error": "INVALID_MEDIA_URL",
+                        "message": "media_url must be a public http(s) URL."
+                      },
+                      "errorId": "ERR-MTUD0DBO-KKRMP8"
+                    }
+                  },
+                  "CHANNEL_MISMATCH": {
+                    "summary": "CHANNEL_MISMATCH",
+                    "value": {
+                      "success": false,
+                      "statusCode": 400,
+                      "timestamp": "2026-09-09T17:15:20.453Z",
+                      "path": "/api/v1/messages",
+                      "method": "POST",
+                      "message": {
+                        "error": "CHANNEL_MISMATCH",
+                        "message": "Address looks like a 'whatsapp' address, but the channel is 'telegram'.",
+                        "details": {
+                          "channel": "telegram",
+                          "implied_channel": "whatsapp"
+                        }
+                      },
+                      "errorId": "ERR-MTUD0DBO-KKRMP8"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Erro de cliente. Veja os exemplos por código nomeado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErroDaApi"
+                },
+                "examples": {
+                  "CHANNEL_NOT_FOUND": {
+                    "summary": "CHANNEL_NOT_FOUND",
+                    "value": {
+                      "success": false,
+                      "statusCode": 404,
+                      "timestamp": "2026-09-09T17:15:20.453Z",
+                      "path": "/api/v1/messages",
+                      "method": "POST",
+                      "message": {
+                        "error": "CHANNEL_NOT_FOUND",
+                        "message": "Channel not found."
+                      },
+                      "errorId": "ERR-MTUD0DBO-KKRMP8"
+                    }
+                  },
+                  "CONTACT_NOT_FOUND": {
+                    "summary": "CONTACT_NOT_FOUND",
+                    "value": {
+                      "success": false,
+                      "statusCode": 404,
+                      "timestamp": "2026-09-09T17:15:20.453Z",
+                      "path": "/api/v1/messages",
+                      "method": "POST",
+                      "message": {
+                        "error": "CONTACT_NOT_FOUND",
+                        "message": "Contact not found."
+                      },
+                      "errorId": "ERR-MTUD0DBO-KKRMP8"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "`NO_OPEN_CONVERSATION` — This channel requires an existing conversation with the recipient. Starting a conversation is not available in this contract yet.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErroDaApi"
+                },
+                "examples": {
+                  "NO_OPEN_CONVERSATION": {
+                    "summary": "NO_OPEN_CONVERSATION",
+                    "value": {
+                      "success": false,
+                      "statusCode": 409,
+                      "timestamp": "2026-09-09T17:15:20.453Z",
+                      "path": "/api/v1/messages",
+                      "method": "POST",
+                      "message": {
+                        "error": "NO_OPEN_CONVERSATION",
+                        "message": "This channel requires an existing conversation with the recipient. Starting a conversation is not available in this contract yet.",
+                        "details": {
+                          "channel": "telegram"
+                        }
+                      },
+                      "errorId": "ERR-MTUD0DBO-KKRMP8"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Erro de cliente. Veja os exemplos por código nomeado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErroDaApi"
+                },
+                "examples": {
+                  "RECIPIENT_NOT_ON_CHANNEL": {
+                    "summary": "RECIPIENT_NOT_ON_CHANNEL",
+                    "value": {
+                      "success": false,
+                      "statusCode": 422,
+                      "timestamp": "2026-09-09T17:15:20.453Z",
+                      "path": "/api/v1/messages",
+                      "method": "POST",
+                      "message": {
+                        "error": "RECIPIENT_NOT_ON_CHANNEL",
+                        "message": "Contact has no identity on channel 'telegram'.",
+                        "details": {
+                          "channel": "telegram",
+                          "contact_id": "9c8b7a65-4321-4def-8abc-1234567890ab"
+                        }
+                      },
+                      "errorId": "ERR-MTUD0DBO-KKRMP8"
+                    }
+                  },
+                  "UNSUPPORTED_CAPABILITY": {
+                    "summary": "UNSUPPORTED_CAPABILITY",
+                    "value": {
+                      "success": false,
+                      "statusCode": 422,
+                      "timestamp": "2026-09-09T17:15:20.453Z",
+                      "path": "/api/v1/messages",
+                      "method": "POST",
+                      "message": {
+                        "error": "UNSUPPORTED_CAPABILITY",
+                        "message": "Channel 'telegram' does not support messages of type 'image'.",
+                        "details": {
+                          "channel": "telegram",
+                          "requested": "image",
+                          "supported": [
+                            "text"
+                          ]
+                        }
+                      },
+                      "errorId": "ERR-MTUD0DBO-KKRMP8"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "`SEND_FAILED` — Failed to send message.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErroDaApi"
+                },
+                "examples": {
+                  "SEND_FAILED": {
+                    "summary": "SEND_FAILED",
+                    "value": {
+                      "success": false,
+                      "statusCode": 500,
+                      "timestamp": "2026-09-09T17:15:20.453Z",
+                      "path": "/api/v1/messages",
+                      "method": "POST",
+                      "message": {
+                        "error": "SEND_FAILED",
+                        "message": "Failed to send message."
+                      },
+                      "errorId": "ERR-MTUD0DBO-KKRMP8"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "`UNAUTHORIZED` — Invalid or missing API key.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErroDaApi"
+                },
+                "examples": {
+                  "UNAUTHORIZED": {
+                    "summary": "UNAUTHORIZED",
+                    "value": {
+                      "success": false,
+                      "statusCode": 401,
+                      "timestamp": "2026-09-09T17:15:20.453Z",
+                      "path": "/api/v1/messages",
+                      "method": "POST",
+                      "message": {
+                        "error": "UNAUTHORIZED",
+                        "message": "Invalid or missing API key."
+                      },
+                      "errorId": "ERR-MTUD0DBO-KKRMP8"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "`RATE_LIMITED` — Too many requests.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErroDaApi"
+                },
+                "examples": {
+                  "RATE_LIMITED": {
+                    "summary": "RATE_LIMITED",
+                    "value": {
+                      "success": false,
+                      "statusCode": 429,
+                      "timestamp": "2026-09-09T17:15:20.453Z",
+                      "path": "/api/v1/messages",
+                      "method": "POST",
+                      "message": {
+                        "error": "RATE_LIMITED",
+                        "message": "Too many requests."
+                      },
+                      "errorId": "ERR-MTUD0DBO-KKRMP8"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "enviarMensagem",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "channel_id": {
+                    "type": "string",
+                    "description": "O `id` da conta de canal, vindo de `GET /channels`. É ele que define o canal."
+                  },
+                  "contact_id": {
+                    "type": "string",
+                    "description": "Identificador do contato na WizeBot. Use este **ou** `to`, nunca os dois."
+                  },
+                  "to": {
+                    "type": "string",
+                    "description": "Endereço nativo no canal — telefone no WhatsApp, identificador de chat no Telegram."
+                  },
+                  "type": {
+                    "type": "string",
+                    "enum": [
+                      "text",
+                      "image",
+                      "document",
+                      "audio",
+                      "video"
+                    ],
+                    "default": "text"
+                  },
+                  "text": {
+                    "type": "string",
+                    "description": "Texto da mensagem. Obrigatório quando `type` é `text`."
+                  },
+                  "media_url": {
+                    "type": "string",
+                    "description": "URL pública da mídia. Obrigatório nos tipos de mídia."
+                  },
+                  "caption": {
+                    "type": "string",
+                    "description": "Legenda da mídia, onde o canal a aceita."
+                  },
+                  "filename": {
+                    "type": "string",
+                    "default": "document",
+                    "description": "Nome do arquivo, para `document`."
+                  },
+                  "client_message_id": {
+                    "type": "string",
+                    "description": "Seu identificador do envio. Duas requisições com o mesmo valor viram **um** envio só."
+                  }
+                },
+                "required": [
+                  "channel_id"
+                ]
+              },
+              "example": {
+                "channel_id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+                "contact_id": "9c8b7a65-4321-4def-8abc-1234567890ab",
+                "text": "Seu pedido saiu para entrega.",
+                "client_message_id": "pedido-8842"
+              }
+            }
+          }
+        },
+        "x-mint": {
+          "href": "/api-reference/mensagens/enviar-mensagem"
+        }
+      }
+    },
+    "/messages/{message_id}": {
+      "get": {
+        "tags": [
+          "Mensagens"
+        ],
+        "summary": "Consultar status da mensagem",
+        "description": "Devolve o estado de entrega, acrescentando o canal ao retorno.\n\nAceita o identificador interno da WizeBot ou o do provedor.\n\nÉ aqui que a entrega se confirma — o `201` do envio diz apenas que a mensagem foi aceita.",
+        "responses": {
+          "200": {
+            "description": "Estado da mensagem.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "success",
+                    "data",
+                    "timestamp"
+                  ],
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "description": "Sempre `true` nas respostas de sucesso."
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "message_id": {
+                          "type": "string"
+                        },
+                        "channel": {
+                          "type": "string"
+                        },
+                        "status": {
+                          "type": "string",
+                          "description": "`queued`, `sent`, `delivered`, `read` ou `failed`."
+                        },
+                        "status_updated_at": {
+                          "type": [
+                            "string",
+                            "null"
+                          ],
+                          "format": "date-time"
+                        },
+                        "sent_at": {
+                          "type": [
+                            "string",
+                            "null"
+                          ],
+                          "format": "date-time"
+                        },
+                        "delivered_at": {
+                          "type": [
+                            "string",
+                            "null"
+                          ],
+                          "format": "date-time"
+                        },
+                        "read_at": {
+                          "type": [
+                            "string",
+                            "null"
+                          ],
+                          "format": "date-time"
+                        },
+                        "failure_reason": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        }
+                      }
+                    },
+                    "timestamp": {
+                      "type": "string",
+                      "format": "date-time"
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "data": {
+                    "message_id": "7f3e1a24-5b6c-4d8e-9f01-2a3b4c5d6e7f",
+                    "channel": "whatsapp",
+                    "status": "read",
+                    "status_updated_at": "2026-09-09T17:17:52.000Z",
+                    "sent_at": "2026-09-09T17:15:38.238Z",
+                    "delivered_at": "2026-09-09T17:17:52.000Z",
+                    "read_at": "2026-09-09T17:32:24.000Z",
+                    "failure_reason": null
+                  },
+                  "timestamp": "2026-09-09T17:15:20.453Z"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "`MISSING_PARAM` — message_id is required.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErroDaApi"
+                },
+                "examples": {
+                  "MISSING_PARAM": {
+                    "summary": "MISSING_PARAM",
+                    "value": {
+                      "success": false,
+                      "statusCode": 400,
+                      "timestamp": "2026-09-09T17:15:20.453Z",
+                      "path": "/api/v1/messages/7f3e1a24-5b6c-4d8e-9f01-2a3b4c5d6e7f",
+                      "method": "GET",
+                      "message": {
+                        "error": "MISSING_PARAM",
+                        "message": "message_id is required."
+                      },
+                      "errorId": "ERR-MTUD0DBO-KKRMP8"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "`MESSAGE_NOT_FOUND` — Message not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErroDaApi"
+                },
+                "examples": {
+                  "MESSAGE_NOT_FOUND": {
+                    "summary": "MESSAGE_NOT_FOUND",
+                    "value": {
+                      "success": false,
+                      "statusCode": 404,
+                      "timestamp": "2026-09-09T17:15:20.453Z",
+                      "path": "/api/v1/messages/7f3e1a24-5b6c-4d8e-9f01-2a3b4c5d6e7f",
+                      "method": "GET",
+                      "message": {
+                        "error": "MESSAGE_NOT_FOUND",
+                        "message": "Message not found."
+                      },
+                      "errorId": "ERR-MTUD0DBO-KKRMP8"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "`UNAUTHORIZED` — Invalid or missing API key.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErroDaApi"
+                },
+                "examples": {
+                  "UNAUTHORIZED": {
+                    "summary": "UNAUTHORIZED",
+                    "value": {
+                      "success": false,
+                      "statusCode": 401,
+                      "timestamp": "2026-09-09T17:15:20.453Z",
+                      "path": "/api/v1/messages/7f3e1a24-5b6c-4d8e-9f01-2a3b4c5d6e7f",
+                      "method": "GET",
+                      "message": {
+                        "error": "UNAUTHORIZED",
+                        "message": "Invalid or missing API key."
+                      },
+                      "errorId": "ERR-MTUD0DBO-KKRMP8"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "`RATE_LIMITED` — Too many requests.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErroDaApi"
+                },
+                "examples": {
+                  "RATE_LIMITED": {
+                    "summary": "RATE_LIMITED",
+                    "value": {
+                      "success": false,
+                      "statusCode": 429,
+                      "timestamp": "2026-09-09T17:15:20.453Z",
+                      "path": "/api/v1/messages/7f3e1a24-5b6c-4d8e-9f01-2a3b4c5d6e7f",
+                      "method": "GET",
+                      "message": {
+                        "error": "RATE_LIMITED",
+                        "message": "Too many requests."
+                      },
+                      "errorId": "ERR-MTUD0DBO-KKRMP8"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "consultarMensagem",
+        "parameters": [
+          {
+            "name": "message_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Identificador da mensagem — o interno da WizeBot ou o do provedor.",
+            "example": "7f3e1a24-5b6c-4d8e-9f01-2a3b4c5d6e7f"
+          }
+        ],
+        "x-mint": {
+          "href": "/api-reference/mensagens/consultar-status"
+        }
+      }
+    },
+    "/whatsapp/messages": {
+      "post": {
+        "tags": [
+          "WhatsApp · Mensagens"
+        ],
+        "summary": "Enviar mensagem (WhatsApp)",
+        "description": "Camada específica do WhatsApp, mantida sem mudanças para quem já integrou.\n\n**Só responde a conversas existentes.** Se o número nunca conversou com o seu, o envio é recusado — e nesta camada a recusa chega como `500 SEND_FAILED`, não como código de conflito.\n\n**A janela de 24 horas não é verificada aqui.** Uma mensagem fora da janela é aceita com `201` e depois recusada pelo WhatsApp: confirme sempre pela consulta de status.",
+        "responses": {
+          "201": {
+            "description": "Mensagem aceita para envio.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "success",
+                    "data",
+                    "timestamp"
+                  ],
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "description": "Sempre `true` nas respostas de sucesso."
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "message_id": {
+                          "type": "string"
+                        },
+                        "message": {
+                          "type": "string"
+                        }
+                      }
+                    },
+                    "timestamp": {
+                      "type": "string",
+                      "format": "date-time"
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "data": {
+                    "message_id": "7f3e1a24-5b6c-4d8e-9f01-2a3b4c5d6e7f",
+                    "message": "Message queued successfully."
+                  },
+                  "timestamp": "2026-09-09T17:15:20.453Z"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Erro de cliente. Veja os exemplos por código nomeado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErroDaApi"
+                },
+                "examples": {
+                  "MISSING_PARAM": {
+                    "summary": "MISSING_PARAM",
+                    "value": {
+                      "success": false,
+                      "statusCode": 400,
+                      "timestamp": "2026-09-09T17:15:20.453Z",
+                      "path": "/api/v1/whatsapp/messages",
+                      "method": "POST",
+                      "message": {
+                        "error": "MISSING_PARAM",
+                        "message": "phone_number is required."
+                      },
+                      "errorId": "ERR-MTUD0DBO-KKRMP8"
+                    }
+                  },
+                  "INVALID_TYPE": {
+                    "summary": "INVALID_TYPE",
+                    "value": {
+                      "success": false,
+                      "statusCode": 400,
+                      "timestamp": "2026-09-09T17:15:20.453Z",
+                      "path": "/api/v1/whatsapp/messages",
+                      "method": "POST",
+                      "message": {
+                        "error": "INVALID_TYPE",
+                        "message": "Invalid type. Must be one of: text, image, document, audio, video"
+                      },
+                      "errorId": "ERR-MTUD0DBO-KKRMP8"
+                    }
+                  },
+                  "INVALID_MEDIA_URL": {
+                    "summary": "INVALID_MEDIA_URL",
+                    "value": {
+                      "success": false,
+                      "statusCode": 400,
+                      "timestamp": "2026-09-09T17:15:20.453Z",
+                      "path": "/api/v1/whatsapp/messages",
+                      "method": "POST",
+                      "message": {
+                        "error": "INVALID_MEDIA_URL",
+                        "message": "media_url must be a public http(s) URL."
+                      },
+                      "errorId": "ERR-MTUD0DBO-KKRMP8"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "`CHANNEL_NOT_FOUND` — Invalid phone_number_id or channel not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErroDaApi"
+                },
+                "examples": {
+                  "CHANNEL_NOT_FOUND": {
+                    "summary": "CHANNEL_NOT_FOUND",
+                    "value": {
+                      "success": false,
+                      "statusCode": 404,
+                      "timestamp": "2026-09-09T17:15:20.453Z",
+                      "path": "/api/v1/whatsapp/messages",
+                      "method": "POST",
+                      "message": {
+                        "error": "CHANNEL_NOT_FOUND",
+                        "message": "Invalid phone_number_id or channel not found."
+                      },
+                      "errorId": "ERR-MTUD0DBO-KKRMP8"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "`SEND_FAILED` — Failed to send message.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErroDaApi"
+                },
+                "examples": {
+                  "SEND_FAILED": {
+                    "summary": "SEND_FAILED",
+                    "value": {
+                      "success": false,
+                      "statusCode": 500,
+                      "timestamp": "2026-09-09T17:15:20.453Z",
+                      "path": "/api/v1/whatsapp/messages",
+                      "method": "POST",
+                      "message": {
+                        "error": "SEND_FAILED",
+                        "message": "Failed to send message."
+                      },
+                      "errorId": "ERR-MTUD0DBO-KKRMP8"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "`UNAUTHORIZED` — Invalid or missing API key.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErroDaApi"
+                },
+                "examples": {
+                  "UNAUTHORIZED": {
+                    "summary": "UNAUTHORIZED",
+                    "value": {
+                      "success": false,
+                      "statusCode": 401,
+                      "timestamp": "2026-09-09T17:15:20.453Z",
+                      "path": "/api/v1/whatsapp/messages",
+                      "method": "POST",
+                      "message": {
+                        "error": "UNAUTHORIZED",
+                        "message": "Invalid or missing API key."
+                      },
+                      "errorId": "ERR-MTUD0DBO-KKRMP8"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "`RATE_LIMITED` — Too many requests.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErroDaApi"
+                },
+                "examples": {
+                  "RATE_LIMITED": {
+                    "summary": "RATE_LIMITED",
+                    "value": {
+                      "success": false,
+                      "statusCode": 429,
+                      "timestamp": "2026-09-09T17:15:20.453Z",
+                      "path": "/api/v1/whatsapp/messages",
+                      "method": "POST",
+                      "message": {
+                        "error": "RATE_LIMITED",
+                        "message": "Too many requests."
+                      },
+                      "errorId": "ERR-MTUD0DBO-KKRMP8"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "whatsappEnviarMensagem",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "phone_number_id": {
+                    "type": "string",
+                    "description": "Identificador do seu número de WhatsApp na Meta."
+                  },
+                  "phone_number": {
+                    "type": "string",
+                    "description": "Número do destinatário, com código do país e apenas dígitos."
+                  },
+                  "type": {
+                    "type": "string",
+                    "enum": [
+                      "text",
+                      "image",
+                      "document",
+                      "audio",
+                      "video"
+                    ],
+                    "default": "text"
+                  },
+                  "message": {
+                    "type": "string",
+                    "description": "Texto da mensagem. Obrigatório quando `type` é `text`."
+                  },
+                  "media_url": {
+                    "type": "string",
+                    "description": "URL pública da mídia. Obrigatório nos tipos de mídia."
+                  },
+                  "caption": {
+                    "type": "string",
+                    "description": "Legenda da mídia."
+                  },
+                  "filename": {
+                    "type": "string",
+                    "default": "document",
+                    "description": "Nome do arquivo, para `document`."
+                  }
+                },
+                "required": [
+                  "phone_number_id",
+                  "phone_number"
+                ]
+              },
+              "example": {
+                "phone_number_id": "102938475610293",
+                "phone_number": "5511999999999",
+                "message": "Seu pedido saiu para entrega."
+              }
+            }
+          }
+        },
+        "x-mint": {
+          "href": "/api-reference/whatsapp/enviar-mensagem"
+        }
+      }
+    },
+    "/whatsapp/messages/{message_id}/status": {
+      "get": {
+        "tags": [
+          "WhatsApp · Mensagens"
+        ],
+        "summary": "Consultar status (WhatsApp)",
+        "description": "Estado de entrega de uma mensagem. Aceita o identificador interno ou o do provedor.",
+        "responses": {
+          "200": {
+            "description": "Estado da mensagem.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "success",
+                    "data",
+                    "timestamp"
+                  ],
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "description": "Sempre `true` nas respostas de sucesso."
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "message_status": {
+                          "type": "string"
+                        },
+                        "delivery_status_updated_at": {
+                          "type": [
+                            "string",
+                            "null"
+                          ],
+                          "format": "date-time"
+                        },
+                        "read_time": {
+                          "type": [
+                            "string",
+                            "null"
+                          ],
+                          "format": "date-time"
+                        },
+                        "failed_time": {
+                          "type": [
+                            "string",
+                            "null"
+                          ],
+                          "format": "date-time"
+                        },
+                        "failed_reason": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        }
+                      }
+                    },
+                    "timestamp": {
+                      "type": "string",
+                      "format": "date-time"
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "data": {
+                    "message_status": "read",
+                    "delivery_status_updated_at": "2026-09-09T17:17:52.000Z",
+                    "read_time": "2026-09-09T17:32:24.000Z",
+                    "failed_time": null,
+                    "failed_reason": null
+                  },
+                  "timestamp": "2026-09-09T17:15:20.453Z"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "`MISSING_PARAM` — message_id is required.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErroDaApi"
+                },
+                "examples": {
+                  "MISSING_PARAM": {
+                    "summary": "MISSING_PARAM",
+                    "value": {
+                      "success": false,
+                      "statusCode": 400,
+                      "timestamp": "2026-09-09T17:15:20.453Z",
+                      "path": "/api/v1/whatsapp/messages/7f3e1a24-5b6c-4d8e-9f01-2a3b4c5d6e7f/status",
+                      "method": "GET",
+                      "message": {
+                        "error": "MISSING_PARAM",
+                        "message": "message_id is required."
+                      },
+                      "errorId": "ERR-MTUD0DBO-KKRMP8"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "`MESSAGE_NOT_FOUND` — Message not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErroDaApi"
+                },
+                "examples": {
+                  "MESSAGE_NOT_FOUND": {
+                    "summary": "MESSAGE_NOT_FOUND",
+                    "value": {
+                      "success": false,
+                      "statusCode": 404,
+                      "timestamp": "2026-09-09T17:15:20.453Z",
+                      "path": "/api/v1/whatsapp/messages/7f3e1a24-5b6c-4d8e-9f01-2a3b4c5d6e7f/status",
+                      "method": "GET",
+                      "message": {
+                        "error": "MESSAGE_NOT_FOUND",
+                        "message": "Message not found."
+                      },
+                      "errorId": "ERR-MTUD0DBO-KKRMP8"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "`UNAUTHORIZED` — Invalid or missing API key.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErroDaApi"
+                },
+                "examples": {
+                  "UNAUTHORIZED": {
+                    "summary": "UNAUTHORIZED",
+                    "value": {
+                      "success": false,
+                      "statusCode": 401,
+                      "timestamp": "2026-09-09T17:15:20.453Z",
+                      "path": "/api/v1/whatsapp/messages/7f3e1a24-5b6c-4d8e-9f01-2a3b4c5d6e7f/status",
+                      "method": "GET",
+                      "message": {
+                        "error": "UNAUTHORIZED",
+                        "message": "Invalid or missing API key."
+                      },
+                      "errorId": "ERR-MTUD0DBO-KKRMP8"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "`RATE_LIMITED` — Too many requests.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErroDaApi"
+                },
+                "examples": {
+                  "RATE_LIMITED": {
+                    "summary": "RATE_LIMITED",
+                    "value": {
+                      "success": false,
+                      "statusCode": 429,
+                      "timestamp": "2026-09-09T17:15:20.453Z",
+                      "path": "/api/v1/whatsapp/messages/7f3e1a24-5b6c-4d8e-9f01-2a3b4c5d6e7f/status",
+                      "method": "GET",
+                      "message": {
+                        "error": "RATE_LIMITED",
+                        "message": "Too many requests."
+                      },
+                      "errorId": "ERR-MTUD0DBO-KKRMP8"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "whatsappStatusMensagem",
+        "parameters": [
+          {
+            "name": "message_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Identificador da mensagem.",
+            "example": "7f3e1a24-5b6c-4d8e-9f01-2a3b4c5d6e7f"
+          }
+        ],
+        "x-mint": {
+          "href": "/api-reference/whatsapp/status-da-mensagem"
+        }
+      }
+    },
+    "/whatsapp/contacts": {
+      "get": {
+        "tags": [
+          "WhatsApp · Contatos"
+        ],
+        "summary": "Listar contatos",
+        "description": "Contatos vinculados a um número de WhatsApp, do mais recente para o mais antigo.",
+        "responses": {
+          "200": {
+            "description": "Lista de contatos.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "success",
+                    "data",
+                    "timestamp"
+                  ],
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "description": "Sempre `true` nas respostas de sucesso."
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "items": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "string"
+                              },
+                              "phone_number": {
+                                "type": "string"
+                              },
+                              "name": {
+                                "type": [
+                                  "string",
+                                  "null"
+                                ]
+                              },
+                              "email": {
+                                "type": [
+                                  "string",
+                                  "null"
+                                ]
+                              },
+                              "gender": {
+                                "type": [
+                                  "string",
+                                  "null"
+                                ]
+                              },
+                              "tag_names": {
+                                "type": "string",
+                                "description": "Nomes das etiquetas do contato, separados por vírgula. Vazio quando não há."
+                              }
+                            }
+                          }
+                        },
+                        "limit": {
+                          "type": "integer"
+                        },
+                        "offset": {
+                          "type": "integer"
+                        }
+                      }
+                    },
+                    "timestamp": {
+                      "type": "string",
+                      "format": "date-time"
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "data": {
+                    "items": [
+                      {
+                        "id": "9c8b7a65-4321-4def-8abc-1234567890ab",
+                        "phone_number": "5511999999999",
+                        "name": "Maria Souza",
+                        "email": null,
+                        "gender": null,
+                        "tag_names": "Cliente,VIP"
+                      }
+                    ],
+                    "limit": 20,
+                    "offset": 0
+                  },
+                  "timestamp": "2026-09-09T17:15:20.453Z"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "`MISSING_PARAM` — phone_number_id is required.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErroDaApi"
+                },
+                "examples": {
+                  "MISSING_PARAM": {
+                    "summary": "MISSING_PARAM",
+                    "value": {
+                      "success": false,
+                      "statusCode": 400,
+                      "timestamp": "2026-09-09T17:15:20.453Z",
+                      "path": "/api/v1/whatsapp/contacts",
+                      "method": "GET",
+                      "message": {
+                        "error": "MISSING_PARAM",
+                        "message": "phone_number_id is required."
+                      },
+                      "errorId": "ERR-MTUD0DBO-KKRMP8"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "`CHANNEL_NOT_FOUND` — Invalid phone_number_id or channel not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErroDaApi"
+                },
+                "examples": {
+                  "CHANNEL_NOT_FOUND": {
+                    "summary": "CHANNEL_NOT_FOUND",
+                    "value": {
+                      "success": false,
+                      "statusCode": 404,
+                      "timestamp": "2026-09-09T17:15:20.453Z",
+                      "path": "/api/v1/whatsapp/contacts",
+                      "method": "GET",
+                      "message": {
+                        "error": "CHANNEL_NOT_FOUND",
+                        "message": "Invalid phone_number_id or channel not found."
+                      },
+                      "errorId": "ERR-MTUD0DBO-KKRMP8"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "`UNAUTHORIZED` — Invalid or missing API key.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErroDaApi"
+                },
+                "examples": {
+                  "UNAUTHORIZED": {
+                    "summary": "UNAUTHORIZED",
+                    "value": {
+                      "success": false,
+                      "statusCode": 401,
+                      "timestamp": "2026-09-09T17:15:20.453Z",
+                      "path": "/api/v1/whatsapp/contacts",
+                      "method": "GET",
+                      "message": {
+                        "error": "UNAUTHORIZED",
+                        "message": "Invalid or missing API key."
+                      },
+                      "errorId": "ERR-MTUD0DBO-KKRMP8"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "`RATE_LIMITED` — Too many requests.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErroDaApi"
+                },
+                "examples": {
+                  "RATE_LIMITED": {
+                    "summary": "RATE_LIMITED",
+                    "value": {
+                      "success": false,
+                      "statusCode": 429,
+                      "timestamp": "2026-09-09T17:15:20.453Z",
+                      "path": "/api/v1/whatsapp/contacts",
+                      "method": "GET",
+                      "message": {
+                        "error": "RATE_LIMITED",
+                        "message": "Too many requests."
+                      },
+                      "errorId": "ERR-MTUD0DBO-KKRMP8"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "whatsappListarContatos",
+        "parameters": [
+          {
+            "name": "phone_number_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Identificador do seu número de WhatsApp na Meta.",
+            "example": "102938475610293"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 20,
+              "maximum": 100
+            },
+            "description": "Quantos contatos trazer. Teto de 100.",
+            "example": 20
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 0
+            },
+            "description": "Quantos pular.",
+            "example": 0
+          }
+        ],
+        "x-mint": {
+          "href": "/api-reference/whatsapp/listar-contatos"
+        }
+      },
+      "post": {
+        "tags": [
+          "WhatsApp · Contatos"
+        ],
+        "summary": "Criar contato",
+        "description": "Cria o contato e o vínculo de identidade de canal no mesmo passo — os dois nascem juntos ou não nascem.\n\nO telefone é normalizado com a mesma regra do caminho de entrada do WhatsApp, para que um contato criado pela API e o mesmo contato criado por uma mensagem recebida sejam a mesma pessoa.",
+        "responses": {
+          "201": {
+            "description": "Contato criado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "success",
+                    "data",
+                    "timestamp"
+                  ],
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "description": "Sempre `true` nas respostas de sucesso."
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "message": {
+                          "type": "string"
+                        }
+                      }
+                    },
+                    "timestamp": {
+                      "type": "string",
+                      "format": "date-time"
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "data": {
+                    "message": "Contact created successfully."
+                  },
+                  "timestamp": "2026-09-09T17:15:20.453Z"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "`MISSING_PARAM` — name is required.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErroDaApi"
+                },
+                "examples": {
+                  "MISSING_PARAM": {
+                    "summary": "MISSING_PARAM",
+                    "value": {
+                      "success": false,
+                      "statusCode": 400,
+                      "timestamp": "2026-09-09T17:15:20.453Z",
+                      "path": "/api/v1/whatsapp/contacts",
+                      "method": "POST",
+                      "message": {
+                        "error": "MISSING_PARAM",
+                        "message": "name is required."
+                      },
+                      "errorId": "ERR-MTUD0DBO-KKRMP8"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "`CHANNEL_NOT_FOUND` — Invalid phone_number_id or channel not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErroDaApi"
+                },
+                "examples": {
+                  "CHANNEL_NOT_FOUND": {
+                    "summary": "CHANNEL_NOT_FOUND",
+                    "value": {
+                      "success": false,
+                      "statusCode": 404,
+                      "timestamp": "2026-09-09T17:15:20.453Z",
+                      "path": "/api/v1/whatsapp/contacts",
+                      "method": "POST",
+                      "message": {
+                        "error": "CHANNEL_NOT_FOUND",
+                        "message": "Invalid phone_number_id or channel not found."
+                      },
+                      "errorId": "ERR-MTUD0DBO-KKRMP8"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "`CONTACT_EXISTS` — A contact with this phone number already exists.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErroDaApi"
+                },
+                "examples": {
+                  "CONTACT_EXISTS": {
+                    "summary": "CONTACT_EXISTS",
+                    "value": {
+                      "success": false,
+                      "statusCode": 409,
+                      "timestamp": "2026-09-09T17:15:20.453Z",
+                      "path": "/api/v1/whatsapp/contacts",
+                      "method": "POST",
+                      "message": {
+                        "error": "CONTACT_EXISTS",
+                        "message": "A contact with this phone number already exists."
+                      },
+                      "errorId": "ERR-MTUD0DBO-KKRMP8"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "`UNAUTHORIZED` — Invalid or missing API key.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErroDaApi"
+                },
+                "examples": {
+                  "UNAUTHORIZED": {
+                    "summary": "UNAUTHORIZED",
+                    "value": {
+                      "success": false,
+                      "statusCode": 401,
+                      "timestamp": "2026-09-09T17:15:20.453Z",
+                      "path": "/api/v1/whatsapp/contacts",
+                      "method": "POST",
+                      "message": {
+                        "error": "UNAUTHORIZED",
+                        "message": "Invalid or missing API key."
+                      },
+                      "errorId": "ERR-MTUD0DBO-KKRMP8"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "`RATE_LIMITED` — Too many requests.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErroDaApi"
+                },
+                "examples": {
+                  "RATE_LIMITED": {
+                    "summary": "RATE_LIMITED",
+                    "value": {
+                      "success": false,
+                      "statusCode": 429,
+                      "timestamp": "2026-09-09T17:15:20.453Z",
+                      "path": "/api/v1/whatsapp/contacts",
+                      "method": "POST",
+                      "message": {
+                        "error": "RATE_LIMITED",
+                        "message": "Too many requests."
+                      },
+                      "errorId": "ERR-MTUD0DBO-KKRMP8"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "whatsappCriarContato",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "phone_number_id": {
+                    "type": "string",
+                    "description": "Identificador do seu número de WhatsApp na Meta."
+                  },
+                  "phone_number": {
+                    "type": "string",
+                    "description": "Telefone do contato, com código do país."
+                  },
+                  "name": {
+                    "type": "string",
+                    "description": "Nome do contato."
+                  }
+                },
+                "required": [
+                  "phone_number_id",
+                  "phone_number",
+                  "name"
+                ]
+              },
+              "example": {
+                "phone_number_id": "102938475610293",
+                "phone_number": "5511999999999",
+                "name": "Maria Souza"
+              }
+            }
+          }
+        },
+        "x-mint": {
+          "href": "/api-reference/whatsapp/criar-contato"
+        }
+      },
+      "patch": {
+        "tags": [
+          "WhatsApp · Contatos"
+        ],
+        "summary": "Atualizar contato",
+        "description": "Atualiza nome, gênero e etiquetas. Campos ausentes ficam como estão.\n\n`first_name` e `last_name` são juntados num único nome.",
+        "responses": {
+          "200": {
+            "description": "Contato atualizado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "success",
+                    "data",
+                    "timestamp"
+                  ],
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "description": "Sempre `true` nas respostas de sucesso."
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "message": {
+                          "type": "string"
+                        }
+                      }
+                    },
+                    "timestamp": {
+                      "type": "string",
+                      "format": "date-time"
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "data": {
+                    "message": "Contact updated successfully."
+                  },
+                  "timestamp": "2026-09-09T17:15:20.453Z"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "`MISSING_PARAM` — phone_number is required.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErroDaApi"
+                },
+                "examples": {
+                  "MISSING_PARAM": {
+                    "summary": "MISSING_PARAM",
+                    "value": {
+                      "success": false,
+                      "statusCode": 400,
+                      "timestamp": "2026-09-09T17:15:20.453Z",
+                      "path": "/api/v1/whatsapp/contacts",
+                      "method": "PATCH",
+                      "message": {
+                        "error": "MISSING_PARAM",
+                        "message": "phone_number is required."
+                      },
+                      "errorId": "ERR-MTUD0DBO-KKRMP8"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "`CONTACT_NOT_FOUND` — Contact not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErroDaApi"
+                },
+                "examples": {
+                  "CONTACT_NOT_FOUND": {
+                    "summary": "CONTACT_NOT_FOUND",
+                    "value": {
+                      "success": false,
+                      "statusCode": 404,
+                      "timestamp": "2026-09-09T17:15:20.453Z",
+                      "path": "/api/v1/whatsapp/contacts",
+                      "method": "PATCH",
+                      "message": {
+                        "error": "CONTACT_NOT_FOUND",
+                        "message": "Contact not found."
+                      },
+                      "errorId": "ERR-MTUD0DBO-KKRMP8"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "`UNAUTHORIZED` — Invalid or missing API key.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErroDaApi"
+                },
+                "examples": {
+                  "UNAUTHORIZED": {
+                    "summary": "UNAUTHORIZED",
+                    "value": {
+                      "success": false,
+                      "statusCode": 401,
+                      "timestamp": "2026-09-09T17:15:20.453Z",
+                      "path": "/api/v1/whatsapp/contacts",
+                      "method": "PATCH",
+                      "message": {
+                        "error": "UNAUTHORIZED",
+                        "message": "Invalid or missing API key."
+                      },
+                      "errorId": "ERR-MTUD0DBO-KKRMP8"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "`RATE_LIMITED` — Too many requests.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErroDaApi"
+                },
+                "examples": {
+                  "RATE_LIMITED": {
+                    "summary": "RATE_LIMITED",
+                    "value": {
+                      "success": false,
+                      "statusCode": 429,
+                      "timestamp": "2026-09-09T17:15:20.453Z",
+                      "path": "/api/v1/whatsapp/contacts",
+                      "method": "PATCH",
+                      "message": {
+                        "error": "RATE_LIMITED",
+                        "message": "Too many requests."
+                      },
+                      "errorId": "ERR-MTUD0DBO-KKRMP8"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "whatsappAtualizarContato",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "phone_number_id": {
+                    "type": "string"
+                  },
+                  "phone_number": {
+                    "type": "string"
+                  },
+                  "first_name": {
+                    "type": "string"
+                  },
+                  "last_name": {
+                    "type": "string"
+                  },
+                  "gender": {
+                    "type": "string"
+                  },
+                  "tag_ids": {
+                    "type": "string",
+                    "description": "Identificadores de etiqueta separados por vírgula. Atribui; não remove as demais."
+                  }
+                },
+                "required": [
+                  "phone_number_id",
+                  "phone_number"
+                ]
+              },
+              "example": {
+                "phone_number_id": "102938475610293",
+                "phone_number": "5511999999999",
+                "first_name": "Maria",
+                "last_name": "Souza"
+              }
+            }
+          }
+        },
+        "x-mint": {
+          "href": "/api-reference/whatsapp/atualizar-contato"
+        }
+      },
+      "delete": {
+        "tags": [
+          "WhatsApp · Contatos"
+        ],
+        "summary": "Excluir contato",
+        "description": "Remove o contato e tudo que depende dele, inclusive as mídias trocadas.\n\n**Não é reversível.**",
+        "responses": {
+          "200": {
+            "description": "Contato excluído.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "success",
+                    "data",
+                    "timestamp"
+                  ],
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "description": "Sempre `true` nas respostas de sucesso."
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "message": {
+                          "type": "string"
+                        }
+                      }
+                    },
+                    "timestamp": {
+                      "type": "string",
+                      "format": "date-time"
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "data": {
+                    "message": "Contact deleted successfully."
+                  },
+                  "timestamp": "2026-09-09T17:15:20.453Z"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "`MISSING_PARAM` — phone_number is required.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErroDaApi"
+                },
+                "examples": {
+                  "MISSING_PARAM": {
+                    "summary": "MISSING_PARAM",
+                    "value": {
+                      "success": false,
+                      "statusCode": 400,
+                      "timestamp": "2026-09-09T17:15:20.453Z",
+                      "path": "/api/v1/whatsapp/contacts",
+                      "method": "DELETE",
+                      "message": {
+                        "error": "MISSING_PARAM",
+                        "message": "phone_number is required."
+                      },
+                      "errorId": "ERR-MTUD0DBO-KKRMP8"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "`CONTACT_NOT_FOUND` — Contact not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErroDaApi"
+                },
+                "examples": {
+                  "CONTACT_NOT_FOUND": {
+                    "summary": "CONTACT_NOT_FOUND",
+                    "value": {
+                      "success": false,
+                      "statusCode": 404,
+                      "timestamp": "2026-09-09T17:15:20.453Z",
+                      "path": "/api/v1/whatsapp/contacts",
+                      "method": "DELETE",
+                      "message": {
+                        "error": "CONTACT_NOT_FOUND",
+                        "message": "Contact not found."
+                      },
+                      "errorId": "ERR-MTUD0DBO-KKRMP8"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "`UNAUTHORIZED` — Invalid or missing API key.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErroDaApi"
+                },
+                "examples": {
+                  "UNAUTHORIZED": {
+                    "summary": "UNAUTHORIZED",
+                    "value": {
+                      "success": false,
+                      "statusCode": 401,
+                      "timestamp": "2026-09-09T17:15:20.453Z",
+                      "path": "/api/v1/whatsapp/contacts",
+                      "method": "DELETE",
+                      "message": {
+                        "error": "UNAUTHORIZED",
+                        "message": "Invalid or missing API key."
+                      },
+                      "errorId": "ERR-MTUD0DBO-KKRMP8"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "`RATE_LIMITED` — Too many requests.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErroDaApi"
+                },
+                "examples": {
+                  "RATE_LIMITED": {
+                    "summary": "RATE_LIMITED",
+                    "value": {
+                      "success": false,
+                      "statusCode": 429,
+                      "timestamp": "2026-09-09T17:15:20.453Z",
+                      "path": "/api/v1/whatsapp/contacts",
+                      "method": "DELETE",
+                      "message": {
+                        "error": "RATE_LIMITED",
+                        "message": "Too many requests."
+                      },
+                      "errorId": "ERR-MTUD0DBO-KKRMP8"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "whatsappExcluirContato",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "phone_number_id": {
+                    "type": "string"
+                  },
+                  "phone_number": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "phone_number_id",
+                  "phone_number"
+                ]
+              },
+              "example": {
+                "phone_number_id": "102938475610293",
+                "phone_number": "5511999999999"
+              }
+            }
+          }
+        },
+        "x-mint": {
+          "href": "/api-reference/whatsapp/excluir-contato"
+        }
+      }
+    },
+    "/whatsapp/contacts/lookup": {
+      "get": {
+        "tags": [
+          "WhatsApp · Contatos"
+        ],
+        "summary": "Buscar contato por telefone",
+        "description": "Busca um único contato pelo telefone, dentro de um número de WhatsApp.",
+        "responses": {
+          "200": {
+            "description": "Contato encontrado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "success",
+                    "data",
+                    "timestamp"
+                  ],
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "description": "Sempre `true` nas respostas de sucesso."
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string"
+                        },
+                        "phone_number": {
+                          "type": "string"
+                        },
+                        "name": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "email": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "gender": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "tag_names": {
+                          "type": "string",
+                          "description": "Nomes das etiquetas do contato, separados por vírgula. Vazio quando não há."
+                        }
+                      }
+                    },
+                    "timestamp": {
+                      "type": "string",
+                      "format": "date-time"
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "data": {
+                    "id": "9c8b7a65-4321-4def-8abc-1234567890ab",
+                    "phone_number": "5511999999999",
+                    "name": "Maria Souza",
+                    "email": null,
+                    "gender": null,
+                    "tag_names": "Cliente,VIP"
+                  },
+                  "timestamp": "2026-09-09T17:15:20.453Z"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "`MISSING_PARAM` — phone_number is required.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErroDaApi"
+                },
+                "examples": {
+                  "MISSING_PARAM": {
+                    "summary": "MISSING_PARAM",
+                    "value": {
+                      "success": false,
+                      "statusCode": 400,
+                      "timestamp": "2026-09-09T17:15:20.453Z",
+                      "path": "/api/v1/whatsapp/contacts/lookup",
+                      "method": "GET",
+                      "message": {
+                        "error": "MISSING_PARAM",
+                        "message": "phone_number is required."
+                      },
+                      "errorId": "ERR-MTUD0DBO-KKRMP8"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "`CONTACT_NOT_FOUND` — Contact not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErroDaApi"
+                },
+                "examples": {
+                  "CONTACT_NOT_FOUND": {
+                    "summary": "CONTACT_NOT_FOUND",
+                    "value": {
+                      "success": false,
+                      "statusCode": 404,
+                      "timestamp": "2026-09-09T17:15:20.453Z",
+                      "path": "/api/v1/whatsapp/contacts/lookup",
+                      "method": "GET",
+                      "message": {
+                        "error": "CONTACT_NOT_FOUND",
+                        "message": "Contact not found."
+                      },
+                      "errorId": "ERR-MTUD0DBO-KKRMP8"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "`UNAUTHORIZED` — Invalid or missing API key.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErroDaApi"
+                },
+                "examples": {
+                  "UNAUTHORIZED": {
+                    "summary": "UNAUTHORIZED",
+                    "value": {
+                      "success": false,
+                      "statusCode": 401,
+                      "timestamp": "2026-09-09T17:15:20.453Z",
+                      "path": "/api/v1/whatsapp/contacts/lookup",
+                      "method": "GET",
+                      "message": {
+                        "error": "UNAUTHORIZED",
+                        "message": "Invalid or missing API key."
+                      },
+                      "errorId": "ERR-MTUD0DBO-KKRMP8"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "`RATE_LIMITED` — Too many requests.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErroDaApi"
+                },
+                "examples": {
+                  "RATE_LIMITED": {
+                    "summary": "RATE_LIMITED",
+                    "value": {
+                      "success": false,
+                      "statusCode": 429,
+                      "timestamp": "2026-09-09T17:15:20.453Z",
+                      "path": "/api/v1/whatsapp/contacts/lookup",
+                      "method": "GET",
+                      "message": {
+                        "error": "RATE_LIMITED",
+                        "message": "Too many requests."
+                      },
+                      "errorId": "ERR-MTUD0DBO-KKRMP8"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "whatsappBuscarContato",
+        "parameters": [
+          {
+            "name": "phone_number_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Identificador do seu número de WhatsApp na Meta.",
+            "example": "102938475610293"
+          },
+          {
+            "name": "phone_number",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Número do destinatário, com código do país e apenas dígitos.",
+            "example": "5511999999999"
+          }
+        ],
+        "x-mint": {
+          "href": "/api-reference/whatsapp/buscar-contato"
+        }
+      }
+    },
+    "/whatsapp/contacts/tags": {
+      "post": {
+        "tags": [
+          "WhatsApp · Etiquetas"
+        ],
+        "summary": "Atribuir etiquetas a um contato",
+        "description": "Atribui uma ou mais etiquetas. Repetir uma etiqueta já atribuída não é erro.",
+        "responses": {
+          "200": {
+            "description": "Etiquetas atribuídas.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "success",
+                    "data",
+                    "timestamp"
+                  ],
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "description": "Sempre `true` nas respostas de sucesso."
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "message": {
+                          "type": "string"
+                        }
+                      }
+                    },
+                    "timestamp": {
+                      "type": "string",
+                      "format": "date-time"
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "data": {
+                    "message": "Tags assigned successfully."
+                  },
+                  "timestamp": "2026-09-09T17:15:20.453Z"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "`MISSING_PARAM` — tag_ids is required.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErroDaApi"
+                },
+                "examples": {
+                  "MISSING_PARAM": {
+                    "summary": "MISSING_PARAM",
+                    "value": {
+                      "success": false,
+                      "statusCode": 400,
+                      "timestamp": "2026-09-09T17:15:20.453Z",
+                      "path": "/api/v1/whatsapp/contacts/tags",
+                      "method": "POST",
+                      "message": {
+                        "error": "MISSING_PARAM",
+                        "message": "tag_ids is required."
+                      },
+                      "errorId": "ERR-MTUD0DBO-KKRMP8"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "`CONTACT_NOT_FOUND` — Contact not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErroDaApi"
+                },
+                "examples": {
+                  "CONTACT_NOT_FOUND": {
+                    "summary": "CONTACT_NOT_FOUND",
+                    "value": {
+                      "success": false,
+                      "statusCode": 404,
+                      "timestamp": "2026-09-09T17:15:20.453Z",
+                      "path": "/api/v1/whatsapp/contacts/tags",
+                      "method": "POST",
+                      "message": {
+                        "error": "CONTACT_NOT_FOUND",
+                        "message": "Contact not found."
+                      },
+                      "errorId": "ERR-MTUD0DBO-KKRMP8"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "`UNAUTHORIZED` — Invalid or missing API key.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErroDaApi"
+                },
+                "examples": {
+                  "UNAUTHORIZED": {
+                    "summary": "UNAUTHORIZED",
+                    "value": {
+                      "success": false,
+                      "statusCode": 401,
+                      "timestamp": "2026-09-09T17:15:20.453Z",
+                      "path": "/api/v1/whatsapp/contacts/tags",
+                      "method": "POST",
+                      "message": {
+                        "error": "UNAUTHORIZED",
+                        "message": "Invalid or missing API key."
+                      },
+                      "errorId": "ERR-MTUD0DBO-KKRMP8"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "`RATE_LIMITED` — Too many requests.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErroDaApi"
+                },
+                "examples": {
+                  "RATE_LIMITED": {
+                    "summary": "RATE_LIMITED",
+                    "value": {
+                      "success": false,
+                      "statusCode": 429,
+                      "timestamp": "2026-09-09T17:15:20.453Z",
+                      "path": "/api/v1/whatsapp/contacts/tags",
+                      "method": "POST",
+                      "message": {
+                        "error": "RATE_LIMITED",
+                        "message": "Too many requests."
+                      },
+                      "errorId": "ERR-MTUD0DBO-KKRMP8"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "whatsappAtribuirEtiquetas",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "phone_number_id": {
+                    "type": "string"
+                  },
+                  "phone_number": {
+                    "type": "string"
+                  },
+                  "tag_ids": {
+                    "type": "string",
+                    "description": "Identificadores de etiqueta separados por vírgula."
+                  }
+                },
+                "required": [
+                  "phone_number_id",
+                  "phone_number",
+                  "tag_ids"
+                ]
+              },
+              "example": {
+                "phone_number_id": "102938475610293",
+                "phone_number": "5511999999999",
+                "tag_ids": "tag-1,tag-2"
+              }
+            }
+          }
+        },
+        "x-mint": {
+          "href": "/api-reference/whatsapp/atribuir-etiquetas"
+        }
+      },
+      "delete": {
+        "tags": [
+          "WhatsApp · Etiquetas"
+        ],
+        "summary": "Remover etiquetas de um contato",
+        "description": "Remove uma ou mais etiquetas do contato.",
+        "responses": {
+          "200": {
+            "description": "Etiquetas removidas.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "success",
+                    "data",
+                    "timestamp"
+                  ],
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "description": "Sempre `true` nas respostas de sucesso."
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "message": {
+                          "type": "string"
+                        }
+                      }
+                    },
+                    "timestamp": {
+                      "type": "string",
+                      "format": "date-time"
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "data": {
+                    "message": "Tags removed successfully."
+                  },
+                  "timestamp": "2026-09-09T17:15:20.453Z"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "`MISSING_PARAM` — tag_ids is required.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErroDaApi"
+                },
+                "examples": {
+                  "MISSING_PARAM": {
+                    "summary": "MISSING_PARAM",
+                    "value": {
+                      "success": false,
+                      "statusCode": 400,
+                      "timestamp": "2026-09-09T17:15:20.453Z",
+                      "path": "/api/v1/whatsapp/contacts/tags",
+                      "method": "DELETE",
+                      "message": {
+                        "error": "MISSING_PARAM",
+                        "message": "tag_ids is required."
+                      },
+                      "errorId": "ERR-MTUD0DBO-KKRMP8"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "`CONTACT_NOT_FOUND` — Contact not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErroDaApi"
+                },
+                "examples": {
+                  "CONTACT_NOT_FOUND": {
+                    "summary": "CONTACT_NOT_FOUND",
+                    "value": {
+                      "success": false,
+                      "statusCode": 404,
+                      "timestamp": "2026-09-09T17:15:20.453Z",
+                      "path": "/api/v1/whatsapp/contacts/tags",
+                      "method": "DELETE",
+                      "message": {
+                        "error": "CONTACT_NOT_FOUND",
+                        "message": "Contact not found."
+                      },
+                      "errorId": "ERR-MTUD0DBO-KKRMP8"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "`UNAUTHORIZED` — Invalid or missing API key.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErroDaApi"
+                },
+                "examples": {
+                  "UNAUTHORIZED": {
+                    "summary": "UNAUTHORIZED",
+                    "value": {
+                      "success": false,
+                      "statusCode": 401,
+                      "timestamp": "2026-09-09T17:15:20.453Z",
+                      "path": "/api/v1/whatsapp/contacts/tags",
+                      "method": "DELETE",
+                      "message": {
+                        "error": "UNAUTHORIZED",
+                        "message": "Invalid or missing API key."
+                      },
+                      "errorId": "ERR-MTUD0DBO-KKRMP8"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "`RATE_LIMITED` — Too many requests.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErroDaApi"
+                },
+                "examples": {
+                  "RATE_LIMITED": {
+                    "summary": "RATE_LIMITED",
+                    "value": {
+                      "success": false,
+                      "statusCode": 429,
+                      "timestamp": "2026-09-09T17:15:20.453Z",
+                      "path": "/api/v1/whatsapp/contacts/tags",
+                      "method": "DELETE",
+                      "message": {
+                        "error": "RATE_LIMITED",
+                        "message": "Too many requests."
+                      },
+                      "errorId": "ERR-MTUD0DBO-KKRMP8"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "whatsappRemoverEtiquetas",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "phone_number_id": {
+                    "type": "string"
+                  },
+                  "phone_number": {
+                    "type": "string"
+                  },
+                  "tag_ids": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "phone_number_id",
+                  "phone_number",
+                  "tag_ids"
+                ]
+              },
+              "example": {
+                "phone_number_id": "102938475610293",
+                "phone_number": "5511999999999",
+                "tag_ids": "tag-1"
+              }
+            }
+          }
+        },
+        "x-mint": {
+          "href": "/api-reference/whatsapp/remover-etiquetas"
+        }
+      }
+    },
+    "/whatsapp/tags": {
+      "get": {
+        "tags": [
+          "WhatsApp · Etiquetas"
+        ],
+        "summary": "Listar etiquetas",
+        "description": "Todas as etiquetas da empresa, em ordem alfabética.",
+        "responses": {
+          "200": {
+            "description": "Lista de etiquetas.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "success",
+                    "data",
+                    "timestamp"
+                  ],
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "description": "Sempre `true` nas respostas de sucesso."
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "items": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "string"
+                              },
+                              "name": {
+                                "type": "string"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "timestamp": {
+                      "type": "string",
+                      "format": "date-time"
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "data": {
+                    "items": [
+                      {
+                        "id": "tag-1",
+                        "name": "Cliente"
+                      },
+                      {
+                        "id": "tag-2",
+                        "name": "VIP"
+                      }
+                    ]
+                  },
+                  "timestamp": "2026-09-09T17:15:20.453Z"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "`UNAUTHORIZED` — Invalid or missing API key.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErroDaApi"
+                },
+                "examples": {
+                  "UNAUTHORIZED": {
+                    "summary": "UNAUTHORIZED",
+                    "value": {
+                      "success": false,
+                      "statusCode": 401,
+                      "timestamp": "2026-09-09T17:15:20.453Z",
+                      "path": "/api/v1/whatsapp/tags",
+                      "method": "GET",
+                      "message": {
+                        "error": "UNAUTHORIZED",
+                        "message": "Invalid or missing API key."
+                      },
+                      "errorId": "ERR-MTUD0DBO-KKRMP8"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "`RATE_LIMITED` — Too many requests.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErroDaApi"
+                },
+                "examples": {
+                  "RATE_LIMITED": {
+                    "summary": "RATE_LIMITED",
+                    "value": {
+                      "success": false,
+                      "statusCode": 429,
+                      "timestamp": "2026-09-09T17:15:20.453Z",
+                      "path": "/api/v1/whatsapp/tags",
+                      "method": "GET",
+                      "message": {
+                        "error": "RATE_LIMITED",
+                        "message": "Too many requests."
+                      },
+                      "errorId": "ERR-MTUD0DBO-KKRMP8"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "whatsappListarEtiquetas",
+        "x-mint": {
+          "href": "/api-reference/whatsapp/listar-etiquetas"
+        }
+      },
+      "post": {
+        "tags": [
+          "WhatsApp · Etiquetas"
+        ],
+        "summary": "Criar etiqueta",
+        "description": "Cria uma etiqueta. É idempotente: criar de novo uma etiqueta de mesmo nome não duplica nem falha.",
+        "responses": {
+          "201": {
+            "description": "Etiqueta criada.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "success",
+                    "data",
+                    "timestamp"
+                  ],
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "description": "Sempre `true` nas respostas de sucesso."
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "message": {
+                          "type": "string"
+                        }
+                      }
+                    },
+                    "timestamp": {
+                      "type": "string",
+                      "format": "date-time"
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "data": {
+                    "message": "Tag created successfully."
+                  },
+                  "timestamp": "2026-09-09T17:15:20.453Z"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "`MISSING_PARAM` — name is required.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErroDaApi"
+                },
+                "examples": {
+                  "MISSING_PARAM": {
+                    "summary": "MISSING_PARAM",
+                    "value": {
+                      "success": false,
+                      "statusCode": 400,
+                      "timestamp": "2026-09-09T17:15:20.453Z",
+                      "path": "/api/v1/whatsapp/tags",
+                      "method": "POST",
+                      "message": {
+                        "error": "MISSING_PARAM",
+                        "message": "name is required."
+                      },
+                      "errorId": "ERR-MTUD0DBO-KKRMP8"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "`UNAUTHORIZED` — Invalid or missing API key.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErroDaApi"
+                },
+                "examples": {
+                  "UNAUTHORIZED": {
+                    "summary": "UNAUTHORIZED",
+                    "value": {
+                      "success": false,
+                      "statusCode": 401,
+                      "timestamp": "2026-09-09T17:15:20.453Z",
+                      "path": "/api/v1/whatsapp/tags",
+                      "method": "POST",
+                      "message": {
+                        "error": "UNAUTHORIZED",
+                        "message": "Invalid or missing API key."
+                      },
+                      "errorId": "ERR-MTUD0DBO-KKRMP8"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "`RATE_LIMITED` — Too many requests.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErroDaApi"
+                },
+                "examples": {
+                  "RATE_LIMITED": {
+                    "summary": "RATE_LIMITED",
+                    "value": {
+                      "success": false,
+                      "statusCode": 429,
+                      "timestamp": "2026-09-09T17:15:20.453Z",
+                      "path": "/api/v1/whatsapp/tags",
+                      "method": "POST",
+                      "message": {
+                        "error": "RATE_LIMITED",
+                        "message": "Too many requests."
+                      },
+                      "errorId": "ERR-MTUD0DBO-KKRMP8"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "whatsappCriarEtiqueta",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "description": "Nome da etiqueta."
+                  }
+                },
+                "required": [
+                  "name"
+                ]
+              },
+              "example": {
+                "name": "Cliente"
+              }
+            }
+          }
+        },
+        "x-mint": {
+          "href": "/api-reference/whatsapp/criar-etiqueta"
+        }
+      }
+    },
+    "/whatsapp/templates": {
+      "get": {
+        "tags": [
+          "WhatsApp · Mensagens"
+        ],
+        "summary": "Listar modelos de mensagem",
+        "description": "Modelos de mensagem da empresa. Os modelos valem para a empresa toda, e não por número: `phone_number_id` é aceito por compatibilidade e não altera o resultado.\n\nEnviar modelo não faz parte desta API — a lista serve para conferência e para montar campanhas no painel.",
+        "responses": {
+          "200": {
+            "description": "Lista de modelos.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "success",
+                    "data",
+                    "timestamp"
+                  ],
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "description": "Sempre `true` nas respostas de sucesso."
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "items": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "string"
+                              },
+                              "template_id": {
+                                "type": [
+                                  "string",
+                                  "null"
+                                ]
+                              },
+                              "template_name": {
+                                "type": "string"
+                              },
+                              "template_type": {
+                                "type": "string",
+                                "description": "Categoria: `MARKETING`, `UTILITY` ou `AUTHENTICATION`."
+                              },
+                              "locale": {
+                                "type": "string"
+                              },
+                              "status": {
+                                "type": "string"
+                              },
+                              "template_json": {
+                                "type": [
+                                  "array",
+                                  "object",
+                                  "null"
+                                ]
+                              }
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "timestamp": {
+                      "type": "string",
+                      "format": "date-time"
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "data": {
+                    "items": [
+                      {
+                        "id": "0b3d9f21-77aa-4c55-9e10-3f8b1c2d4e56",
+                        "template_id": "1234567890123456",
+                        "template_name": "confirmacao_pedido",
+                        "template_type": "UTILITY",
+                        "locale": "pt_BR",
+                        "status": "APPROVED",
+                        "template_json": [
+                          {
+                            "type": "BODY",
+                            "text": "Olá {{1}}, seu pedido foi confirmado."
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "timestamp": "2026-09-09T17:15:20.453Z"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "`UNAUTHORIZED` — Invalid or missing API key.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErroDaApi"
+                },
+                "examples": {
+                  "UNAUTHORIZED": {
+                    "summary": "UNAUTHORIZED",
+                    "value": {
+                      "success": false,
+                      "statusCode": 401,
+                      "timestamp": "2026-09-09T17:15:20.453Z",
+                      "path": "/api/v1/whatsapp/templates",
+                      "method": "GET",
+                      "message": {
+                        "error": "UNAUTHORIZED",
+                        "message": "Invalid or missing API key."
+                      },
+                      "errorId": "ERR-MTUD0DBO-KKRMP8"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "`RATE_LIMITED` — Too many requests.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErroDaApi"
+                },
+                "examples": {
+                  "RATE_LIMITED": {
+                    "summary": "RATE_LIMITED",
+                    "value": {
+                      "success": false,
+                      "statusCode": 429,
+                      "timestamp": "2026-09-09T17:15:20.453Z",
+                      "path": "/api/v1/whatsapp/templates",
+                      "method": "GET",
+                      "message": {
+                        "error": "RATE_LIMITED",
+                        "message": "Too many requests."
+                      },
+                      "errorId": "ERR-MTUD0DBO-KKRMP8"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "whatsappListarModelos",
+        "parameters": [
+          {
+            "name": "phone_number_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Aceito por compatibilidade; os modelos são da empresa inteira.",
+            "example": "102938475610293"
+          }
+        ],
+        "x-mint": {
+          "href": "/api-reference/whatsapp/listar-modelos"
+        }
+      }
+    },
+    "/whatsapp/custom-fields": {
+      "get": {
+        "tags": [
+          "WhatsApp · Contatos"
+        ],
+        "summary": "Listar campos personalizados",
+        "description": "Campos personalizados configurados no painel, na ordem de exibição.",
+        "responses": {
+          "200": {
+            "description": "Lista de campos.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "success",
+                    "data",
+                    "timestamp"
+                  ],
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "description": "Sempre `true` nas respostas de sucesso."
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "items": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "string"
+                              },
+                              "name": {
+                                "type": "string",
+                                "description": "Rótulo do campo."
+                              },
+                              "reply_type": {
+                                "type": "string",
+                                "description": "Tipo do campo."
+                              }
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "timestamp": {
+                      "type": "string",
+                      "format": "date-time"
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "data": {
+                    "items": [
+                      {
+                        "id": "cf-1",
+                        "name": "CPF",
+                        "reply_type": "text"
+                      },
+                      {
+                        "id": "cf-2",
+                        "name": "Data de nascimento",
+                        "reply_type": "date"
+                      }
+                    ]
+                  },
+                  "timestamp": "2026-09-09T17:15:20.453Z"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "`UNAUTHORIZED` — Invalid or missing API key.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErroDaApi"
+                },
+                "examples": {
+                  "UNAUTHORIZED": {
+                    "summary": "UNAUTHORIZED",
+                    "value": {
+                      "success": false,
+                      "statusCode": 401,
+                      "timestamp": "2026-09-09T17:15:20.453Z",
+                      "path": "/api/v1/whatsapp/custom-fields",
+                      "method": "GET",
+                      "message": {
+                        "error": "UNAUTHORIZED",
+                        "message": "Invalid or missing API key."
+                      },
+                      "errorId": "ERR-MTUD0DBO-KKRMP8"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "`RATE_LIMITED` — Too many requests.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErroDaApi"
+                },
+                "examples": {
+                  "RATE_LIMITED": {
+                    "summary": "RATE_LIMITED",
+                    "value": {
+                      "success": false,
+                      "statusCode": 429,
+                      "timestamp": "2026-09-09T17:15:20.453Z",
+                      "path": "/api/v1/whatsapp/custom-fields",
+                      "method": "GET",
+                      "message": {
+                        "error": "RATE_LIMITED",
+                        "message": "Too many requests."
+                      },
+                      "errorId": "ERR-MTUD0DBO-KKRMP8"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "whatsappListarCamposPersonalizados",
+        "x-mint": {
+          "href": "/api-reference/whatsapp/listar-campos-personalizados"
+        }
+      }
+    },
+    "/whatsapp/contacts/custom-fields": {
+      "patch": {
+        "tags": [
+          "WhatsApp · Contatos"
+        ],
+        "summary": "Definir campos personalizados de um contato",
+        "description": "Grava valores de campos personalizados no contato. Os campos enviados são mesclados aos já existentes; os não enviados ficam como estão.",
+        "responses": {
+          "200": {
+            "description": "Campos atualizados.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "success",
+                    "data",
+                    "timestamp"
+                  ],
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "description": "Sempre `true` nas respostas de sucesso."
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "message": {
+                          "type": "string"
+                        }
+                      }
+                    },
+                    "timestamp": {
+                      "type": "string",
+                      "format": "date-time"
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "data": {
+                    "message": "Custom fields updated successfully."
+                  },
+                  "timestamp": "2026-09-09T17:15:20.453Z"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "`MISSING_PARAM` — custom_fields is required.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErroDaApi"
+                },
+                "examples": {
+                  "MISSING_PARAM": {
+                    "summary": "MISSING_PARAM",
+                    "value": {
+                      "success": false,
+                      "statusCode": 400,
+                      "timestamp": "2026-09-09T17:15:20.453Z",
+                      "path": "/api/v1/whatsapp/contacts/custom-fields",
+                      "method": "PATCH",
+                      "message": {
+                        "error": "MISSING_PARAM",
+                        "message": "custom_fields is required."
+                      },
+                      "errorId": "ERR-MTUD0DBO-KKRMP8"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "`CONTACT_NOT_FOUND` — Contact not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErroDaApi"
+                },
+                "examples": {
+                  "CONTACT_NOT_FOUND": {
+                    "summary": "CONTACT_NOT_FOUND",
+                    "value": {
+                      "success": false,
+                      "statusCode": 404,
+                      "timestamp": "2026-09-09T17:15:20.453Z",
+                      "path": "/api/v1/whatsapp/contacts/custom-fields",
+                      "method": "PATCH",
+                      "message": {
+                        "error": "CONTACT_NOT_FOUND",
+                        "message": "Contact not found."
+                      },
+                      "errorId": "ERR-MTUD0DBO-KKRMP8"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "`UNAUTHORIZED` — Invalid or missing API key.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErroDaApi"
+                },
+                "examples": {
+                  "UNAUTHORIZED": {
+                    "summary": "UNAUTHORIZED",
+                    "value": {
+                      "success": false,
+                      "statusCode": 401,
+                      "timestamp": "2026-09-09T17:15:20.453Z",
+                      "path": "/api/v1/whatsapp/contacts/custom-fields",
+                      "method": "PATCH",
+                      "message": {
+                        "error": "UNAUTHORIZED",
+                        "message": "Invalid or missing API key."
+                      },
+                      "errorId": "ERR-MTUD0DBO-KKRMP8"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "`RATE_LIMITED` — Too many requests.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErroDaApi"
+                },
+                "examples": {
+                  "RATE_LIMITED": {
+                    "summary": "RATE_LIMITED",
+                    "value": {
+                      "success": false,
+                      "statusCode": 429,
+                      "timestamp": "2026-09-09T17:15:20.453Z",
+                      "path": "/api/v1/whatsapp/contacts/custom-fields",
+                      "method": "PATCH",
+                      "message": {
+                        "error": "RATE_LIMITED",
+                        "message": "Too many requests."
+                      },
+                      "errorId": "ERR-MTUD0DBO-KKRMP8"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "whatsappDefinirCamposPersonalizados",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "phone_number_id": {
+                    "type": "string"
+                  },
+                  "phone_number": {
+                    "type": "string"
+                  },
+                  "custom_fields": {
+                    "type": "object",
+                    "additionalProperties": true,
+                    "description": "Objeto com os campos a gravar, por nome."
+                  }
+                },
+                "required": [
+                  "phone_number_id",
+                  "phone_number",
+                  "custom_fields"
+                ]
+              },
+              "example": {
+                "phone_number_id": "102938475610293",
+                "phone_number": "5511999999999",
+                "custom_fields": {
+                  "CPF": "000.000.000-00",
+                  "Data de nascimento": "1990-05-12"
+                }
+              }
+            }
+          }
+        },
+        "x-mint": {
+          "href": "/api-reference/whatsapp/definir-campos-personalizados"
+        }
+      }
+    },
+    "/whatsapp/ping": {
+      "get": {
+        "tags": [
+          "WhatsApp · Conta"
+        ],
+        "summary": "Testar a chave de API",
+        "description": "Confere se a chave é válida e devolve a empresa e as permissões associadas. É o primeiro endpoint a chamar ao montar uma integração.",
+        "responses": {
+          "200": {
+            "description": "A chave é válida.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "success",
+                    "data",
+                    "timestamp"
+                  ],
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "description": "Sempre `true` nas respostas de sucesso."
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "message": {
+                          "type": "string"
+                        },
+                        "tenant_id": {
+                          "type": "string",
+                          "description": "Identificador da sua empresa."
+                        },
+                        "permissions": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        },
+                        "timestamp": {
+                          "type": "string",
+                          "format": "date-time"
+                        }
+                      }
+                    },
+                    "timestamp": {
+                      "type": "string",
+                      "format": "date-time"
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "data": {
+                    "message": "API Key is valid.",
+                    "tenant_id": "1a2b3c4d-5e6f-4071-8293-a4b5c6d7e8f9",
+                    "permissions": [
+                      "read",
+                      "write"
+                    ],
+                    "timestamp": "2026-09-09T17:15:20.453Z"
+                  },
+                  "timestamp": "2026-09-09T17:15:20.453Z"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "`UNAUTHORIZED` — Invalid or missing API key.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErroDaApi"
+                },
+                "examples": {
+                  "UNAUTHORIZED": {
+                    "summary": "UNAUTHORIZED",
+                    "value": {
+                      "success": false,
+                      "statusCode": 401,
+                      "timestamp": "2026-09-09T17:15:20.453Z",
+                      "path": "/api/v1/whatsapp/ping",
+                      "method": "GET",
+                      "message": {
+                        "error": "UNAUTHORIZED",
+                        "message": "Invalid or missing API key."
+                      },
+                      "errorId": "ERR-MTUD0DBO-KKRMP8"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "`RATE_LIMITED` — Too many requests.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErroDaApi"
+                },
+                "examples": {
+                  "RATE_LIMITED": {
+                    "summary": "RATE_LIMITED",
+                    "value": {
+                      "success": false,
+                      "statusCode": 429,
+                      "timestamp": "2026-09-09T17:15:20.453Z",
+                      "path": "/api/v1/whatsapp/ping",
+                      "method": "GET",
+                      "message": {
+                        "error": "RATE_LIMITED",
+                        "message": "Too many requests."
+                      },
+                      "errorId": "ERR-MTUD0DBO-KKRMP8"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "whatsappPing",
+        "x-mint": {
+          "href": "/api-reference/whatsapp/testar-chave"
+        }
+      }
+    },
+    "/whatsapp/sequences/cancel": {
+      "post": {
+        "tags": [
+          "WhatsApp · Sequências"
+        ],
+        "summary": "Cancelar sequência agendada",
+        "description": "Cancela a sequência agendada de um contato. Responde `200` mesmo quando não havia nada a cancelar — o campo `canceled` é que diz o que aconteceu.\n\n`phone_number_id` é opcional: sem ele, o contato é procurado na empresa inteira, pelo contato de interação mais recente.",
+        "responses": {
+          "200": {
+            "description": "Pedido processado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "success",
+                    "data",
+                    "timestamp"
+                  ],
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "description": "Sempre `true` nas respostas de sucesso."
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "canceled": {
+                          "type": "boolean"
+                        },
+                        "message": {
+                          "type": "string"
+                        }
+                      }
+                    },
+                    "timestamp": {
+                      "type": "string",
+                      "format": "date-time"
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "data": {
+                    "canceled": true,
+                    "message": "Sequence canceled successfully."
+                  },
+                  "timestamp": "2026-09-09T17:15:20.453Z"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "`MISSING_PARAM` — phone_number is required.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErroDaApi"
+                },
+                "examples": {
+                  "MISSING_PARAM": {
+                    "summary": "MISSING_PARAM",
+                    "value": {
+                      "success": false,
+                      "statusCode": 400,
+                      "timestamp": "2026-09-09T17:15:20.453Z",
+                      "path": "/api/v1/whatsapp/sequences/cancel",
+                      "method": "POST",
+                      "message": {
+                        "error": "MISSING_PARAM",
+                        "message": "phone_number is required."
+                      },
+                      "errorId": "ERR-MTUD0DBO-KKRMP8"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "`CONTACT_NOT_FOUND` — Contact not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErroDaApi"
+                },
+                "examples": {
+                  "CONTACT_NOT_FOUND": {
+                    "summary": "CONTACT_NOT_FOUND",
+                    "value": {
+                      "success": false,
+                      "statusCode": 404,
+                      "timestamp": "2026-09-09T17:15:20.453Z",
+                      "path": "/api/v1/whatsapp/sequences/cancel",
+                      "method": "POST",
+                      "message": {
+                        "error": "CONTACT_NOT_FOUND",
+                        "message": "Contact not found."
+                      },
+                      "errorId": "ERR-MTUD0DBO-KKRMP8"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "`CANCEL_FAILED` — Failed to cancel sequence.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErroDaApi"
+                },
+                "examples": {
+                  "CANCEL_FAILED": {
+                    "summary": "CANCEL_FAILED",
+                    "value": {
+                      "success": false,
+                      "statusCode": 500,
+                      "timestamp": "2026-09-09T17:15:20.453Z",
+                      "path": "/api/v1/whatsapp/sequences/cancel",
+                      "method": "POST",
+                      "message": {
+                        "error": "CANCEL_FAILED",
+                        "message": "Failed to cancel sequence."
+                      },
+                      "errorId": "ERR-MTUD0DBO-KKRMP8"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "`UNAUTHORIZED` — Invalid or missing API key.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErroDaApi"
+                },
+                "examples": {
+                  "UNAUTHORIZED": {
+                    "summary": "UNAUTHORIZED",
+                    "value": {
+                      "success": false,
+                      "statusCode": 401,
+                      "timestamp": "2026-09-09T17:15:20.453Z",
+                      "path": "/api/v1/whatsapp/sequences/cancel",
+                      "method": "POST",
+                      "message": {
+                        "error": "UNAUTHORIZED",
+                        "message": "Invalid or missing API key."
+                      },
+                      "errorId": "ERR-MTUD0DBO-KKRMP8"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "`RATE_LIMITED` — Too many requests.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErroDaApi"
+                },
+                "examples": {
+                  "RATE_LIMITED": {
+                    "summary": "RATE_LIMITED",
+                    "value": {
+                      "success": false,
+                      "statusCode": 429,
+                      "timestamp": "2026-09-09T17:15:20.453Z",
+                      "path": "/api/v1/whatsapp/sequences/cancel",
+                      "method": "POST",
+                      "message": {
+                        "error": "RATE_LIMITED",
+                        "message": "Too many requests."
+                      },
+                      "errorId": "ERR-MTUD0DBO-KKRMP8"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "whatsappCancelarSequencia",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "phone_number": {
+                    "type": "string",
+                    "description": "Telefone do contato."
+                  },
+                  "phone_number_id": {
+                    "type": "string",
+                    "description": "Opcional. Restringe a busca a um número de WhatsApp."
+                  },
+                  "reason": {
+                    "type": "string",
+                    "description": "Motivo registrado no cancelamento."
+                  }
+                },
+                "required": [
+                  "phone_number"
+                ]
+              },
+              "example": {
+                "phone_number": "5511999999999",
+                "reason": "Cliente concluiu a compra"
+              }
+            }
+          }
+        },
+        "x-mint": {
+          "href": "/api-reference/whatsapp/cancelar-sequencia"
+        }
+      }
+    },
+    "/whatsapp/sequences/status": {
+      "get": {
+        "tags": [
+          "WhatsApp · Sequências"
+        ],
+        "summary": "Consultar sequência agendada",
+        "description": "Diz se o contato tem sequência agendada. Quando não há, `data` vem como `null`.",
+        "responses": {
+          "200": {
+            "description": "Sequência agendada, ou `null`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "success",
+                    "data",
+                    "timestamp"
+                  ],
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "description": "Sempre `true` nas respostas de sucesso."
+                    },
+                    "data": {
+                      "oneOf": [
+                        {
+                          "type": "object",
+                          "properties": {
+                            "scheduled_at": {
+                              "type": "string",
+                              "format": "date-time"
+                            },
+                            "source": {
+                              "type": "string"
+                            },
+                            "is_template": {
+                              "type": "boolean"
+                            }
+                          }
+                        },
+                        {
+                          "type": "null",
+                          "description": "Não há sequência agendada."
+                        }
+                      ]
+                    },
+                    "timestamp": {
+                      "type": "string",
+                      "format": "date-time"
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "data": {
+                    "scheduled_at": "2026-09-10T12:00:00.000Z",
+                    "source": "campanha",
+                    "is_template": false
+                  },
+                  "timestamp": "2026-09-09T17:15:20.453Z"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "`MISSING_PARAM` — phone_number is required.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErroDaApi"
+                },
+                "examples": {
+                  "MISSING_PARAM": {
+                    "summary": "MISSING_PARAM",
+                    "value": {
+                      "success": false,
+                      "statusCode": 400,
+                      "timestamp": "2026-09-09T17:15:20.453Z",
+                      "path": "/api/v1/whatsapp/sequences/status",
+                      "method": "GET",
+                      "message": {
+                        "error": "MISSING_PARAM",
+                        "message": "phone_number is required."
+                      },
+                      "errorId": "ERR-MTUD0DBO-KKRMP8"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "`CONTACT_NOT_FOUND` — Contact not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErroDaApi"
+                },
+                "examples": {
+                  "CONTACT_NOT_FOUND": {
+                    "summary": "CONTACT_NOT_FOUND",
+                    "value": {
+                      "success": false,
+                      "statusCode": 404,
+                      "timestamp": "2026-09-09T17:15:20.453Z",
+                      "path": "/api/v1/whatsapp/sequences/status",
+                      "method": "GET",
+                      "message": {
+                        "error": "CONTACT_NOT_FOUND",
+                        "message": "Contact not found."
+                      },
+                      "errorId": "ERR-MTUD0DBO-KKRMP8"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "`STATUS_FAILED` — Failed to get sequence status.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErroDaApi"
+                },
+                "examples": {
+                  "STATUS_FAILED": {
+                    "summary": "STATUS_FAILED",
+                    "value": {
+                      "success": false,
+                      "statusCode": 500,
+                      "timestamp": "2026-09-09T17:15:20.453Z",
+                      "path": "/api/v1/whatsapp/sequences/status",
+                      "method": "GET",
+                      "message": {
+                        "error": "STATUS_FAILED",
+                        "message": "Failed to get sequence status."
+                      },
+                      "errorId": "ERR-MTUD0DBO-KKRMP8"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "`UNAUTHORIZED` — Invalid or missing API key.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErroDaApi"
+                },
+                "examples": {
+                  "UNAUTHORIZED": {
+                    "summary": "UNAUTHORIZED",
+                    "value": {
+                      "success": false,
+                      "statusCode": 401,
+                      "timestamp": "2026-09-09T17:15:20.453Z",
+                      "path": "/api/v1/whatsapp/sequences/status",
+                      "method": "GET",
+                      "message": {
+                        "error": "UNAUTHORIZED",
+                        "message": "Invalid or missing API key."
+                      },
+                      "errorId": "ERR-MTUD0DBO-KKRMP8"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "`RATE_LIMITED` — Too many requests.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErroDaApi"
+                },
+                "examples": {
+                  "RATE_LIMITED": {
+                    "summary": "RATE_LIMITED",
+                    "value": {
+                      "success": false,
+                      "statusCode": 429,
+                      "timestamp": "2026-09-09T17:15:20.453Z",
+                      "path": "/api/v1/whatsapp/sequences/status",
+                      "method": "GET",
+                      "message": {
+                        "error": "RATE_LIMITED",
+                        "message": "Too many requests."
+                      },
+                      "errorId": "ERR-MTUD0DBO-KKRMP8"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "whatsappStatusSequencia",
+        "parameters": [
+          {
+            "name": "phone_number",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Número do destinatário, com código do país e apenas dígitos.",
+            "example": "5511999999999"
+          },
+          {
+            "name": "phone_number_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Opcional. Restringe a busca a um número de WhatsApp.",
+            "example": "102938475610293"
+          }
+        ],
+        "x-mint": {
+          "href": "/api-reference/whatsapp/status-da-sequencia"
+        }
+      }
+    }
+  }
+}
