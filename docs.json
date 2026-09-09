@@ -93,43 +93,6 @@
           "tutoriais/api/respostas-e-erros-api-whatsapp",
           "tutoriais/api/limites-de-uso-api-whatsapp",
           {
-            "group": "Mensagens",
-            "icon": "message",
-            "pages": [
-              "tutoriais/api/enviar-mensagem-whatsapp",
-              "tutoriais/api/status-mensagem-whatsapp",
-              "tutoriais/api/listar-modelos-whatsapp"
-            ]
-          },
-          {
-            "group": "Contatos",
-            "icon": "users",
-            "pages": [
-              "tutoriais/api/listar-assinantes-whatsapp",
-              "tutoriais/api/obter-assinante-whatsapp",
-              "tutoriais/api/criar-assinante-whatsapp",
-              "tutoriais/api/atualizar-assinante-whatsapp",
-              "tutoriais/api/excluir-contato-whatsapp",
-              "tutoriais/api/campos-personalizados-whatsapp"
-            ]
-          },
-          {
-            "group": "Etiquetas",
-            "icon": "tag",
-            "pages": [
-              "tutoriais/api/listar-etiquetas-whatsapp",
-              "tutoriais/api/criar-etiqueta-whatsapp",
-              "tutoriais/api/etiquetas-do-contato-whatsapp"
-            ]
-          },
-          {
-            "group": "Sequências",
-            "icon": "clock",
-            "pages": [
-              "tutoriais/api/sequencias-whatsapp"
-            ]
-          },
-          {
             "group": "Recebimento",
             "icon": "inbox",
             "pages": [
@@ -137,6 +100,69 @@
             ]
           },
           "tutoriais/api/migracao-v2-api-whatsapp"
+        ]
+      },
+      {
+        "group": "Referência da API",
+        "icon": "terminal",
+        "openapi": "openapi.json",
+        "pages": [
+          {
+            "group": "Contrato multicanal",
+            "icon": "share-nodes",
+            "pages": [
+              "GET /channels",
+              "POST /messages",
+              "GET /messages/{message_id}"
+            ]
+          },
+          {
+            "group": "WhatsApp · Mensagens",
+            "icon": "paper-plane",
+            "pages": [
+              "POST /whatsapp/messages",
+              "GET /whatsapp/messages/{message_id}/status",
+              "GET /whatsapp/templates"
+            ]
+          },
+          {
+            "group": "WhatsApp · Contatos",
+            "icon": "users",
+            "pages": [
+              "GET /whatsapp/contacts",
+              "GET /whatsapp/contacts/lookup",
+              "POST /whatsapp/contacts",
+              "PATCH /whatsapp/contacts",
+              "DELETE /whatsapp/contacts",
+              "GET /whatsapp/custom-fields",
+              "PATCH /whatsapp/contacts/custom-fields"
+            ]
+          },
+          {
+            "group": "WhatsApp · Etiquetas",
+            "icon": "tag",
+            "pages": [
+              "GET /whatsapp/tags",
+              "POST /whatsapp/tags",
+              "POST /whatsapp/contacts/tags",
+              "DELETE /whatsapp/contacts/tags"
+            ]
+          },
+          {
+            "group": "WhatsApp · Sequências",
+            "icon": "clock",
+            "pages": [
+              "GET /whatsapp/sequences/status",
+              "POST /whatsapp/sequences/cancel"
+            ]
+          },
+          {
+            "group": "WhatsApp · Conta",
+            "icon": "key",
+            "pages": [
+              "GET /whatsapp/ping"
+            ]
+          }
         ]
       },
       {
@@ -177,7 +203,19 @@
   },
   "api": {
     "playground": {
-      "display": "simple"
+      "display": "interactive",
+      "proxy": true
+    },
+    "examples": {
+      "languages": [
+        "bash",
+        "javascript",
+        "node",
+        "python",
+        "php"
+      ],
+      "defaults": "required",
+      "prefill": true
     },
     "mdx": {
       "server": "https://api.wizebot.com.br/v1"
