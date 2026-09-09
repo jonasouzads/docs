@@ -67,10 +67,7 @@ Envie **apenas dígitos, com código do país**: `5511999999999`.
 
 A `media_url` precisa ser um endereço **público** em `http` ou `https`. URLs que apontam para rede interna, endereço de loopback ou serviço de metadados de nuvem são recusadas com `400 INVALID_MEDIA_URL`, antes de qualquer download.
 
-| Tipo | Como a mídia é entregue |
-|---|---|
-| `image`, `document`, `video` | A URL é repassada ao WhatsApp, que faz o download |
-| `audio` | O arquivo é baixado pelo nosso servidor e enviado ao WhatsApp |
+Em todos os tipos de mídia — `image`, `document`, `video` e `audio` — a URL é repassada ao WhatsApp, que faz o download do arquivo direto do seu servidor.
 
 <Note>
   A URL precisa continuar acessível por alguns minutos depois do envio. Links assinados com validade muito curta podem expirar antes do download.
