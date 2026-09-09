@@ -1,0 +1,128 @@
+---
+title: 'Respostas e erros'
+sidebarTitle: 'Respostas e erros'
+description: 'O envelope de resposta, a tabela de códigos de erro e o identificador de suporte'
+icon: 'triangle-exclamation'
+---
+
+Toda resposta desta API — de sucesso ou de erro — vem dentro de um envelope. Escreva o seu cliente para ler o envelope, não o conteúdo direto.
+
+## Resposta de sucesso
+
+```json
+{
+  "success": true,
+  "data": { ... },
+  "timestamp": "2026-09-08T19:30:00.000Z"
+}
+```
+
+O conteúdo útil está sempre em `data`.
+
+<Warning>
+  **Endpoints de leitura trazem um nível a mais.** Os endpoints que devolvem registros aninham o resultado num segundo `data`, de forma que o caminho completo é `data.data`. É o comportamento real do servidor e os exemplos desta documentação o refletem. Confira o exemplo de cada endpoint antes de escrever o acesso ao campo.
+</Warning>
+
+<CodeGroup>
+```json Envio (um nível)
+{
+  "success": true,
+  "data": {
+    "message_id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+    "message": "Message queued successfully."
+  },
+  "timestamp": "2026-09-08T19:30:00.000Z"
+}
+```
+
+```json Leitura (dois níveis)
+{
+  "success": true,
+  "data": {
+    "data": [
+      { "id": "...", "phone_number": "5511999999999", "name": "João Silva" }
+    ],
+    "limit": 20,
+    "offset": 0
+  },
+  "timestamp": "2026-09-08T19:30:00.000Z"
+}
+```
+</CodeGroup>
+
+## Resposta de erro
+
+```json
+{
+  "success": false,
+  "statusCode": 404,
+  "timestamp": "2026-09-08T19:30:00.000Z",
+  "path": "/api/v1/whatsapp/contacts/lookup",
+  "method": "GET",
+  "message": {
+    "error": "CONTACT_NOT_FOUND",
+    "message": "Contact not found."
+  },
+  "errorId": "ERR-MTT63UQF-5WH1EX"
+}
+```
+
+O código legível por máquina fica em `message.error`. É por ele que o seu cliente deve decidir o que fazer — nunca pelo texto de `message.message`, que pode mudar.
+
+### O campo `errorId`
+
+Todo erro carrega um `errorId` único. Ele é a referência que permite ao suporte localizar a requisição exata nos registros do servidor, inclusive nos casos em que a mensagem devolvida é genérica.
+
+<Note>
+  **Guarde o `errorId` nos seus próprios registros.** Ao abrir um chamado, envie-o junto: sem ele, um erro genérico é praticamente impossível de rastrear.
+</Note>
+
+## Códigos de erro
+
+| HTTP | Código | Quando acontece | O que fazer |
+|---|---|---|---|
+| 400 | `MISSING_PARAM` | Falta um parâmetro obrigatório | Conferir o corpo ou a query da requisição |
+| 400 | `INVALID_TYPE` | O campo `type` não é um tipo de mensagem aceito | Usar `text`, `image`, `document`, `audio` ou `video` |
+| 400 | `INVALID_MEDIA_URL` | A `media_url` não é uma URL pública `http`/`https` | Publicar a mídia num endereço acessível pela internet |
+| 401 | — | Chave ausente, inválida, revogada, expirada ou empresa inativa | Conferir o cabeçalho e o estado da chave |
+| 403 | — | Limite de contatos do plano atingido | Liberar espaço ou fazer upgrade do plano |
+| 404 | `CHANNEL_NOT_FOUND` | O `phone_number_id` não pertence à sua empresa | Conferir o identificador no painel |
+| 404 | `CONTACT_NOT_FOUND` | O contato não existe nesse número | Criar o contato antes |
+| 404 | `MESSAGE_NOT_FOUND` | A mensagem não existe, ou ainda não foi gravada | Ver [Status da mensagem](/tutoriais/api/status-mensagem-whatsapp) |
+| 409 | `CONTACT_EXISTS` | Já existe contato com esse telefone | Usar a atualização em vez da criação |
+| 429 | — | Limite de requisições excedido | Aguardar o `Retry-After` |
+| 500 | `SEND_FAILED` | O envio não pôde ser aceito | Ver a observação abaixo |
+| 500 | `CANCEL_FAILED` | Falha ao cancelar a sequência | Tentar novamente; se persistir, abrir chamado |
+| 500 | `STATUS_FAILED` | Falha ao consultar a sequência | Tentar novamente; se persistir, abrir chamado |
+
+<Warning>
+  **`SEND_FAILED` cobre mais do que falha de infraestrutura.** Hoje ele também é devolvido quando o envio é recusado por regra de negócio — texto acima do limite de 4096 caracteres, número sem conversa anterior, conta de WhatsApp desconectada ou teto de envio por número atingido. Ao receber `SEND_FAILED`, trate como possível problema da requisição, não só como falha temporária.
+</Warning>
+
+### Erros de limite de plano
+
+O `403` de limite de plano não traz código nomeado, e a mensagem devolvida é genérica. Se a criação de contato passar a responder `403`, verifique o consumo do plano no painel.
+
+### Erro de limite de requisições
+
+O `429` também não traz código nomeado:
+
+```json
+{
+  "success": false,
+  "statusCode": 429,
+  "timestamp": "2026-09-08T19:30:00.000Z",
+  "path": "/api/v1/whatsapp/messages",
+  "method": "POST",
+  "message": { "message": "Limite de requisições excedido" },
+  "errorId": "ERR-MTT63UVL-5TEY00"
+}
+```
+
+Os cabeçalhos da resposta dizem quanto esperar. Veja [Limites de uso](/tutoriais/api/limites-de-uso-api-whatsapp).
+
+## Erros vindos do WhatsApp
+
+O envio é assíncrono: a API responde `201` assim que aceita a mensagem, **antes** de falar com o WhatsApp. Por isso, uma recusa do WhatsApp nunca aparece na resposta do envio.
+
+Ela aparece depois, no campo `failed_reason` da consulta de status, já traduzida para português. Veja [Status da mensagem](/tutoriais/api/status-mensagem-whatsapp).

@@ -11,137 +11,147 @@
   "favicon": "/favicon.svg",
   "navigation": {
     "groups": [
+      {
+        "group": "Primeiros Passos",
+        "icon": "rocket",
+        "pages": [
+          "tutoriais/visao-geral/introducao",
+          "tutoriais/configuracao/conectar-whatsapp",
+          "tutoriais/visao-geral/nome-exibicao",
+          "tutoriais/visao-geral/foto-perfil",
+          "tutoriais/configuracao/metodo-pagamento"
+        ]
+      },
+      {
+        "group": "Modelos de Mensagem",
+        "icon": "envelope",
+        "pages": [
+          "tutoriais/modelos-mensagem/visao-geral",
+          "tutoriais/modelos-mensagem/criacao",
+          "tutoriais/modelos-mensagem/marketing",
+          "tutoriais/modelos-mensagem/utilidade",
+          "tutoriais/modelos-mensagem/autenticacao",
+          "tutoriais/modelos-mensagem/atualizacoes-precos"
+        ]
+      },
+      {
+        "group": "Automação e Bots",
+        "icon": "sparkles",
+        "pages": [
+          "tutoriais/gerenciador-bots/sem-palavra-chave",
+          "tutoriais/gerenciador-bots/fluxo"
+        ]
+      },
+      {
+        "group": "Contatos",
+        "icon": "users",
+        "pages": [
+          "tutoriais/gerenciador-contatos/importar"
+        ]
+      },
+      {
+        "group": "Atendimento",
+        "icon": "headset",
+        "pages": [
+          "tutoriais/bate-papo/caixa-entrada"
+        ]
+      },
+      {
+        "group": "Campanhas",
+        "icon": "megaphone",
+        "pages": [
+          "tutoriais/campanha/mensagem-em-massa"
+        ]
+      },
+      {
+        "group": "Automação",
+        "icon": "bolt",
+        "pages": [
+          "tutoriais/integracoes/webhooks"
+        ]
+      },
+      {
+        "group": "Agentes IA",
+        "icon": "robot",
+        "pages": [
+          "tutoriais/ia/agentes",
+          "tutoriais/ia/gerenciar-etiquetas",
+          "tutoriais/ia/mover-pipeline",
+          "tutoriais/ia/pausar-ia",
+          "tutoriais/ia/atribuir-conversa",
+          "tutoriais/ia/enviar-midias",
+          "tutoriais/ia/resposta-voz"
+        ]
+      },
+      {
+        "group": "API WhatsApp",
+        "icon": "code",
+        "pages": [
+          "tutoriais/api/introducao-api-whatsapp",
+          "tutoriais/api/autenticacao-api-whatsapp",
+          "tutoriais/api/respostas-e-erros-api-whatsapp",
+          "tutoriais/api/limites-de-uso-api-whatsapp",
           {
-            "group": "Primeiros Passos",
-            "icon": "rocket",
+            "group": "Mensagens",
+            "icon": "message",
             "pages": [
-              "tutoriais/visao-geral/introducao",
-              "tutoriais/configuracao/conectar-whatsapp",
-              "tutoriais/visao-geral/nome-exibicao",
-              "tutoriais/visao-geral/foto-perfil",
-              "tutoriais/configuracao/metodo-pagamento"
-            ]
-          },
-          {
-            "group": "Modelos de Mensagem",
-            "icon": "envelope",
-            "pages": [
-              "tutoriais/modelos-mensagem/visao-geral",
-              "tutoriais/modelos-mensagem/criacao",
-              "tutoriais/modelos-mensagem/marketing",
-              "tutoriais/modelos-mensagem/utilidade",
-              "tutoriais/modelos-mensagem/autenticacao",
-              "tutoriais/modelos-mensagem/atualizacoes-precos"
-            ]
-          },
-          {
-            "group": "Automação e Bots",
-            "icon": "sparkles",
-            "pages": [
-              "tutoriais/gerenciador-bots/sem-palavra-chave",
-              "tutoriais/gerenciador-bots/fluxo"
+              "tutoriais/api/enviar-mensagem-whatsapp",
+              "tutoriais/api/status-mensagem-whatsapp",
+              "tutoriais/api/listar-modelos-whatsapp"
             ]
           },
           {
             "group": "Contatos",
             "icon": "users",
             "pages": [
-              "tutoriais/gerenciador-contatos/importar"
+              "tutoriais/api/listar-assinantes-whatsapp",
+              "tutoriais/api/obter-assinante-whatsapp",
+              "tutoriais/api/criar-assinante-whatsapp",
+              "tutoriais/api/atualizar-assinante-whatsapp",
+              "tutoriais/api/excluir-contato-whatsapp",
+              "tutoriais/api/campos-personalizados-whatsapp"
             ]
           },
           {
-            "group": "Atendimento",
-            "icon": "headset",
+            "group": "Etiquetas",
+            "icon": "tag",
             "pages": [
-              "tutoriais/bate-papo/caixa-entrada"
+              "tutoriais/api/listar-etiquetas-whatsapp",
+              "tutoriais/api/criar-etiqueta-whatsapp",
+              "tutoriais/api/etiquetas-do-contato-whatsapp"
             ]
           },
           {
-            "group": "Campanhas",
-            "icon": "megaphone",
+            "group": "Sequências",
+            "icon": "clock",
             "pages": [
-              "tutoriais/campanha/mensagem-em-massa"
+              "tutoriais/api/sequencias-whatsapp"
             ]
           },
           {
-            "group": "Automação",
-            "icon": "bolt",
+            "group": "Recebimento",
+            "icon": "inbox",
             "pages": [
-              "tutoriais/integracoes/webhooks"
+              "tutoriais/api/receber-mensagens-whatsapp"
             ]
           },
-          {
-            "group": "Agentes IA",
-            "icon": "robot",
-            "pages": [
-              "tutoriais/ia/agentes",
-              "tutoriais/ia/gerenciar-etiquetas",
-              "tutoriais/ia/mover-pipeline",
-              "tutoriais/ia/pausar-ia",
-              "tutoriais/ia/atribuir-conversa",
-              "tutoriais/ia/enviar-midias",
-              "tutoriais/ia/resposta-voz"
-            ]
-          },
-          {
-            "group": "API WhatsApp",
-            "icon": "code",
-            "pages": [
-              "tutoriais/api/introducao-api-whatsapp",
-              {
-                "group": "Mensagens",
-                "icon": "message",
-                "pages": [
-                  "tutoriais/api/enviar-mensagem-whatsapp",
-                  "tutoriais/api/enviar-modelo-transmissao-whatsapp",
-                  "tutoriais/api/listar-modelos-whatsapp",
-                  "tutoriais/api/obter-conversa-whatsapp"
-                ]
-              },
-              {
-                "group": "Fluxo de Conversa",
-                "icon": "sparkles",
-                "pages": [
-                  "tutoriais/api/acionar-fluxo-bot-whatsapp"
-                ]
-              },
-              {
-                "group": "Contatos",
-                "icon": "users",
-                "pages": [
-                  "tutoriais/api/obter-assinante-whatsapp",
-                  "tutoriais/api/listar-assinantes-whatsapp",
-                  "tutoriais/api/criar-assinante-whatsapp",
-                  "tutoriais/api/atualizar-assinante-whatsapp",
-                  "tutoriais/api/redefinir-fluxo-entrada-whatsapp",
-                  "tutoriais/api/atribuir-chat-equipe-whatsapp",
-                  "tutoriais/api/atribuir-campos-personalizados-whatsapp"
-                ]
-              },
-              {
-                "group": "Etiquetas",
-                "icon": "tag",
-                "pages": [
-                  "tutoriais/api/listar-etiquetas-whatsapp",
-                  "tutoriais/api/criar-etiqueta-whatsapp"
-                ]
-              }
-            ]
-          },
-          {
-            "group": "Novidades",
-            "icon": "sparkle",
-            "pages": [
-              "changelog/atualizacoes"
-            ]
-          },
-          {
-            "group": "Suporte",
-            "icon": "life-ring",
-            "pages": [
-              "tutoriais/solucao-problemas/suporte"
-            ]
-          }
+          "tutoriais/api/migracao-v2-api-whatsapp"
+        ]
+      },
+      {
+        "group": "Novidades",
+        "icon": "sparkle",
+        "pages": [
+          "changelog/atualizacoes"
+        ]
+      },
+      {
+        "group": "Suporte",
+        "icon": "life-ring",
+        "pages": [
+          "tutoriais/solucao-problemas/suporte"
+        ]
+      }
     ],
     "global": {
       "anchors": [
@@ -166,10 +176,10 @@
   },
   "api": {
     "playground": {
-      "display": "interactive"
+      "display": "simple"
     },
     "mdx": {
-      "server": "https://app.wizebot.com.br/api/v1"
+      "server": "https://api.wizebot.com.br/api/v1"
     }
   },
   "appearance": {
@@ -206,7 +216,12 @@
     }
   },
   "contextual": {
-    "options": ["copy", "view", "chatgpt", "claude"]
+    "options": [
+      "copy",
+      "view",
+      "chatgpt",
+      "claude"
+    ]
   },
   "errors": {
     "404": {

@@ -1,0 +1,88 @@
+---
+title: 'Migração das rotas antigas'
+sidebarTitle: 'Migração'
+description: 'Equivalência entre as rotas antigas e as atuais, e o que muda na resposta'
+icon: 'arrow-right-arrow-left'
+---
+
+As rotas antigas continuam respondendo, mas com ressalvas importantes. Esta página é o mapa para sair delas.
+
+## O que muda de verdade
+
+<Warning>
+  **A resposta das rotas antigas é a nova.** Elas não devolvem mais o formato `{ "status": "1", "message": ... }`. Toda rota antiga responde no [envelope atual](/tutoriais/api/respostas-e-erros-api-whatsapp), com `success`, `data` e `timestamp`, e os erros como HTTP 4xx e 5xx.
+
+  Um cliente antigo que leia `status` recebe `undefined` — sem erro, sem aviso. **É a falha mais provável de quem ainda usa as rotas antigas hoje.**
+</Warning>
+
+<Warning>
+  **Cada rota antiga aceita um único verbo.** Documentações anteriores diziam que todas aceitavam `GET` e `POST`; na prática cada uma responde a apenas um, indicado na tabela abaixo. O outro verbo devolve `404`.
+</Warning>
+
+<Note>
+  **A tradução de nomes é só de entrada.** As rotas antigas aceitam os nomes antigos de parâmetro (`label_ids`, `bot_flow_unique_id`, `phoneNumberID`) e os convertem. Mas a **resposta** já vem com os nomes novos: `subscriber_id`, `chat_id`, `label_names` e `conversation_time` não existem mais em nenhuma saída.
+</Note>
+
+## Equivalência
+
+| Rota antiga | Verbo aceito | Rota atual |
+|---|---|---|
+| `/send` | `POST` | [`POST /messages`](/tutoriais/api/enviar-mensagem-whatsapp) |
+| `/get/message-status` | `GET` | [`GET /messages/{id}/status`](/tutoriais/api/status-mensagem-whatsapp) |
+| `/subscriber/list` | `GET` | [`GET /contacts`](/tutoriais/api/listar-assinantes-whatsapp) |
+| `/subscriber/get` | `GET` | [`GET /contacts/lookup`](/tutoriais/api/obter-assinante-whatsapp) |
+| `/subscriber/create` | `GET` | [`POST /contacts`](/tutoriais/api/criar-assinante-whatsapp) |
+| `/subscriber/update` | `GET` | [`PATCH /contacts`](/tutoriais/api/atualizar-assinante-whatsapp) |
+| `/subscriber/delete` | `GET` | [`DELETE /contacts`](/tutoriais/api/excluir-contato-whatsapp) |
+| `/label/list` | `GET` | [`GET /tags`](/tutoriais/api/listar-etiquetas-whatsapp) |
+| `/label/create` | `GET` | [`POST /tags`](/tutoriais/api/criar-etiqueta-whatsapp) |
+| `/subscriber/chat/assign-labels` | `GET` | [`POST /contacts/tags`](/tutoriais/api/etiquetas-do-contato-whatsapp) |
+| `/template/list` | `GET` | [`GET /templates`](/tutoriais/api/listar-modelos-whatsapp) |
+| `/subscriber/custom-fields/list` | `GET` | [`GET /custom-fields`](/tutoriais/api/campos-personalizados-whatsapp) |
+| `/subscriber/chat/assign-custom-fields` | `POST` | [`PATCH /contacts/custom-fields`](/tutoriais/api/campos-personalizados-whatsapp) |
+| `/webhook/test` | `POST` | `GET /ping` |
+| `/remarketing/cancel` | `GET` | [`POST /sequences/cancel`](/tutoriais/api/sequencias-whatsapp) |
+| `/remarketing/status` | `GET` | [`GET /sequences/status`](/tutoriais/api/sequencias-whatsapp) |
+
+<Warning>
+  `GET /subscriber/delete` apaga o contato **e todo o histórico de conversas dele**, por `GET`. Um link acionado por engano executa a exclusão. Migre essa chamada com prioridade — veja [Excluir contato](/tutoriais/api/excluir-contato-whatsapp).
+</Warning>
+
+## Rotas sem equivalente atual
+
+Estas rotas antigas existem, mas o recurso correspondente está indisponível. Não há substituta a indicar.
+
+| Rota antiga | Situação |
+|---|---|
+| `/get/conversation` | Indisponível. O histórico de conversa não pode ser consultado por esta API |
+| `/subscriber/chat/remove-labels` | Indisponível. Para remover etiqueta de um contato, use o painel |
+| `/trigger-bot` | Indisponível. A rota responde com sucesso mas **não dispara fluxo nenhum** |
+
+## Rotas que nunca existiram
+
+Versões anteriores desta documentação descreviam endpoints que não existem na API. Chamadas a eles sempre retornaram erro de rota não encontrada:
+
+- `/broadcast/template/send`
+- `/subscriber/chat/assign-to-team-member`
+- `/subscriber/reset/user-input-flow`
+
+## Sobre o domínio
+
+O domínio `app.wizebot.com.br`, usado nos exemplos antigos, **nunca serviu esta API** — ele responde apenas pelo painel. Não há transição de domínio: adote `https://api.wizebot.com.br` e pronto.
+
+## Roteiro de migração
+
+<Steps>
+  <Step title="Troque a autenticação primeiro">
+    Se você envia `apiToken` no corpo, nada funciona. Passe a enviar a chave no cabeçalho. Veja [Autenticação](/tutoriais/api/autenticacao-api-whatsapp).
+  </Step>
+  <Step title="Troque a URL base">
+    Aponte para `https://api.wizebot.com.br/api/v1/whatsapp`.
+  </Step>
+  <Step title="Ajuste a leitura da resposta">
+    Pare de ler `status` e passe a ler `success` e `data`. Trate erro por código HTTP e por `message.error`.
+  </Step>
+  <Step title="Troque as rotas">
+    Use a tabela de equivalência acima, atentando para o verbo de cada rota nova.
+  </Step>
+</Steps>

@@ -1,170 +1,151 @@
 ---
-title: 'Enviar Mensagem WhatsApp'
-sidebarTitle: 'Enviar Mensagem'
-description: 'Enviar mensagem do WhatsApp para qualquer número de celular'
-api: 'POST https://app.wizebot.com.br/api/v1/whatsapp/send'
+title: 'Enviar mensagem'
+sidebarTitle: 'Enviar mensagem'
+description: 'Enviar mensagem de texto ou mídia para um contato com conversa em andamento'
+icon: 'paper-plane'
 ---
 
-# Enviar Mensagem do WhatsApp
+<ParamField path="POST https://api.wizebot.com.br/api/v1/whatsapp/messages" />
 
-Esta API permite enviar mensagens de texto para qualquer número de telefone através do WhatsApp.
+Envia uma mensagem de texto ou de mídia. A resposta é `201 Created` assim que a mensagem é aceita para envio.
 
-## Texto vs Mensagem de Modelo
+## Antes de integrar
 
-Quando um usuário escreve para você no seu serviço de chat usando seu número comercial, você pode responder a ele por mensagem de texto em até 24 horas. Isso é conhecido como mensagem de texto iniciada pelo cliente ou mensagem de sessão. 
+Três regras definem o que este endpoint consegue fazer. Vale ler as três antes de escrever o código.
 
-Uma mensagem de modelo do WhatsApp, por outro lado, usa um modelo pré-aprovado para comunicação e é uma mensagem de saída lançada por uma empresa. Você pode entrar em contato com um usuário usando mensagens de modelo se acidentalmente não responder à mensagem dele em até 24 horas.
+<Warning>
+  **Só é possível responder a conversas existentes.** Se o número de destino nunca conversou com o seu número de WhatsApp, o envio é recusado. A recusa chega como `500` com código `SEND_FAILED`.
+</Warning>
 
-## Endpoint da API
+<Warning>
+  **Não há envio de modelo de mensagem nesta API.** O campo `type` aceita apenas `text`, `image`, `document`, `audio` e `video`. Como o modelo é o único jeito de falar com quem está fora da janela de atendimento, não há como iniciar conversa por aqui.
+</Warning>
 
-<ParamField method="POST" type="string">
-  Enviar uma mensagem de texto para um número de telefone via WhatsApp
-</ParamField>
+<Warning>
+  **A janela de atendimento de 24 horas não é verificada neste caminho.** Uma mensagem enviada fora da janela é aceita com `201` e depois recusada pelo WhatsApp. O envio parece ter dado certo e a mensagem não chega. Confirme a entrega pela [consulta de status](/tutoriais/api/status-mensagem-whatsapp) — é o único jeito de saber.
+</Warning>
 
 ## Parâmetros
 
-<ParamField query="apiToken" type="string" required>
-  Sua chave de API
+<ParamField body="phone_number_id" type="string" required>
+  Identificador do seu número de WhatsApp na Meta.
 </ParamField>
 
-<ParamField query="phone_number_id" type="string" required>
-  Número de telefone da conta do WhatsApp ID
+<ParamField body="phone_number" type="string" required>
+  Número do destinatário, com código do país e apenas dígitos. Veja [Formato do telefone](#formato-do-telefone).
 </ParamField>
 
-<ParamField query="message" type="string" required>
-  Conteúdo da mensagem de texto (necessário valor codificado em URL para solicitação GET)
+<ParamField body="type" type="string" default="text">
+  Um de `text`, `image`, `document`, `audio`, `video`.
 </ParamField>
 
-<ParamField query="phone_number" type="string" required>
-  Deve começar com o código do país e apenas caracteres numéricos são permitidos
+<ParamField body="message" type="string">
+  Texto da mensagem. Obrigatório quando `type` é `text`. Máximo de 4096 caracteres.
 </ParamField>
 
-## Exemplo de Solicitação
+<ParamField body="media_url" type="string">
+  URL pública da mídia. Obrigatório para os tipos de mídia. Veja [Regras da mídia](#regras-da-midia).
+</ParamField>
 
-<CodeGroup>
-```bash POST
-curl -X POST \ 
-'https://app.wizebot.com.br/api/v1/whatsapp/send' \
--d 'apiToken=API-KEY' \
--d 'phone_number_id=PHONE-NUMBER-ID' \
--d 'message=TEXT-MESSAGE' \
--d 'phone_number=PHONE-NUMBER'
-```
-</CodeGroup>
+<ParamField body="caption" type="string">
+  Legenda, para `image`, `document` e `video`. Ignorada em `audio`.
+</ParamField>
 
-## Exemplo de Resposta
+<ParamField body="filename" type="string" default="document">
+  Nome do arquivo, para `document`.
+</ParamField>
 
-<CodeGroup>
-```json Sucesso
-{
-  "status": "1",
-  "message": "Message sent successfully."
-}
-```
+## Formato do telefone
 
-```json Erro
-{
-  "status": "0",
-  "message": "Subscriber limit has been exceeded. You cannot have more subscribers."
-}
-```
-</CodeGroup>
-
-## Teste a API
+Envie **apenas dígitos, com código do país**: `5511999999999`.
 
 <Note>
-  Para testar esta API, você precisará de sua chave API (apiToken) que pode ser encontrada no painel da WizeBot em Configurações > API.
+  A API não normaliza o telefone para você em todos os caminhos. Os endpoints de contato comparam o número **literalmente** com o que está gravado, então `+55 11 99999-8888` e `5511999998888` são valores diferentes para eles. Adote dígitos com código do país em toda a integração e você não esbarra nisso.
 </Note>
 
-<Playground
-  method="POST"
-  endpoint="https://app.wizebot.com.br/api/v1/whatsapp/send"
->
-  ```json
-  {
-    "apiToken": "SUA_API_KEY_AQUI",
-    "phone_number_id": "SEU_PHONE_NUMBER_ID",
-    "message": "Olá! Esta é uma mensagem de teste da API da WizeBot.",
-    "phone_number": "5511999999999"
-  }
-  ```
-</Playground>
+## Regras da mídia
 
-<RequestExample>
-  ```bash cURL
-  curl -X POST \
-    'https://app.wizebot.com.br/api/v1/whatsapp/send' \
-    -d 'apiToken=SUA_API_KEY_AQUI' \
-    -d 'phone_number_id=SEU_PHONE_NUMBER_ID' \
-    -d 'message=Olá! Esta é uma mensagem de teste da API da WizeBot.' \
-    -d 'phone_number=5511999999999'
-  ```
+A `media_url` precisa ser um endereço **público** em `http` ou `https`. URLs que apontam para rede interna, endereço de loopback ou serviço de metadados de nuvem são recusadas com `400 INVALID_MEDIA_URL`, antes de qualquer download.
 
-  ```javascript Node.js
-  const axios = require('axios');
+| Tipo | Como a mídia é entregue |
+|---|---|
+| `image`, `document`, `video` | A URL é repassada ao WhatsApp, que faz o download |
+| `audio` | O arquivo é baixado pelo nosso servidor e enviado ao WhatsApp |
 
-  const data = {
-    apiToken: 'SUA_API_KEY_AQUI',
-    phone_number_id: 'SEU_PHONE_NUMBER_ID',
-    message: 'Olá! Esta é uma mensagem de teste da API da WizeBot.',
-    phone_number: '5511999999999'
-  };
+<Note>
+  A URL precisa continuar acessível por alguns minutos depois do envio. Links assinados com validade muito curta podem expirar antes do download.
+</Note>
 
-  axios.post('https://app.wizebot.com.br/api/v1/whatsapp/send', data)
-  .then(response => {
-    console.log(response.data);
-  })
-  .catch(error => {
-    console.error('Erro:', error);
-  });
-  ```
+## Exemplos
 
-  ```php PHP
-  <?php
-  $url = 'https://app.wizebot.com.br/api/v1/whatsapp/send';
-  
-  $data = array(
-    'apiToken' => 'SUA_API_KEY_AQUI',
-    'phone_number_id' => 'SEU_PHONE_NUMBER_ID',
-    'message' => 'Olá! Esta é uma mensagem de teste da API da WizeBot.',
-    'phone_number' => '5511999999999'
-  );
-  
-  $options = array(
-    'http' => array(
-      'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
-      'method'  => 'POST',
-      'content' => http_build_query($data)
-    )
-  );
-  
-  $context  = stream_context_create($options);
-  $result = file_get_contents($url, false, $context);
-  
-  echo $result;
-  ?>
-  ```
-</RequestExample>
+<CodeGroup>
+```bash Texto
+curl -X POST 'https://api.wizebot.com.br/api/v1/whatsapp/messages' \
+  -H 'x-api-key: wz_live_sua_chave_aqui' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "phone_number_id": "119153661148976",
+    "phone_number": "5511999999999",
+    "message": "Seu pedido saiu para entrega."
+  }'
+```
 
-<ResponseExample>
-  ```json Sucesso
-  {
-    "status": "1",
-    "message": "Message sent successfully."
-  }
-  ```
+```bash Imagem
+curl -X POST 'https://api.wizebot.com.br/api/v1/whatsapp/messages' \
+  -H 'x-api-key: wz_live_sua_chave_aqui' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "phone_number_id": "119153661148976",
+    "phone_number": "5511999999999",
+    "type": "image",
+    "media_url": "https://exemplo.com/comprovante.jpg",
+    "caption": "Comprovante do pedido"
+  }'
+```
 
-  ```json Erro - Limite de Assinantes
-  {
-    "status": "0",
-    "message": "Subscriber limit has been exceeded. You cannot have more subscribers."
-  }
-  ```
+```bash Documento
+curl -X POST 'https://api.wizebot.com.br/api/v1/whatsapp/messages' \
+  -H 'x-api-key: wz_live_sua_chave_aqui' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "phone_number_id": "119153661148976",
+    "phone_number": "5511999999999",
+    "type": "document",
+    "media_url": "https://exemplo.com/nota-fiscal.pdf",
+    "filename": "nota-fiscal.pdf"
+  }'
+```
+</CodeGroup>
 
-  ```json Erro - API Key Inválida
-  {
-    "status": "0",
-    "message": "Invalid API Key."
-  }
-  ```
-</ResponseExample>
+## Resposta
+
+```json
+{
+  "success": true,
+  "data": {
+    "message_id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+    "message": "Message queued successfully."
+  },
+  "timestamp": "2026-09-08T19:30:00.000Z"
+}
+```
+
+<Note>
+  `message_id` é o identificador interno da WizeBot, e é ele que a [consulta de status](/tutoriais/api/status-mensagem-whatsapp) aceita. Guarde-o: sem ele não há como acompanhar a entrega.
+</Note>
+
+## Reenvio e duplicidade
+
+<Warning>
+  **Não há chave de idempotência.** Se a sua requisição sofrer timeout e você repetir, o destinatário pode receber a mensagem duas vezes. Antes de repetir, consulte o status do `message_id` que você já tem — ou registre o envio do seu lado antes de tentar de novo.
+</Warning>
+
+## Erros comuns
+
+| HTTP | Código | Causa provável |
+|---|---|---|
+| 400 | `MISSING_PARAM` | Falta `phone_number`, ou `message` num envio de texto, ou `media_url` num envio de mídia |
+| 400 | `INVALID_TYPE` | `type` fora da lista aceita |
+| 400 | `INVALID_MEDIA_URL` | `media_url` não é endereço público válido |
+| 404 | `CHANNEL_NOT_FOUND` | `phone_number_id` não pertence à sua empresa |
+| 500 | `SEND_FAILED` | Número sem conversa anterior, texto acima de 4096 caracteres, conta desconectada ou teto de envio atingido |

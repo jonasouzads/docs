@@ -1,0 +1,97 @@
+---
+title: 'Status da mensagem'
+sidebarTitle: 'Status da mensagem'
+description: 'Consultar o estado de entrega de uma mensagem enviada'
+icon: 'circle-check'
+---
+
+<ParamField path="GET https://api.wizebot.com.br/api/v1/whatsapp/messages/{message_id}/status" />
+
+Devolve o estado de entrega de uma mensagem enviada por esta API.
+
+## Quando consultar
+
+<Warning>
+  **Consultar imediatamente após o envio devolve `404`.** A mensagem é gravada durante o processamento, alguns instantes depois de a API responder `201`. Nesse intervalo o `message_id` é válido mas ainda não existe no banco.
+</Warning>
+
+Aguarde **pelo menos 5 segundos** entre o envio e a primeira consulta. Se ainda receber `404`, tente de novo com espera crescente antes de tratar como erro — um `404` persistente por mais de um minuto indica que o envio não chegou a ser processado.
+
+## Parâmetros
+
+<ParamField path="message_id" type="string" required>
+  O `message_id` devolvido no envio. O identificador do WhatsApp (WAMID) também é aceito, se você o obteve por outro caminho.
+</ParamField>
+
+## Exemplo
+
+```bash
+curl 'https://api.wizebot.com.br/api/v1/whatsapp/messages/a1b2c3d4-e5f6-7890-abcd-ef1234567890/status' \
+  -H 'x-api-key: wz_live_sua_chave_aqui'
+```
+
+## Resposta
+
+```json
+{
+  "success": true,
+  "data": {
+    "data": {
+      "message_status": "delivered",
+      "delivery_status_updated_at": "2026-09-08T13:21:03.000Z",
+      "read_time": null,
+      "failed_time": null,
+      "failed_reason": null
+    }
+  },
+  "timestamp": "2026-09-08T19:30:00.000Z"
+}
+```
+
+## Valores de `message_status`
+
+| Status | Significado |
+|---|---|
+| `sending` | Aceita e na fila de envio. Ainda não foi entregue ao WhatsApp |
+| `sent` | Entregue ao WhatsApp |
+| `delivered` | Entregue ao aparelho do destinatário |
+| `read` | Lida pelo destinatário |
+| `failed` | Recusada. O motivo está em `failed_reason` |
+
+<Note>
+  `sending` é o estado de fila. Uma mensagem que permanece em `sending` por muito tempo não foi entregue ao WhatsApp — vale investigar, não continuar esperando.
+</Note>
+
+## Campos de data
+
+| Campo | O que traz |
+|---|---|
+| `delivery_status_updated_at` | Data da entrega quando houve entrega. Sem entrega, cai para a data de envio ou de criação — não é um "atualizado em" confiável |
+| `read_time` | Data da leitura, quando houver |
+| `failed_time` | Preenchido apenas quando o status é `failed` |
+| `failed_reason` | Motivo da falha, já traduzido para português |
+
+## Erros
+
+| HTTP | Código | Causa |
+|---|---|---|
+| 400 | `MISSING_PARAM` | `message_id` não informado |
+| 404 | `MESSAGE_NOT_FOUND` | Mensagem inexistente, de outra empresa, ou ainda não gravada |
+
+## Como saber se a mensagem chegou
+
+Esta consulta é o **único** caminho para saber o desfecho de um envio. Não há notificação de mudança de status: o encaminhamento de webhook cobre mensagens **recebidas**, não mudanças de status das enviadas. Veja [Receber mensagens](/tutoriais/api/receber-mensagens-whatsapp).
+
+Um padrão que funciona bem:
+
+<Steps>
+  <Step title="Guarde o message_id">
+    Grave o identificador junto do registro que originou o envio.
+  </Step>
+  <Step title="Consulte após 5 segundos">
+    A primeira consulta costuma já devolver `sent`.
+  </Step>
+  <Step title="Reconsulte o que ficou pendente">
+    `delivered` e `read` chegam depois. Uma varredura periódica dos envios não finalizados custa menos que consultar cada mensagem em laço.
+  </Step>
+</Steps>

@@ -1,0 +1,83 @@
+---
+title: 'Limites de uso'
+sidebarTitle: 'Limites de uso'
+description: 'Quantas requisições por minuto cada endpoint aceita e como reagir ao limite'
+icon: 'gauge'
+---
+
+Cada endpoint tem um limite próprio de requisições por minuto, contado **por chave de API**. Os limites são independentes entre endpoints: consumir o limite de envio não afeta o de leitura.
+
+## Limites por endpoint
+
+| Endpoint | Limite |
+|---|---|
+| `POST /messages` | 100 / min |
+| `GET /messages/:message_id/status` | 60 / min |
+| `GET /contacts` | 60 / min |
+| `GET /contacts/lookup` | 60 / min |
+| `GET /tags` | 60 / min |
+| `GET /templates` | 60 / min |
+| `GET /custom-fields` | 60 / min |
+| `GET /sequences/status` | 60 / min |
+| `POST /contacts` | 30 / min |
+| `PATCH /contacts` | 30 / min |
+| `POST /tags` | 30 / min |
+| `POST /contacts/tags` | 30 / min |
+| `PATCH /contacts/custom-fields` | 30 / min |
+| `POST /sequences/cancel` | 30 / min |
+| `DELETE /contacts` | 10 / min |
+| `GET /ping` | 5 / min |
+
+<Note>
+  **Planeje a carga inicial.** Com 30 criações de contato por minuto e uma requisição por contato, importar uma base grande pela API leva horas. Para carga inicial, use a importação de CSV no painel.
+</Note>
+
+## Cabeçalhos de limite
+
+Toda resposta traz o estado do seu saldo:
+
+| Cabeçalho | Significado |
+|---|---|
+| `X-RateLimit-Limit` | Teto do endpoint na janela |
+| `X-RateLimit-Remaining` | Quantas requisições ainda cabem |
+| `X-RateLimit-Reset` | Segundos até a janela reiniciar |
+| `Retry-After` | Presente no `429`: segundos a aguardar |
+
+Use `X-RateLimit-Remaining` para desacelerar antes de bater no teto, em vez de esperar o `429`.
+
+```bash
+curl -i 'https://api.wizebot.com.br/api/v1/whatsapp/ping' \
+  -H 'x-api-key: wz_live_sua_chave_aqui'
+
+# X-RateLimit-Limit: 5
+# X-RateLimit-Remaining: 4
+# X-RateLimit-Reset: 60
+```
+
+## Teto adicional de envio por número
+
+Além do limite de 100 requisições por minuto do endpoint de envio, existe um **segundo teto**, aplicado por número de WhatsApp e derivado da capacidade que a Meta atribui à conta.
+
+<Warning>
+  Esse teto se manifesta de forma diferente: quando ele é atingido, a resposta é **`500` com código `SEND_FAILED`**, e não `429`. Não há `Retry-After` nesse caso.
+</Warning>
+
+Na prática: se o envio começar a falhar com `SEND_FAILED` sob volume alto, reduza a taxa de envio mesmo sem ter recebido `429`.
+
+## Como reagir ao `429`
+
+<Steps>
+  <Step title="Leia o Retry-After">
+    A resposta diz quantos segundos esperar. Respeite esse valor em vez de tentar de novo imediatamente.
+  </Step>
+  <Step title="Espere e repita">
+    Aguarde o intervalo indicado e refaça a requisição. Se ainda receber `429`, aumente a espera progressivamente.
+  </Step>
+  <Step title="Distribua a carga">
+    Se o `429` for constante, o problema é a taxa média, não o pico. Espalhe as chamadas ao longo do minuto.
+  </Step>
+</Steps>
+
+<Note>
+  Não use várias chaves para contornar o limite. Os tetos existem para proteger a entrega das suas próprias mensagens: exceder a capacidade que a Meta atribui ao seu número piora a qualidade da conta.
+</Note>

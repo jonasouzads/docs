@@ -1,0 +1,89 @@
+---
+title: 'Autenticação'
+sidebarTitle: 'Autenticação'
+description: 'Como enviar a chave de API, quais formatos são aceitos e qual não é'
+icon: 'key'
+---
+
+Toda requisição precisa apresentar a chave de API em um **cabeçalho HTTP**. Não há autenticação por corpo da requisição nem por query string.
+
+<Warning>
+  **Se você seguiu uma versão anterior desta documentação, sua integração não funciona.** Aquela versão instruía a enviar a chave como parâmetro `apiToken` no corpo da requisição. Esse parâmetro **nunca foi aceito pela API** — requisições nesse formato sempre receberam `401`. Migre para um dos cabeçalhos abaixo.
+</Warning>
+
+## Formatos aceitos
+
+Os dois formatos abaixo são equivalentes. Escolha um.
+
+<CodeGroup>
+```bash Cabeçalho x-api-key
+curl 'https://api.wizebot.com.br/api/v1/whatsapp/ping' \
+  -H 'x-api-key: wz_live_sua_chave_aqui'
+```
+
+```bash Cabeçalho Authorization
+curl 'https://api.wizebot.com.br/api/v1/whatsapp/ping' \
+  -H 'Authorization: ApiKey wz_live_sua_chave_aqui'
+```
+</CodeGroup>
+
+<Warning>
+  **`Authorization: Bearer` não é aceito.** É uma recusa deliberada, para não misturar o mecanismo de chave de API com o de sessão de usuário. Muitos clientes HTTP montam `Bearer` por padrão quando você configura "token" — confira o cabeçalho gerado se estiver recebendo `401` sem motivo aparente.
+</Warning>
+
+## A API é de servidor para servidor
+
+<Note>
+  Não chame esta API a partir de um navegador, aplicativo móvel ou qualquer código que o usuário final consiga inspecionar.
+</Note>
+
+Há duas razões:
+
+1. **A chave dá acesso total à sua conta.** Exposta no navegador, ela pode ser lida por qualquer visitante.
+2. **Tecnicamente não funciona.** A política de CORS do servidor não libera o cabeçalho `x-api-key` para origens de navegador, então a requisição de verificação prévia falha antes mesmo de a chamada sair.
+
+O caminho correto é o seu servidor chamar a API e o seu front-end chamar o seu servidor.
+
+## Ciclo de vida da chave
+
+| Propriedade | Comportamento |
+|---|---|
+| Formato | `wz_live_` seguido de caracteres aleatórios |
+| Armazenamento | Guardamos apenas o resumo criptográfico. A chave em claro não é recuperável |
+| Exibição | Apenas uma vez, no momento da criação |
+| Expiração | Opcional, definida na criação |
+| Revogação | Imediata. Uma chave revogada passa a receber `401` na requisição seguinte |
+| Escopo | A chave pertence a uma empresa e só enxerga os dados dela |
+
+<Note>
+  Se a chave vazar, revogue-a no painel e gere outra. Não existe rotação parcial: a chave antiga para de funcionar assim que é revogada.
+</Note>
+
+## Erros de autenticação
+
+Falha de autenticação segue o mesmo envelope de erro de qualquer outro problema. Veja [Respostas e erros](/tutoriais/api/respostas-e-erros-api-whatsapp).
+
+```json
+{
+  "success": false,
+  "statusCode": 401,
+  "timestamp": "2026-09-08T19:30:00.000Z",
+  "path": "/api/v1/whatsapp/ping",
+  "method": "GET",
+  "message": { "message": "Não autorizado" },
+  "errorId": "ERR-MTT63UQF-5WH1EX"
+}
+```
+
+<Note>
+  O `401` é o mesmo para chave ausente, chave inválida, chave revogada, chave expirada e empresa inativa. Essa indistinção é proposital — devolver o motivo exato permitiria descobrir quais chaves existem.
+</Note>
+
+## Testar a conexão
+
+O endpoint `GET /ping` confirma que a chave é válida sem produzir efeito nenhum. Ele tem limite de 5 requisições por minuto, então serve para verificação pontual e para monitoramento em intervalos de 30 segundos ou mais — não para verificação a cada poucos segundos.
+
+```bash
+curl 'https://api.wizebot.com.br/api/v1/whatsapp/ping' \
+  -H 'x-api-key: wz_live_sua_chave_aqui'
+```

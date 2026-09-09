@@ -1,192 +1,72 @@
 ---
-title: 'Criar Assinante WhatsApp'
-sidebarTitle: 'Criar Contato'
-description: 'Criar um Assinante/Contato no WhatsApp'
-api: 'POST https://app.wizebot.com.br/api/v1/whatsapp/subscriber/create'
+title: 'Criar contato'
+sidebarTitle: 'Criar contato'
+description: 'Criar um contato vinculado a um número de WhatsApp'
+icon: 'user-plus'
 ---
 
-# Criar Assinante
+<ParamField path="POST https://api.wizebot.com.br/api/v1/whatsapp/contacts" />
 
-Esta API permite criar um novo assinante/contato na sua conta do WhatsApp Business.
+Cria um contato. Responde `201 Created`.
 
-## Endpoint da API
-
-<ParamField method="POST" type="string">
-  Criar um novo assinante/contato na sua conta do WhatsApp
-</ParamField>
+<Note>
+  Criar um contato **não** habilita o envio de mensagem para ele. O envio continua exigindo que o contato tenha conversado com o seu número antes. Veja [Enviar mensagem](/tutoriais/api/enviar-mensagem-whatsapp).
+</Note>
 
 ## Parâmetros
 
-<ParamField query="apiToken" type="string" required>
-  Sua chave de API
+<ParamField body="phone_number_id" type="string" required>
+  Identificador do seu número de WhatsApp na Meta.
 </ParamField>
 
-<ParamField query="phoneNumberID" type="string" required>
-  Número de telefone da conta do WhatsApp ID
+<ParamField body="phone_number" type="string" required>
+  Telefone do contato, com código do país e apenas dígitos.
 </ParamField>
 
-<ParamField query="name" type="string" required>
-  Nome do seu assinante
+<ParamField body="name" type="string" required>
+  Nome do contato, em um único campo.
 </ParamField>
-
-<ParamField query="phoneNumber" type="string" required>
-  Número de telefone do assinante com código do país (sem o sinal de +)
-</ParamField>
-
-## Exemplo de Solicitação
-
-<CodeGroup>
-```bash POST
-curl -X POST \ 
-'https://app.wizebot.com.br/api/v1/whatsapp/subscriber/create' \
--d 'apiToken=API-KEY' \
--d 'phoneNumberID=PHONE-NUMBER-ID' \
--d 'name=NAME' \
--d 'phoneNumber=MOBILE'
-```
-</CodeGroup>
-
-## Exemplo de Resposta
-
-<CodeGroup>
-```json Sucesso
-{
-  "status": "1",
-  "mesasge": "WhatsApp subscriber has been created."
-}
-```
-
-```json Erro - Conta não encontrada
-{
-  "status": "0",
-  "message": "WhatsApp account not found."
-}
-```
-
-```json Erro - Limite de assinantes
-{
-  "status": "0",
-  "message": "Subscriber limit has been exceeded. You cannot have more subscribers."
-}
-```
-
-```json Erro - Assinante já existe
-{
-  "status": "0",
-  "message": "Something went wrong or subscriber already exist."
-}
-```
-</CodeGroup>
-
-## Teste a API
 
 <Note>
-  Para testar esta API, você precisará de sua chave API (apiToken) que pode ser encontrada no painel da WizeBot em Configurações > API.
+  A criação recebe o nome inteiro em `name`, enquanto a [atualização](/tutoriais/api/atualizar-assinante-whatsapp) recebe `first_name` e `last_name` separados. É uma assimetria da API: ao atualizar, os dois campos são concatenados no mesmo `name`.
 </Note>
 
-<Playground
-  method="POST"
-  endpoint="https://app.wizebot.com.br/api/v1/whatsapp/subscriber/create"
->
-  ```json
-  {
-    "apiToken": "SUA_API_KEY_AQUI",
-    "phoneNumberID": "SEU_PHONE_NUMBER_ID",
-    "name": "João Silva",
-    "phoneNumber": "5511999999999"
-  }
-  ```
-</Playground>
+## Exemplo
 
-<RequestExample>
-  ```bash cURL
-  curl -X POST \
-    'https://app.wizebot.com.br/api/v1/whatsapp/subscriber/create' \
-    -d 'apiToken=SUA_API_KEY_AQUI' \
-    -d 'phoneNumberID=SEU_PHONE_NUMBER_ID' \
-    -d 'name=João Silva' \
-    -d 'phoneNumber=5511999999999'
-  ```
+```bash
+curl -X POST 'https://api.wizebot.com.br/api/v1/whatsapp/contacts' \
+  -H 'x-api-key: wz_live_sua_chave_aqui' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "phone_number_id": "119153661148976",
+    "phone_number": "5511999999999",
+    "name": "João Silva"
+  }'
+```
 
-  ```javascript Node.js
-  const axios = require('axios');
+## Resposta
 
-  const data = {
-    apiToken: 'SUA_API_KEY_AQUI',
-    phoneNumberID: 'SEU_PHONE_NUMBER_ID',
-    name: 'João Silva',
-    phoneNumber: '5511999999999'
-  };
+```json
+{
+  "success": true,
+  "data": { "message": "Contact created successfully." },
+  "timestamp": "2026-09-08T19:30:00.000Z"
+}
+```
 
-  axios.post('https://app.wizebot.com.br/api/v1/whatsapp/subscriber/create', data)
-  .then(response => {
-    console.log(response.data);
-  })
-  .catch(error => {
-    console.error('Erro:', error);
-  });
-  ```
+<Warning>
+  A resposta **não devolve o `id`** do contato criado. Se precisar dele, faça em seguida uma [busca pelo telefone](/tutoriais/api/obter-assinante-whatsapp).
+</Warning>
 
-  ```php PHP
-  <?php
-  $url = 'https://app.wizebot.com.br/api/v1/whatsapp/subscriber/create';
-  
-  $data = array(
-    'apiToken' => 'SUA_API_KEY_AQUI',
-    'phoneNumberID' => 'SEU_PHONE_NUMBER_ID',
-    'name' => 'João Silva',
-    'phoneNumber' => '5511999999999'
-  );
-  
-  $options = array(
-    'http' => array(
-      'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
-      'method'  => 'POST',
-      'content' => http_build_query($data)
-    )
-  );
-  
-  $context  = stream_context_create($options);
-  $result = file_get_contents($url, false, $context);
-  
-  echo $result;
-  ?>
-  ```
-</RequestExample>
+## Contato duplicado
 
-<ResponseExample>
-  ```json Sucesso
-  {
-    "status": "1",
-    "mesasge": "WhatsApp subscriber has been created."
-  }
-  ```
+O `409 CONTACT_EXISTS` é devolvido quando o telefone já pertence a um contato da sua empresa. A verificação considera variações de formatação do mesmo número, então `+55 11 99999-8888` e `5511999998888` são reconhecidos como o mesmo telefone.
 
-  ```json Erro - API Key Inválida
-  {
-    "status": "0",
-    "message": "Invalid API Key."
-  }
-  ```
+## Erros
 
-  ```json Erro - Conta não encontrada
-  {
-    "status": "0",
-    "message": "WhatsApp account not found."
-  }
-  ```
-
-  ```json Erro - Limite de assinantes
-  {
-    "status": "0",
-    "message": "Subscriber limit has been exceeded. You cannot have more subscribers."
-  }
-  ```
-
-  ```json Erro - Assinante já existe
-  {
-    "status": "0",
-    "message": "Something went wrong or subscriber already exist."
-  }
-  ```
-</ResponseExample>
+| HTTP | Código | Causa |
+|---|---|---|
+| 400 | `MISSING_PARAM` | Falta `phone_number` ou `name` |
+| 403 | — | Limite de contatos do plano atingido |
+| 404 | `CHANNEL_NOT_FOUND` | `phone_number_id` não pertence à sua empresa |
+| 409 | `CONTACT_EXISTS` | Já existe contato com esse telefone |

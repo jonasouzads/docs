@@ -1,0 +1,117 @@
+---
+title: 'Sequências'
+sidebarTitle: 'Sequências'
+description: 'Consultar e cancelar uma sequência agendada para um contato'
+icon: 'clock'
+---
+
+Sequências são mensagens agendadas que a plataforma dispara automaticamente. Estes dois endpoints permitem consultar e cancelar uma sequência pendente.
+
+## Consultar sequência
+
+<ParamField path="GET https://api.wizebot.com.br/api/v1/whatsapp/sequences/status" />
+
+<ParamField query="phone_number" type="string" required>
+  Telefone do contato, com código do país e apenas dígitos.
+</ParamField>
+
+<ParamField query="phone_number_id" type="string">
+  Identificador do número de WhatsApp. Opcional — veja a observação abaixo.
+</ParamField>
+
+```bash
+curl 'https://api.wizebot.com.br/api/v1/whatsapp/sequences/status?phone_number=5511999999999' \
+  -H 'x-api-key: wz_live_sua_chave_aqui'
+```
+
+<CodeGroup>
+```json Com sequência agendada
+{
+  "success": true,
+  "data": {
+    "data": {
+      "scheduled_at": "2026-09-09T10:00:00.000Z",
+      "source": "flow",
+      "is_template": true
+    }
+  },
+  "timestamp": "2026-09-08T19:30:00.000Z"
+}
+```
+
+```json Sem sequência
+{
+  "success": true,
+  "data": {
+    "data": null,
+    "message": "No active sequence found."
+  },
+  "timestamp": "2026-09-08T19:30:00.000Z"
+}
+```
+</CodeGroup>
+
+## Cancelar sequência
+
+<ParamField path="POST https://api.wizebot.com.br/api/v1/whatsapp/sequences/cancel" />
+
+<ParamField body="phone_number" type="string" required>
+  Telefone do contato, com código do país e apenas dígitos.
+</ParamField>
+
+<ParamField body="phone_number_id" type="string">
+  Identificador do número de WhatsApp. Opcional — veja a observação abaixo.
+</ParamField>
+
+<ParamField body="reason" type="string" default="Cancelado via API externa">
+  Motivo do cancelamento, registrado no histórico.
+</ParamField>
+
+```bash
+curl -X POST 'https://api.wizebot.com.br/api/v1/whatsapp/sequences/cancel' \
+  -H 'x-api-key: wz_live_sua_chave_aqui' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "phone_number": "5511999999999",
+    "reason": "Cliente concluiu a compra"
+  }'
+```
+
+<CodeGroup>
+```json Cancelada
+{
+  "success": true,
+  "data": { "canceled": true, "message": "Sequence canceled successfully." },
+  "timestamp": "2026-09-08T19:30:00.000Z"
+}
+```
+
+```json Nada a cancelar
+{
+  "success": true,
+  "data": { "canceled": false, "message": "No active sequence found for this contact." },
+  "timestamp": "2026-09-08T19:30:00.000Z"
+}
+```
+</CodeGroup>
+
+<Note>
+  `canceled: false` não é erro: significa que não havia sequência pendente para aquele contato.
+</Note>
+
+## Sobre o `phone_number_id` opcional
+
+<Warning>
+  Nestes dois endpoints o `phone_number_id` é opcional. **Se a sua empresa tem mais de um número de WhatsApp e você omitir esse parâmetro**, o contato é escolhido pelo de interação mais recente entre os números que compartilham aquele telefone.
+
+  Com múltiplos números, informe sempre o `phone_number_id` — do contrário, duas chamadas idênticas podem atingir contatos diferentes.
+</Warning>
+
+## Erros
+
+| HTTP | Código | Causa |
+|---|---|---|
+| 400 | `MISSING_PARAM` | Falta `phone_number` |
+| 404 | `CONTACT_NOT_FOUND` | Contato inexistente |
+| 500 | `STATUS_FAILED` | Falha ao consultar |
+| 500 | `CANCEL_FAILED` | Falha ao cancelar |

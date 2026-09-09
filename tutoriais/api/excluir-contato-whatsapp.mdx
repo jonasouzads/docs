@@ -1,0 +1,68 @@
+---
+title: 'Excluir contato'
+sidebarTitle: 'Excluir contato'
+description: 'Remover permanentemente um contato e todo o histórico ligado a ele'
+icon: 'user-minus'
+---
+
+<ParamField path="DELETE https://api.wizebot.com.br/api/v1/whatsapp/contacts" />
+
+Remove um contato de forma permanente.
+
+<Warning>
+  **A exclusão apaga muito mais que o cadastro.** Junto com o contato são apagadas em cascata **as conversas dele e todo o histórico de mensagens**, recebidas e enviadas.
+
+  A operação é **irreversível** e não há confirmação intermediária: a requisição já executa. Não existe exclusão lógica neste endpoint.
+</Warning>
+
+<Note>
+  Se o objetivo é apenas parar de enviar mensagens para alguém, não exclua o contato — o histórico é o registro do atendimento e costuma ser necessário depois.
+</Note>
+
+## Parâmetros
+
+<ParamField body="phone_number_id" type="string" required>
+  Identificador do seu número de WhatsApp na Meta.
+</ParamField>
+
+<ParamField body="phone_number" type="string" required>
+  Telefone do contato, com código do país e apenas dígitos.
+</ParamField>
+
+## Exemplo
+
+```bash
+curl -X DELETE 'https://api.wizebot.com.br/api/v1/whatsapp/contacts' \
+  -H 'x-api-key: wz_live_sua_chave_aqui' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "phone_number_id": "119153661148976",
+    "phone_number": "5511999999999"
+  }'
+```
+
+<Note>
+  Este endpoint lê os parâmetros do **corpo** da requisição, mesmo sendo `DELETE`. Alguns clientes HTTP descartam o corpo em `DELETE` por padrão — se você receber `MISSING_PARAM` com o corpo correto, é provavelmente isso. Verifique a configuração do seu cliente.
+</Note>
+
+## Resposta
+
+```json
+{
+  "success": true,
+  "data": { "message": "Contact deleted successfully." },
+  "timestamp": "2026-09-08T19:30:00.000Z"
+}
+```
+
+## Limite
+
+Este endpoint aceita **10 requisições por minuto**, o menor limite da API depois do teste de conexão. Exclusão em massa pela API não é viável nesse ritmo.
+
+## Erros
+
+| HTTP | Código | Causa |
+|---|---|---|
+| 400 | `MISSING_PARAM` | Falta `phone_number`, ou o corpo não chegou |
+| 404 | `CHANNEL_NOT_FOUND` | `phone_number_id` não pertence à sua empresa |
+| 404 | `CONTACT_NOT_FOUND` | Contato inexistente, ou telefone em formato diferente do gravado |

@@ -1,0 +1,82 @@
+---
+title: 'Receber mensagens'
+sidebarTitle: 'Receber mensagens'
+description: 'Receber no seu servidor as mensagens que chegam ao seu número de WhatsApp'
+icon: 'inbox'
+---
+
+O recebimento não é feito por consulta a esta API. A WizeBot **envia** as mensagens recebidas para uma URL sua, por encaminhamento de webhook.
+
+<Note>
+  A configuração é feita **no painel**, em Configurações, não por esta API. Não há endpoint para cadastrar ou alterar o destino do encaminhamento.
+</Note>
+
+## O que é encaminhado
+
+<Warning>
+  O encaminhamento cobre **mensagens recebidas** (`message.received`). Ele **não** notifica mudança de status de mensagens que você enviou. Para saber se um envio foi entregue ou lido, use a [consulta de status](/tutoriais/api/status-mensagem-whatsapp).
+</Warning>
+
+## Formato do envio
+
+A WizeBot faz um `POST` na sua URL com este corpo:
+
+```json
+{
+  "event": "message.received",
+  "timestamp": "2026-09-08T19:30:00.000Z",
+  "data": {
+    "messageId": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+    "from": "5511999999999",
+    "contactName": "João Silva",
+    "body": "Bom dia, meu pedido chegou?",
+    "type": "text",
+    "phoneNumber": "119153661148976",
+    "mediaUrl": null,
+    "caption": null,
+    "direction": "inbound",
+    "mimeType": null,
+    "fileName": null,
+    "sentBy": null,
+    "source": null,
+    "forwarded": false,
+    "frequentlyForwarded": false,
+    "referral": null,
+    "referredProduct": null
+  }
+}
+```
+
+| Campo | O que traz |
+|---|---|
+| `event` | Sempre `message.received` |
+| `data.messageId` | Identificador da mensagem na WizeBot |
+| `data.from` | Telefone de quem enviou |
+| `data.phoneNumber` | Identificador do seu número que recebeu |
+| `data.body` | Texto da mensagem, quando houver |
+| `data.type` | Tipo da mensagem |
+| `data.mediaUrl` | URL da mídia, quando houver |
+| `data.direction` | `inbound` ou `outbound` |
+| `data.referral` | Dados de origem quando a conversa veio de um anúncio |
+
+<Note>
+  Os nomes de campo do encaminhamento seguem a convenção `camelCase`, diferente do `snake_case` dos endpoints REST desta documentação.
+</Note>
+
+## Boas práticas
+
+<Steps>
+  <Step title="Responda rápido">
+    Responda `200` assim que receber e processe depois. Processamento demorado dentro da requisição aumenta a chance de reenvio.
+  </Step>
+  <Step title="Trate repetição">
+    A mesma mensagem pode ser entregue mais de uma vez em caso de falha temporária. Use `data.messageId` para descartar repetição.
+  </Step>
+  <Step title="Valide a origem">
+    Configure o segredo compartilhado no painel e verifique-o antes de aceitar o conteúdo.
+  </Step>
+</Steps>
+
+## Testar a configuração
+
+O painel tem um botão de teste que dispara um envio de exemplo para a URL configurada. Use-o para confirmar que o seu servidor responde antes de depender do encaminhamento em produção.

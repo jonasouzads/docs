@@ -1,0 +1,94 @@
+---
+title: 'Campos personalizados'
+sidebarTitle: 'Campos personalizados'
+description: 'Listar as definições de campo personalizado e gravar valores num contato'
+icon: 'list-check'
+---
+
+## Listar definições
+
+<ParamField path="GET https://api.wizebot.com.br/api/v1/whatsapp/custom-fields" />
+
+Lista os campos personalizados configurados na empresa.
+
+```bash
+curl 'https://api.wizebot.com.br/api/v1/whatsapp/custom-fields' \
+  -H 'x-api-key: wz_live_sua_chave_aqui'
+```
+
+```json
+{
+  "success": true,
+  "data": {
+    "data": [
+      { "id": "cpf_1757280000000", "name": "CPF", "reply_type": "text" },
+      { "id": "nascimento_1757280000001", "name": "Data de nascimento", "reply_type": "date" }
+    ]
+  },
+  "timestamp": "2026-09-08T19:30:00.000Z"
+}
+```
+
+## Gravar valores num contato
+
+<ParamField path="PATCH https://api.wizebot.com.br/api/v1/whatsapp/contacts/custom-fields" />
+
+<Warning>
+  **Os valores gravados por este endpoint não aparecem no painel.** Eles vão para uma área de dados do contato que é separada da que a plataforma usa para campos personalizados.
+
+  Na prática, um valor gravado aqui **não** aparece na ficha do contato, **não** é usado em segmentação de campanha, **não** resolve variável em fluxo e **não** é lido por condição de automação. Ele só é recuperável por quem gravou.
+</Warning>
+
+<Note>
+  Se o objetivo é alimentar automações ou a ficha do contato, este endpoint não serve. Use a importação de contatos ou a edição no painel.
+</Note>
+
+### Parâmetros
+
+<ParamField body="phone_number_id" type="string" required>
+  Identificador do seu número de WhatsApp na Meta.
+</ParamField>
+
+<ParamField body="phone_number" type="string" required>
+  Telefone do contato, com código do país e apenas dígitos.
+</ParamField>
+
+<ParamField body="custom_fields" type="object" required>
+  Objeto com pares de chave e valor.
+</ParamField>
+
+<Warning>
+  As chaves **não são validadas** contra as definições listadas acima: qualquer nome é aceito. Evite usar `gender`, que é o mesmo nome do campo de gênero do contato e seria sobrescrito.
+</Warning>
+
+### Exemplo
+
+```bash
+curl -X PATCH 'https://api.wizebot.com.br/api/v1/whatsapp/contacts/custom-fields' \
+  -H 'x-api-key: wz_live_sua_chave_aqui' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "phone_number_id": "119153661148976",
+    "phone_number": "5511999999999",
+    "custom_fields": {
+      "codigo_pedido": "PED-4471",
+      "plano": "premium"
+    }
+  }'
+```
+
+```json
+{
+  "success": true,
+  "data": { "message": "Custom fields updated successfully." },
+  "timestamp": "2026-09-08T19:30:00.000Z"
+}
+```
+
+### Erros
+
+| HTTP | Código | Causa |
+|---|---|---|
+| 400 | `MISSING_PARAM` | Falta `phone_number` ou `custom_fields` |
+| 404 | `CHANNEL_NOT_FOUND` | `phone_number_id` não pertence à sua empresa |
+| 404 | `CONTACT_NOT_FOUND` | Contato inexistente nesse número |
