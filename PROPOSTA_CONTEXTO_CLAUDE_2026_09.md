@@ -18,7 +18,30 @@
 | Rotação das duas senhas de Postgres | **pendente com o Jonas** |
 | Fase 3 — os seis `CLAUDE.md` | **aplicada** — criados e commitados; seção 4 abaixo já traz o texto final |
 | Fase 4 — rules com `paths` e as duas skills | **aplicada** — 9 rules e 2 skills, validadas |
-| Fase 5 (poda do índice de memória, `autoMemoryDirectory`) | não iniciada |
+| Fase 5 — poda do índice, `autoMemoryDirectory`, pente no allowlist de usuário | **aplicada** |
+
+**As cinco fases da proposta foram executadas.** O que a fase 5 mudou, medido:
+
+| | Antes | Depois |
+|---|---|---|
+| `MEMORY.md` em bytes | 19.223 (75,1% do teto) | **16.768** (65,5%) |
+| `MEMORY.md` em tokens por sessão | 8,5k | **7,5k** |
+| Folga até o corte de 25 KB | 6.377 bytes | **8.832 bytes** |
+| `permissions.allow` do usuário | 55 entradas | **14** |
+| Auto memory numa sessão dentro de `backend/` | nenhuma | **o índice da raiz, via `autoMemoryDirectory`** |
+
+A economia do índice veio de encurtar para uma linha as 24 entradas promovidas a
+`CLAUDE.md` — cada uma passou a dizer só o assunto e onde a regra vive, com o arquivo de
+tópico intacto —, mais quatro encurtamentos, a fusão das duas memórias do teto de colunas
+do Axiom e a poda da memória de handoff.
+
+**Duas correções de rota na execução da fase 5.** A classificação da fase 3 tinha marcado
+a memória de handoff como descartável; lida na íntegra, ela ainda carregava um **deploy
+pendente em duas fases**, o fato de que a pausa de automação não expira sozinha se a fila
+cair, e o motivo de o PUT de metadata ser merge raso. Foi reescrita enxuta em vez de
+apagada. E a janela do Axiom carregava um alarme que não é sobre teto de coluna — a
+limpeza de execuções de fluxo travada na cabeça da fila desde 2026-03-24 —, que virou
+memória própria em vez de ser enterrado na fusão.
 
 ### O que a fase 4 criou
 
@@ -129,6 +152,8 @@ Medição de `~/.claude/projects/-Users-jonas-WizeBot/memory/MEMORY.md`:
 **O corte que chega primeiro é o de bytes, não o de linhas.** Ele será atingido com folga de linhas sobrando: as entradas têm em média **225 bytes** cada (bem acima de uma linha "um resumo por memória"), então a folga de 6.377 bytes comporta cerca de **28 entradas novas** — e não as 86 linhas que a contagem de linhas sugere.
 
 O que acontece ao passar: a escrita ainda funciona, mas *"everything past the limit is dropped on the next load"* — o excedente simplesmente deixa de ser carregado, em silêncio, a partir da sessão seguinte. As memórias mais recentes ficam no fim do arquivo, então **são as recentes que somem primeiro**.
+
+> **Atualização (fase 5 executada):** o índice foi podado e está em **16.768 bytes / 7,5k tokens**, com folga de 8.832 bytes. A medição abaixo é a de antes da poda, preservada porque é ela que justifica o trabalho.
 
 Duas entradas passam de 400 bytes (`project_chat_ux_fase1_seguranca_operacional` e `project_mapa_latencia_endpoints_fase0_1_2`) e várias passam de 300. Encurtar as 10 maiores para ~150 bytes devolve cerca de 2 KB sem perder nenhuma memória — o detalhe já vive no arquivo de tópico, que é lido sob demanda.
 
