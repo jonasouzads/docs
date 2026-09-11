@@ -16,7 +16,40 @@
 | Fase 1 — poda da allowlist da raiz | **aplicada** — 497 → 55 entradas, zero credenciais |
 | Fase 2 — regras `ask`/`deny` + hook `PreToolUse` | **aplicada** em `~/.claude/settings.json`, 17/17 casos de teste conforme esperado |
 | Rotação das duas senhas de Postgres | **pendente com o Jonas** |
-| Fases 3 a 5 (CLAUDE.md, rules, skills, poda do índice, `autoMemoryDirectory`) | não iniciadas |
+| Fase 3 — os seis `CLAUDE.md` | **aplicada** — criados e commitados; seção 4 abaixo já traz o texto final |
+| Fase 4 — rules com `paths` e as duas skills | **aplicada** — 9 rules e 2 skills, validadas |
+| Fase 5 (poda do índice de memória, `autoMemoryDirectory`) | não iniciada |
+
+### O que a fase 4 criou
+
+```text
+frontend/.claude/
+├── rules/design-system.md      paths: components/**/*.tsx, app/**/*.tsx, app/globals.css
+├── rules/ui-navegacao.md       paths: app/**/*.tsx
+├── rules/canais.md             paths: app/settings/**, components/settings/**
+└── skills/design-system-check/SKILL.md
+
+backend/.claude/rules/
+├── jobs-e-filas.md             paths: src/**/*.worker.ts, *.handler.ts, *queue*.ts, *.processor.ts
+├── mensageria.md               paths: src/modules/{messaging,flows,agents}/**/*.ts
+├── node-stats.md               paths: src/modules/flows/**/*.ts
+├── notificacoes.md             paths: src/modules/notifications/**/*.ts
+├── rotas.md                    paths: src/**/*.controller.ts
+└── arquivos-publicos.md        paths: public/**
+
+.claude/skills/ops-db-producao/SKILL.md   (na raiz, local — cobre scripts/)
+```
+
+Um arquivo por tema, não por memória: `design-system.md` absorveu tokens, variantes,
+ghost, escala de cinza, Tabler e o `TagPicker`; `ui-navegacao.md` absorveu breadcrumb e
+campos fabricados; `jobs-e-filas.md` absorveu coordenação por payload e o `jobId` do BullMQ.
+
+**Validação.** Os globs foram conferidos contra os arquivos reais de cada repo, com sonda
+positiva e negativa. O carregamento foi verificado por comportamento, não por inspeção:
+uma sessão que lê um arquivo casado responde um fato que só existe dentro da rule, e uma
+sessão que lê arquivo não casado responde "não sei". Vale também para sessão aberta na
+**raiz** lendo arquivo de repo aninhado. `/context` **não** lista rules carregadas sob
+demanda — só `CLAUDE.md`, auto memory e skills; por isso o teste é comportamental.
 
 Duas divergências deliberadas em relação ao que a seção 5.3/5.4 propunha, decididas durante a execução e detalhadas nas próprias seções: o `deny` de Prisma foi **estreitado** para os subcomandos que aplicam algo, e o caminho de DDL do hook usa **apenas** código de saída 2.
 
@@ -210,15 +243,15 @@ Critério aplicado a cada linha, o da doc de boas práticas: *"Would removing th
 
 **Um detalhe de carregamento que muda o desenho:** `CLAUDE.md` é lido *"from your current working directory and every directory above it"*. Como todos os repos ficam sob `/Users/jonas/WizeBot`, um `CLAUDE.md` na raiz **é carregado mesmo quando a sessão abre dentro de `backend/`** — e o do repo entra depois, com prioridade maior por estar mais perto. A raiz não é repo, então esse arquivo **não é versionado**: é o lugar certo para o que é seu e cruza projetos. Os dos repos são versionados e compartilháveis.
 
-### 4.1 `/Users/jonas/WizeBot/CLAUDE.md` — 46 linhas
+### 4.1 `/Users/jonas/WizeBot/CLAUDE.md` — 46 linhas (texto final, como gravado)
 
 ```markdown
 # WizeBot — contexto de topo
 
 A raiz `/Users/jonas/WizeBot` NÃO é repositório git. Cada subprojeto é o seu:
 `backend/`, `frontend/`, `wizebot-admin/`, `wizebot.com.br/`, `server-wizebot/`
-e `docs/`. Todo comando git precisa de `-C <subprojeto>`;
-commit "na raiz" não existe.
+e `docs/`. Todo comando git precisa de `-C <subprojeto>`; commit "na raiz" não
+existe.
 
 ## Regras permanentes
 
@@ -261,14 +294,14 @@ commit "na raiz" não existe.
   que cruzem essa data.
 ```
 
-### 4.2 `backend/CLAUDE.md` — 48 linhas
+### 4.2 `backend/CLAUDE.md` — 48 linhas (texto final, como gravado)
 
 ```markdown
 # WizeBot backend (NestJS 11 · Prisma 7 · BullMQ)
 
 ## Processos
 
-São 8 entrypoints: a API (`dist/main`) e 6 workers (`worker`, `worker-infra`,
+São 8 entrypoints: a API (`dist/main`) e 7 workers (`worker`, `worker-infra`,
 `worker-campaigns`, `worker-flows`, `worker-messaging`, `worker-ai`,
 `worker-telegram`). Serviço novo consumido por flows precisa ser provido em
 `flows.module.ts` **e** em `worker-flows.module.ts` — senão o `worker-flows`
@@ -304,8 +337,8 @@ quebra no boot por DI, e só lá.
   inbound = **fail-open**. Bloqueio confirmado sempre descarta o job. O estado é
   lido SEMPRE no consume, nunca no enqueue.
 - **Contagem de campanha tem fonte única:** `CampaignStatsService.deriveDisplayCounts`.
-  O export do dashboard (`dashboard-export.service.ts`) é um caminho divergente
-  conhecido — não crie uma terceira fonte.
+  O export do dashboard (`dashboard-export.service.ts`, no repo do frontend) é um
+  caminho divergente conhecido — não crie uma terceira fonte.
 
 ## Nomes
 
@@ -314,16 +347,17 @@ colisão é silenciosa. Prefixo global da API é `api/v1` (`API_PREFIX`), com
 `/admin/queues` como única exceção.
 ```
 
-### 4.3 `frontend/CLAUDE.md` — 35 linhas
+### 4.3 `frontend/CLAUDE.md` — 36 linhas (texto final, como gravado)
 
 ```markdown
 # WizeBot frontend (Next 15 · React 19 · Tailwind 4 · Zustand)
 
 ## Antes de qualquer UI
 
-Este projeto tem design system próprio, documentado em `frontend/docs/` e com
-~49 primitivos em `components/ui/`. Rode a skill `design-system-check` antes de
-criar componente — as regras de cor e variante estão em `.claude/rules/design-system.md`.
+Este projeto tem design system próprio, documentado em `docs/` e com primitivos
+já customizados em `components/ui/`. Rode a skill `design-system-check` antes de
+criar componente — as regras de cor e variante estão em `.claude/rules/design-system.md`
+e carregam sozinhas ao abrir um `.tsx`.
 
 Dois tokens distintos, decisão travada: **`--button` (azul) = ação do usuário**,
 **`--primary` (verde) = estado e identidade**. Não os troque em CTA.
@@ -354,7 +388,7 @@ nova precisa das três, e de redeploy.
   de componentes própria — nunca uma seção dentro da tela de outro canal.
 ```
 
-### 4.4 `wizebot-admin/CLAUDE.md` — 25 linhas
+### 4.4 `wizebot-admin/CLAUDE.md` — 25 linhas (texto final, como gravado)
 
 ```markdown
 # WizeBot admin (Next 16 · porta 3002)
@@ -384,7 +418,7 @@ Na tela `/admin/subscriptions` convivem, por decisão tomada com o Jonas:
 Os dois números **podem divergir e isso é esperado**. Não unifique.
 ```
 
-### 4.5 `docs/CLAUDE.md` — 9 linhas
+### 4.5 `docs/CLAUDE.md` — 9 linhas (texto final, como gravado)
 
 ```markdown
 # Docs (Mintlify)
@@ -398,7 +432,7 @@ Os dois números **podem divergir e isso é esperado**. Não unifique.
   não do que a doc promete.
 ```
 
-### 4.6 `wizebot.com.br/CLAUDE.md` — 9 linhas
+### 4.6 `wizebot.com.br/CLAUDE.md` — 9 linhas (texto final, como gravado)
 
 ```markdown
 # Site institucional (Next · Sanity)
