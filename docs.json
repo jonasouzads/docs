@@ -118,6 +118,13 @@
             ]
           },
           {
+            "group": "Conversas",
+            "icon": "triangle-exclamation",
+            "pages": [
+              "GET /conversations/anomalies"
+            ]
+          },
+          {
             "group": "WhatsApp · Mensagens",
             "icon": "paper-plane",
             "pages": [

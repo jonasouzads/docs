@@ -44,6 +44,10 @@
     {
       "name": "WhatsApp · Conta",
       "description": "Verificação da chave de API."
+    },
+    {
+      "name": "Conversas",
+      "description": "Leitura de diagnóstico das conversas — o que está esperando resposta."
     }
   ],
   "components": {
@@ -4280,6 +4284,279 @@
         ],
         "x-mint": {
           "href": "/api-reference/whatsapp/status-da-sequencia"
+        }
+      }
+    },
+    "/conversations/anomalies": {
+      "get": {
+        "tags": [
+          "Conversas"
+        ],
+        "summary": "Anomalias de conversa",
+        "description": "Numa chamada, as contagens por balde e as piores conversas de cada um. É diagnóstico — responde \"o que está errado agora\", não \"quais são minhas conversas\". Não há paginação, e o número de itens tem teto.\n\n**A janela tem teto superior, e é ele que faz o balde ser anomalia.** Só entram conversas cujo último recebimento está entre `threshold_hours` atrás e o teto da janela de atendimento do canal. Sem esse teto, o critério selecionaria o arquivo inteiro em vez da fila viva.\n\nO teto vem da janela do canal: no WhatsApp são 24 horas. Canais sem janela de atendimento também usam 24 horas, que é o período natural de uma varredura diária.\n\n**Dois baldes só respondem se você pedir.** `unassigned` e `automation_only` ficam de fora por padrão: em boa parte das operações, conversa sem atendente é o estado normal, e ligá-los sem querer produz um relatório em que tudo aparece como problema.",
+        "operationId": "anomaliasDeConversa",
+        "x-mint": {
+          "href": "/api-reference/conversas/anomalias"
+        },
+        "parameters": [
+          {
+            "name": "buckets",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Baldes adicionais, separados por vírgula: `unassigned`, `automation_only`. `unanswered` e `never_engaged` vêm sempre, peça ou não.",
+            "example": "unassigned,automation_only"
+          },
+          {
+            "name": "threshold_hours",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 4,
+              "minimum": 1,
+              "maximum": 24
+            },
+            "description": "Há quantas horas o recebimento precisa estar sem resposta para entrar.",
+            "example": 4
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 20,
+              "maximum": 100
+            },
+            "description": "Quantas conversas trazer por balde. Teto de 100."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Contagens e as piores conversas de cada balde.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "success",
+                    "data",
+                    "timestamp"
+                  ],
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "window": {
+                          "type": "object",
+                          "properties": {
+                            "threshold_hours": {
+                              "type": "integer"
+                            },
+                            "ceiling_hours_by_channel": {
+                              "type": "object",
+                              "additionalProperties": {
+                                "type": "integer"
+                              },
+                              "description": "Teto da janela por canal, para você entender por que uma conversa entrou ou não."
+                            }
+                          }
+                        },
+                        "buckets": {
+                          "type": "object",
+                          "additionalProperties": {
+                            "type": "object",
+                            "properties": {
+                              "count": {
+                                "type": "integer",
+                                "description": "Total no balde — pode ser maior que o número de itens devolvidos."
+                              },
+                              "items": {
+                                "type": "array",
+                                "items": {
+                                  "type": "object",
+                                  "properties": {
+                                    "conversation_id": {
+                                      "type": "string"
+                                    },
+                                    "contact_id": {
+                                      "type": "string"
+                                    },
+                                    "channel": {
+                                      "type": "string",
+                                      "description": "Canal da conversa."
+                                    },
+                                    "channel_account_id": {
+                                      "type": [
+                                        "string",
+                                        "null"
+                                      ]
+                                    },
+                                    "last_inbound_at": {
+                                      "type": [
+                                        "string",
+                                        "null"
+                                      ],
+                                      "format": "date-time"
+                                    },
+                                    "last_message_at": {
+                                      "type": [
+                                        "string",
+                                        "null"
+                                      ],
+                                      "format": "date-time"
+                                    },
+                                    "waiting_hours": {
+                                      "type": [
+                                        "number",
+                                        "null"
+                                      ],
+                                      "description": "Horas desde a última mensagem recebida."
+                                    },
+                                    "assigned": {
+                                      "type": "boolean"
+                                    },
+                                    "unread_count": {
+                                      "type": "integer"
+                                    }
+                                  }
+                                },
+                                "description": "As piores primeiro. Ausente em `never_engaged`, que é só contagem."
+                              }
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "timestamp": {
+                      "type": "string",
+                      "format": "date-time"
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "data": {
+                    "window": {
+                      "threshold_hours": 4,
+                      "ceiling_hours_by_channel": {
+                        "whatsapp": 24,
+                        "sms": 24,
+                        "telegram": 24,
+                        "webchat": 24
+                      }
+                    },
+                    "buckets": {
+                      "unanswered": {
+                        "count": 7,
+                        "items": [
+                          {
+                            "conversation_id": "6e0a32b9-4237-4753-a2f2-e392313bf457",
+                            "contact_id": "03309ad5-3949-4abd-b688-5a52a08b9ec7",
+                            "channel": "whatsapp",
+                            "channel_account_id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+                            "last_inbound_at": "2026-09-12T02:30:31.382Z",
+                            "last_message_at": "2026-09-12T02:30:31.382Z",
+                            "waiting_hours": 19.8,
+                            "assigned": false,
+                            "unread_count": 1
+                          }
+                        ]
+                      },
+                      "never_engaged": {
+                        "count": 3
+                      }
+                    }
+                  },
+                  "timestamp": "2026-09-12T19:15:20.453Z"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "`INVALID_BUCKET` — Unknown bucket(s): foo. Valid buckets: unanswered, unassigned, automation_only, never_engaged.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErroDaApi"
+                },
+                "example": {
+                  "success": false,
+                  "statusCode": 400,
+                  "timestamp": "2026-09-12T19:15:20.453Z",
+                  "path": "/api/v1/conversations/anomalies",
+                  "method": "GET",
+                  "message": {
+                    "error": "INVALID_BUCKET",
+                    "message": "Unknown bucket(s): foo. Valid buckets: unanswered, unassigned, automation_only, never_engaged.",
+                    "details": {
+                      "valid_buckets": [
+                        "unanswered",
+                        "unassigned",
+                        "automation_only",
+                        "never_engaged"
+                      ],
+                      "opt_in": [
+                        "unassigned",
+                        "automation_only"
+                      ]
+                    }
+                  },
+                  "errorId": "ERR-MTUD0DBO-KKRMP8"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "`UNAUTHORIZED` — Invalid or missing API key.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErroDaApi"
+                },
+                "example": {
+                  "success": false,
+                  "statusCode": 401,
+                  "timestamp": "2026-09-12T19:15:20.453Z",
+                  "path": "/api/v1/conversations/anomalies",
+                  "method": "GET",
+                  "message": {
+                    "error": "UNAUTHORIZED",
+                    "message": "Invalid or missing API key."
+                  },
+                  "errorId": "ERR-MTUD0DBO-KKRMP8"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "`RATE_LIMITED` — Too many requests.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErroDaApi"
+                },
+                "example": {
+                  "success": false,
+                  "statusCode": 429,
+                  "timestamp": "2026-09-12T19:15:20.453Z",
+                  "path": "/api/v1/conversations/anomalies",
+                  "method": "GET",
+                  "message": {
+                    "error": "RATE_LIMITED",
+                    "message": "Too many requests."
+                  },
+                  "errorId": "ERR-MTUD0DBO-KKRMP8"
+                }
+              }
+            }
+          }
         }
       }
     }
