@@ -121,6 +121,9 @@
             "group": "Conversas",
             "icon": "triangle-exclamation",
             "pages": [
+              "GET /conversations",
+              "GET /conversations/{conversation_id}/messages",
+              "GET /attachments/{media_id}",
               "GET /conversations/anomalies"
             ]
           },

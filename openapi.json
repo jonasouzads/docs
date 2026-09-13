@@ -4559,6 +4559,790 @@
           }
         }
       }
+    },
+    "/conversations": {
+      "get": {
+        "tags": [
+          "Conversas"
+        ],
+        "summary": "Listar conversas",
+        "description": "Conversas por atividade recente, com paginação por cursor.\n\n**O filtro por identidade devolve sempre uma lista.** Um mesmo telefone pode estar em conversas de contas de canal diferentes — medimos até 11 no pior caso. Não existe atalho para \"a mais recente\": um recurso que às vezes devolve lista e às vezes devolve um item é armadilha de integração. Quem quer a mais recente lê o primeiro item.\n\nPrefira `channel_identifier` a `phone`: a identidade de canal é praticamente unívoca, o telefone não.",
+        "operationId": "listarConversas",
+        "x-mint": {
+          "href": "/api-reference/conversas/listar"
+        },
+        "parameters": [
+          {
+            "name": "channel",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "`whatsapp`, `telegram`, `webchat`."
+          },
+          {
+            "name": "channel_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Conta de canal, vinda de `GET /v1/channels`."
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "open",
+                "resolved",
+                "archived",
+                "all"
+              ],
+              "default": "open"
+            }
+          },
+          {
+            "name": "assigned",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            },
+            "description": "Com ou sem atendente responsável."
+          },
+          {
+            "name": "since",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "until",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "channel_identifier",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Endereço nativo do contato no canal."
+          },
+          {
+            "name": "phone",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Telefone. Ambíguo por construção — ver acima."
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 25,
+              "maximum": 100
+            }
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "`next_cursor` da página anterior."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Página de conversas.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "items": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "conversation_id": {
+                                "type": "string",
+                                "description": "Identificador estável da conversa. É ele que vai na leitura de mensagens."
+                              },
+                              "contact_id": {
+                                "type": "string"
+                              },
+                              "channel": {
+                                "type": "string"
+                              },
+                              "channel_account_id": {
+                                "type": [
+                                  "string",
+                                  "null"
+                                ]
+                              },
+                              "status": {
+                                "type": "string"
+                              },
+                              "assigned": {
+                                "type": "boolean"
+                              },
+                              "unread_count": {
+                                "type": "integer"
+                              },
+                              "last_message_at": {
+                                "type": [
+                                  "string",
+                                  "null"
+                                ],
+                                "format": "date-time"
+                              },
+                              "last_inbound_at": {
+                                "type": [
+                                  "string",
+                                  "null"
+                                ],
+                                "format": "date-time"
+                              }
+                            }
+                          }
+                        },
+                        "next_cursor": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        }
+                      }
+                    },
+                    "timestamp": {
+                      "type": "string",
+                      "format": "date-time"
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "data": {
+                    "items": [
+                      {
+                        "conversation_id": "7f3e1a24-5b6c-4d8e-9f01-2a3b4c5d6e7f",
+                        "contact_id": "9c8b7a65-4321-4def-8abc-1234567890ab",
+                        "channel": "whatsapp",
+                        "channel_account_id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+                        "status": "open",
+                        "assigned": false,
+                        "unread_count": 2,
+                        "last_message_at": "2026-09-13T02:44:51.602Z",
+                        "last_inbound_at": "2026-09-13T02:44:51.602Z"
+                      }
+                    ],
+                    "next_cursor": "eyJ0IjoiMjAyNi0wOS0xMyJ9"
+                  },
+                  "timestamp": "2026-09-13T03:20:00.000Z"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "`INVALID_PARAM` — limit must be an integer between 1 and 100.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErroDaApi"
+                },
+                "example": {
+                  "success": false,
+                  "statusCode": 400,
+                  "timestamp": "2026-09-13T03:20:00.000Z",
+                  "path": "/api/v1/conversations",
+                  "method": "GET",
+                  "message": {
+                    "error": "INVALID_PARAM",
+                    "message": "limit must be an integer between 1 and 100.",
+                    "details": {
+                      "min": 1,
+                      "max": 100
+                    }
+                  },
+                  "errorId": "ERR-MTUD0DBO-KKRMP8"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "`UNAUTHORIZED` — Invalid or missing API key.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErroDaApi"
+                },
+                "example": {
+                  "success": false,
+                  "statusCode": 401,
+                  "timestamp": "2026-09-13T03:20:00.000Z",
+                  "path": "/api/v1/conversations",
+                  "method": "GET",
+                  "message": {
+                    "error": "UNAUTHORIZED",
+                    "message": "Invalid or missing API key."
+                  },
+                  "errorId": "ERR-MTUD0DBO-KKRMP8"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "`RATE_LIMITED` — Too many requests.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErroDaApi"
+                },
+                "example": {
+                  "success": false,
+                  "statusCode": 429,
+                  "timestamp": "2026-09-13T03:20:00.000Z",
+                  "path": "/api/v1/conversations",
+                  "method": "GET",
+                  "message": {
+                    "error": "RATE_LIMITED",
+                    "message": "Too many requests."
+                  },
+                  "errorId": "ERR-MTUD0DBO-KKRMP8"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/conversations/{conversation_id}/messages": {
+      "get": {
+        "tags": [
+          "Conversas"
+        ],
+        "summary": "Ler mensagens de uma conversa",
+        "description": "Do mais recente para o mais antigo, por cursor. A entrada é só o `conversation_id`.\n\n**Sem `since`, a leitura cobre os últimos 30 dias.** Isso é decisão de produto, não limite técnico — medimos que a paginação profunda é barata e de custo constante. A âncora existe para separar *ler a conversa* de *baixar o histórico inteiro*: para ir além da janela recente, informe `since` e a intenção fica declarada.\n\nA resposta devolve em `window` a janela efetivamente aplicada.\n\n**Mídia não vem como URL.** Cada mensagem traz `media.media_id`; troque por um endereço temporário em `GET /v1/attachments/{media_id}`.\n\nReações não aparecem como mensagens: elas vêm no campo `reactions` da mensagem reagida. Mensagens de sistema e não suportadas vêm com o tipo explícito e sem corpo.",
+        "operationId": "lerMensagensDaConversa",
+        "x-mint": {
+          "href": "/api-reference/conversas/mensagens"
+        },
+        "parameters": [
+          {
+            "name": "conversation_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "since",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "description": "Para ler além dos 30 dias recentes."
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 50,
+              "maximum": 100
+            }
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Página de mensagens.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "items": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "message_id": {
+                                "type": "string"
+                              },
+                              "direction": {
+                                "type": "string",
+                                "description": "`inbound` ou `outbound`."
+                              },
+                              "type": {
+                                "type": "string"
+                              },
+                              "status": {
+                                "type": [
+                                  "string",
+                                  "null"
+                                ]
+                              },
+                              "text": {
+                                "type": [
+                                  "string",
+                                  "null"
+                                ],
+                                "description": "Texto ou legenda. `null` quando o tipo não carrega texto — nunca um rótulo de interface."
+                              },
+                              "media": {
+                                "type": [
+                                  "object",
+                                  "null"
+                                ],
+                                "properties": {
+                                  "media_id": {
+                                    "type": [
+                                      "string",
+                                      "null"
+                                    ],
+                                    "description": "Use em `GET /v1/attachments/{media_id}`. `null` em mensagem antiga sem referência."
+                                  },
+                                  "media_status": {
+                                    "type": "string",
+                                    "description": "Por que não há identificador, quando não há."
+                                  },
+                                  "mime_type": {
+                                    "type": [
+                                      "string",
+                                      "null"
+                                    ]
+                                  },
+                                  "file_size": {
+                                    "type": [
+                                      "integer",
+                                      "null"
+                                    ]
+                                  },
+                                  "filename": {
+                                    "type": [
+                                      "string",
+                                      "null"
+                                    ]
+                                  }
+                                }
+                              },
+                              "reactions": {
+                                "type": "array",
+                                "items": {
+                                  "type": "object"
+                                },
+                                "description": "Reações à ESTA mensagem. Reação não é item próprio da linha do tempo."
+                              },
+                              "sent_at": {
+                                "type": [
+                                  "string",
+                                  "null"
+                                ],
+                                "format": "date-time"
+                              },
+                              "delivered_at": {
+                                "type": [
+                                  "string",
+                                  "null"
+                                ],
+                                "format": "date-time"
+                              },
+                              "read_at": {
+                                "type": [
+                                  "string",
+                                  "null"
+                                ],
+                                "format": "date-time"
+                              },
+                              "failure_reason": {
+                                "type": [
+                                  "string",
+                                  "null"
+                                ]
+                              },
+                              "raw": {
+                                "type": [
+                                  "object",
+                                  "null"
+                                ],
+                                "description": "**Fora de contrato.** Forma interna do conteúdo, útil para tipos que os campos próprios não cobrem. Pode mudar sem aviso."
+                              }
+                            }
+                          }
+                        },
+                        "next_cursor": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "window": {
+                          "type": "object",
+                          "properties": {
+                            "recent_window_days": {
+                              "type": "integer"
+                            },
+                            "since": {
+                              "type": "string",
+                              "format": "date-time"
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "timestamp": {
+                      "type": "string",
+                      "format": "date-time"
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "data": {
+                    "items": [
+                      {
+                        "message_id": "a1",
+                        "direction": "inbound",
+                        "type": "image",
+                        "status": "read",
+                        "text": "olha isto",
+                        "media": {
+                          "media_id": "wamid.HBgN",
+                          "media_status": "available",
+                          "mime_type": "image/jpeg",
+                          "file_size": 84213,
+                          "filename": null
+                        },
+                        "reactions": [],
+                        "sent_at": "2026-09-13T02:44:51.602Z",
+                        "delivered_at": null,
+                        "read_at": "2026-09-13T02:45:10.000Z",
+                        "failure_reason": null,
+                        "raw": {
+                          "mediaId": "wamid.HBgN",
+                          "caption": "olha isto"
+                        }
+                      }
+                    ],
+                    "next_cursor": null,
+                    "window": {
+                      "recent_window_days": 30,
+                      "since": "2026-08-14T03:20:00.000Z"
+                    }
+                  },
+                  "timestamp": "2026-09-13T03:20:00.000Z"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "`INVALID_PARAM` — limit must be an integer between 1 and 100.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErroDaApi"
+                },
+                "example": {
+                  "success": false,
+                  "statusCode": 400,
+                  "timestamp": "2026-09-13T03:20:00.000Z",
+                  "path": "/api/v1/conversations/{id}/messages",
+                  "method": "GET",
+                  "message": {
+                    "error": "INVALID_PARAM",
+                    "message": "limit must be an integer between 1 and 100."
+                  },
+                  "errorId": "ERR-MTUD0DBO-KKRMP8"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "`UNAUTHORIZED` — Invalid or missing API key.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErroDaApi"
+                },
+                "example": {
+                  "success": false,
+                  "statusCode": 401,
+                  "timestamp": "2026-09-13T03:20:00.000Z",
+                  "path": "/api/v1/conversations",
+                  "method": "GET",
+                  "message": {
+                    "error": "UNAUTHORIZED",
+                    "message": "Invalid or missing API key."
+                  },
+                  "errorId": "ERR-MTUD0DBO-KKRMP8"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "`CONVERSATION_NOT_FOUND` — Conversation not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErroDaApi"
+                },
+                "example": {
+                  "success": false,
+                  "statusCode": 404,
+                  "timestamp": "2026-09-13T03:20:00.000Z",
+                  "path": "/api/v1/conversations/{id}/messages",
+                  "method": "GET",
+                  "message": {
+                    "error": "CONVERSATION_NOT_FOUND",
+                    "message": "Conversation not found."
+                  },
+                  "errorId": "ERR-MTUD0DBO-KKRMP8"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "`RATE_LIMITED` — Too many requests.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErroDaApi"
+                },
+                "example": {
+                  "success": false,
+                  "statusCode": 429,
+                  "timestamp": "2026-09-13T03:20:00.000Z",
+                  "path": "/api/v1/conversations",
+                  "method": "GET",
+                  "message": {
+                    "error": "RATE_LIMITED",
+                    "message": "Too many requests."
+                  },
+                  "errorId": "ERR-MTUD0DBO-KKRMP8"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/attachments/{media_id}": {
+      "get": {
+        "tags": [
+          "Conversas"
+        ],
+        "summary": "Resolver anexo",
+        "description": "Troca o `media_id` de uma mensagem por uma **URL temporária**, válida por 15 minutos.\n\nA leitura de mensagens nunca devolve URL nem caminho de armazenamento — só o identificador. Este é o lugar de resolvê-lo, e o link é curto de propósito: ele não deve circular nem ser guardado.\n\nMídia ainda em processamento responde `409` com o estado, em vez de uma URL que não funcionaria.",
+        "operationId": "resolverAnexo",
+        "x-mint": {
+          "href": "/api-reference/conversas/anexo"
+        },
+        "parameters": [
+          {
+            "name": "media_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "O `media.media_id` da mensagem."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "URL temporária.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "media_id": {
+                          "type": "string"
+                        },
+                        "message_id": {
+                          "type": "string"
+                        },
+                        "url": {
+                          "type": "string"
+                        },
+                        "expires_in": {
+                          "type": "integer"
+                        },
+                        "mime_type": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "media_status": {
+                          "type": "string"
+                        }
+                      }
+                    },
+                    "timestamp": {
+                      "type": "string",
+                      "format": "date-time"
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "data": {
+                    "media_id": "wamid.HBgN",
+                    "message_id": "a1",
+                    "url": "https://arquivos.wizebot.com.br/...",
+                    "expires_in": 900,
+                    "mime_type": "image/jpeg",
+                    "media_status": "completed"
+                  },
+                  "timestamp": "2026-09-13T03:20:00.000Z"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "`UNAUTHORIZED` — Invalid or missing API key.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErroDaApi"
+                },
+                "example": {
+                  "success": false,
+                  "statusCode": 401,
+                  "timestamp": "2026-09-13T03:20:00.000Z",
+                  "path": "/api/v1/attachments/{id}",
+                  "method": "GET",
+                  "message": {
+                    "error": "UNAUTHORIZED",
+                    "message": "Invalid or missing API key."
+                  },
+                  "errorId": "ERR-MTUD0DBO-KKRMP8"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "`ATTACHMENT_NOT_FOUND` — Attachment not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErroDaApi"
+                },
+                "example": {
+                  "success": false,
+                  "statusCode": 404,
+                  "timestamp": "2026-09-13T03:20:00.000Z",
+                  "path": "/api/v1/attachments/{id}",
+                  "method": "GET",
+                  "message": {
+                    "error": "ATTACHMENT_NOT_FOUND",
+                    "message": "Attachment not found."
+                  },
+                  "errorId": "ERR-MTUD0DBO-KKRMP8"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "`ATTACHMENT_NOT_READY` — Attachment is not available yet.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErroDaApi"
+                },
+                "example": {
+                  "success": false,
+                  "statusCode": 409,
+                  "timestamp": "2026-09-13T03:20:00.000Z",
+                  "path": "/api/v1/attachments/{id}",
+                  "method": "GET",
+                  "message": {
+                    "error": "ATTACHMENT_NOT_READY",
+                    "message": "Attachment is not available yet.",
+                    "details": {
+                      "media_id": "wamid.HBgN",
+                      "media_status": "pending"
+                    }
+                  },
+                  "errorId": "ERR-MTUD0DBO-KKRMP8"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "`ATTACHMENT_URL_FAILED` — Failed to resolve attachment URL.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErroDaApi"
+                },
+                "example": {
+                  "success": false,
+                  "statusCode": 500,
+                  "timestamp": "2026-09-13T03:20:00.000Z",
+                  "path": "/api/v1/attachments/{id}",
+                  "method": "GET",
+                  "message": {
+                    "error": "ATTACHMENT_URL_FAILED",
+                    "message": "Failed to resolve attachment URL."
+                  },
+                  "errorId": "ERR-MTUD0DBO-KKRMP8"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   }
 }
