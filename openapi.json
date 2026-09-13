@@ -4566,7 +4566,7 @@
           "Conversas"
         ],
         "summary": "Listar conversas",
-        "description": "Conversas por atividade recente, com paginação por cursor.\n\n**O filtro por identidade devolve sempre uma lista.** Um mesmo telefone pode estar em conversas de contas de canal diferentes — medimos até 11 no pior caso. Não existe atalho para \"a mais recente\": um recurso que às vezes devolve lista e às vezes devolve um item é armadilha de integração. Quem quer a mais recente lê o primeiro item.\n\nPrefira `channel_identifier` a `phone`: a identidade de canal é praticamente unívoca, o telefone não.",
+        "description": "Conversas por atividade recente — da mais recente para a mais antiga —, com paginação por cursor.\n\n### Os dois filtros de identidade\n\n**Ambos devolvem sempre uma lista, mesmo quando há um único resultado.** Nunca um objeto solto. Um mesmo telefone pode estar em conversas de contas de canal diferentes — medimos até 11 no pior caso — e um recurso que às vezes devolve lista e às vezes devolve um item é armadilha de integração. Quem quer a mais recente lê o primeiro item de `items`.\n\nOs dois não alcançam o mesmo conjunto, e a diferença importa:\n\n| | `channel_identifier` | `phone` |\n|---|---|---|\n| Precisão | praticamente unívoco | ambíguo: o mesmo número pode ser contatos diferentes em contas diferentes |\n| Cobertura | não encontra contato sem vínculo de canal registrado | encontra |\n\n**Prefira `channel_identifier` quando souber o endereço nativo** — ele é o identificador real do contato naquele canal. Mas saiba que ele depende de um vínculo que nem todo contato antigo tem: hoje, cerca de **5% das conversas ativas** pertencem a contatos sem esse vínculo, e para elas só o filtro `phone` responde. Se você busca por identidade e não encontra uma conversa que sabe existir, tente por `phone` antes de concluir que ela não existe.\n\n<Note>\n  Isso afeta **apenas os dois filtros de identidade**. A listagem sem filtro de identidade, a leitura de mensagens e a resolução de anexo não dependem desse vínculo e devolvem tudo normalmente.\n</Note>\n\n### O que a resposta não traz\n\n**Não há contagem de mensagens da conversa.** O contador que existe internamente está incorreto — ele só soma e nunca subtrai quando mensagens são removidas —, e publicar um número errado seria pior que não publicar nenhum. Para saber quantas mensagens uma conversa tem, pagine `GET /v1/conversations/{id}/messages`.",
         "operationId": "listarConversas",
         "x-mint": {
           "href": "/api-reference/conversas/listar"
@@ -4847,7 +4847,7 @@
           "Conversas"
         ],
         "summary": "Ler mensagens de uma conversa",
-        "description": "Do mais recente para o mais antigo, por cursor. A entrada é só o `conversation_id`.\n\n**Sem `since`, a leitura cobre os últimos 30 dias.** Isso é decisão de produto, não limite técnico — medimos que a paginação profunda é barata e de custo constante. A âncora existe para separar *ler a conversa* de *baixar o histórico inteiro*: para ir além da janela recente, informe `since` e a intenção fica declarada.\n\nA resposta devolve em `window` a janela efetivamente aplicada.\n\n**Mídia não vem como URL.** Cada mensagem traz `media.media_id`; troque por um endereço temporário em `GET /v1/attachments/{media_id}`.\n\nReações não aparecem como mensagens: elas vêm no campo `reactions` da mensagem reagida. Mensagens de sistema e não suportadas vêm com o tipo explícito e sem corpo.",
+        "description": "Do mais recente para o mais antigo, por cursor. A entrada é só o `conversation_id`.\n\n### A janela recente\n\n**Sem `since`, a leitura cobre os últimos 30 dias.** Isso é decisão de produto, não limite técnico — medimos que a paginação profunda é barata e de custo constante, então o teto não existe para proteger o servidor. Ele existe para separar *ler a conversa* de *baixar o histórico inteiro*: para alcançar o que está além da janela, informe `since` e a intenção fica declarada na requisição.\n\nA resposta devolve em `window` a janela efetivamente aplicada, para você nunca precisar adivinhar.\n\n### Mídia vem em dois passos\n\nA mensagem **nunca** traz URL nem caminho de armazenamento. Ela traz `media.media_id`; troque por um endereço temporário em `GET /v1/attachments/{media_id}`.\n\n<Warning>\n  Quando `media.media_id` vier **`null`**, não há arquivo a resolver — não tente chamar o anexo. O campo `media.media_status` diz o porquê, e `no_reference` significa mensagem antiga, anterior ao registro interno de mídia. O campo nunca é omitido: se a mensagem é de mídia, o bloco `media` existe.\n</Warning>\n\n### Formas especiais\n\nReações **não** aparecem como mensagens próprias: elas vêm no campo `reactions` da mensagem reagida. Mensagens de sistema e não suportadas vêm com o tipo explícito e sem corpo — `text`, `media` e `raw` nulos.\n\n<Note>\n  O campo **`raw` está fora de contrato**. Ele carrega a forma interna do conteúdo, útil para os tipos que os campos próprios não cobrem, e **pode mudar sem aviso** — inclusive entre versões sem nota de mudança. Não construa integração que dependa da forma dele.\n</Note>\n\nEsta leitura também não traz contagem de mensagens da conversa; veja a nota em `GET /v1/conversations`.",
         "operationId": "lerMensagensDaConversa",
         "x-mint": {
           "href": "/api-reference/conversas/mensagens"
@@ -5175,7 +5175,7 @@
           "Conversas"
         ],
         "summary": "Resolver anexo",
-        "description": "Troca o `media_id` de uma mensagem por uma **URL temporária**, válida por 15 minutos.\n\nA leitura de mensagens nunca devolve URL nem caminho de armazenamento — só o identificador. Este é o lugar de resolvê-lo, e o link é curto de propósito: ele não deve circular nem ser guardado.\n\nMídia ainda em processamento responde `409` com o estado, em vez de uma URL que não funcionaria.",
+        "description": "Troca o `media_id` de uma mensagem por uma **URL temporária**, válida por **15 minutos** (`expires_in: 900`).\n\nA leitura de mensagens nunca devolve URL nem caminho de armazenamento — só o identificador. Este é o lugar de resolvê-lo, e o link é curto de propósito: ele não deve circular, ser guardado nem repassado. Baixe o arquivo e resolva de novo quando precisar.\n\nMídia ainda em processamento responde `409` com o estado, em vez de uma URL que não funcionaria.\n\n<Note>\n  Só chame este endereço quando `media.media_id` não for `null`. Identificador nulo significa que não há arquivo registrado, e a chamada responderia `404`.\n</Note>\n\nEste recurso não depende do vínculo de identidade de canal: qualquer anexo da sua empresa resolve.",
         "operationId": "resolverAnexo",
         "x-mint": {
           "href": "/api-reference/conversas/anexo"
@@ -5313,6 +5313,28 @@
                       "media_id": "wamid.HBgN",
                       "media_status": "pending"
                     }
+                  },
+                  "errorId": "ERR-MTUD0DBO-KKRMP8"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "`RATE_LIMITED` — Too many requests.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErroDaApi"
+                },
+                "example": {
+                  "success": false,
+                  "statusCode": 429,
+                  "timestamp": "2026-09-13T03:20:00.000Z",
+                  "path": "/api/v1/attachments/{id}",
+                  "method": "GET",
+                  "message": {
+                    "error": "RATE_LIMITED",
+                    "message": "Too many requests."
                   },
                   "errorId": "ERR-MTUD0DBO-KKRMP8"
                 }
