@@ -1,0 +1,473 @@
+---
+title: 'Encaminhamento de mensagens por webhook'
+sidebarTitle: 'Encaminhamento de mensagens'
+description: 'Receba no seu sistema as mensagens que chegam e as que saem da sua conta, em tempo real, por HTTP POST'
+icon: 'share'
+---
+
+O encaminhamento envia para uma URL sua cada mensagem que entra ou sai da sua conta na WizeBot. Use para alimentar um CRM, uma planilha, um N8N ou um Make, ou qualquer sistema que aceite webhooks.
+
+Cada mensagem vira um `POST` com um corpo JSON de formato fixo: campos que não se aplicam vêm como `null` ou `false`, nunca são omitidos.
+
+<Note>
+  Esta página trata do **envio** de mensagens da WizeBot para o seu sistema. Para o caminho inverso, em que uma plataforma externa dispara mensagens na WizeBot, veja [Automações com webhooks](/tutoriais/integracoes/webhooks).
+</Note>
+
+## Onde configurar
+
+Acesse **Configurações › Webhook** e clique em **Novo Webhook**. Você pode ter mais de um webhook, cada um com a própria URL e os próprios filtros.
+
+| Campo | O que define |
+|---|---|
+| **Nome** | Como o webhook aparece na lista |
+| **URL de destino** | Endereço que recebe o `POST`. Use `https` |
+| **Conta WhatsApp** | **Todas as contas**, ou uma conta específica. Com uma conta escolhida, só chegam mensagens dessa conta |
+| **Eventos** | **Mensagens recebidas (inbound)**, **Mensagens enviadas (outbound)**, ou as duas. Sem nenhuma marcada, o webhook recebe todos os eventos |
+| **Mensagens enviadas** | Aparece quando as mensagens enviadas fazem parte do webhook. Escolha **Todas as mensagens** ou **Escolher tipos** |
+| **Secret (HMAC-SHA256)** | Opcional. Com ele preenchido, toda requisição sai assinada (veja **Assinatura HMAC-SHA256**) |
+
+### Todas as mensagens ou só alguns tipos
+
+Em **Mensagens enviadas** você decide quais mensagens que saem da sua conta chegam ao webhook:
+
+- **Todas as mensagens**: toda mensagem enviada, inclusive de tipos que a WizeBot venha a criar depois.
+- **Escolher tipos**: só os tipos marcados. É preciso marcar pelo menos um.
+
+| Tipo na tela | Valor em `data.origin` | O que cobre |
+|---|---|---|
+| Atendente | `attendant` | Mensagens que a sua equipe envia pela caixa de entrada, em qualquer canal |
+| Modelo enviado pelo atendente | `attendant_template` | Modelos aprovados enviados por um atendente na conversa |
+| Resposta pelo celular | `phone_echo` | Respostas dadas pelo aplicativo WhatsApp Business no celular conectado à conta (coexistência) |
+| Agente de IA | `ai_agent` | Respostas do agente de IA, inclusive áudio, mídias do catálogo e mensagens de acompanhamento |
+| Fluxos | `flow` | Mensagens de fluxos, inclusive fluxos padrões (boas-vindas, resposta padrão, pós-atendimento), modelos e SMS enviados por fluxo, e mensagens disparadas pelas [automações com webhooks](/tutoriais/integracoes/webhooks) |
+| Campanhas | `campaign` | Mensagens de campanha |
+| Sequências | `sequence` | Mensagens de sequência |
+| API | `api` | Mensagens enviadas pela API da WizeBot |
+
+Um webhook novo já vem com **Todas as mensagens** selecionado.
+
+<Warning>
+  **Webhooks criados antes desta opção recebem só mensagens do atendente** (`attendant`), exatamente como antes. Ao abrir um desses webhooks, a tela mostra **Escolher tipos** com só **Atendente** marcado. Nada muda até você alterar a seleção e salvar.
+</Warning>
+
+## Eventos
+
+| Evento | Quando dispara |
+|---|---|
+| `message.received` | Um contato enviou uma mensagem para a sua conta de WhatsApp |
+| `message.sent` | Uma mensagem saiu da sua conta e foi aceita pelo canal, de um dos tipos escolhidos em **Mensagens enviadas** |
+
+Mensagem enviada só é encaminhada depois que o canal aceita o envio. Envio recusado não gera `message.sent`.
+
+## Formato do envio
+
+Todo envio tem o mesmo envelope:
+
+| Campo | Tipo | O que traz |
+|---|---|---|
+| `event` | `string` | `message.received` ou `message.sent` |
+| `timestamp` | `string` | Data e hora, em ISO 8601 (UTC), em que o encaminhamento foi gerado. Não é a hora da mensagem no WhatsApp |
+| `data` | `object` | A mensagem, com os campos abaixo |
+
+### Campos de `data`
+
+| Campo | Tipo | Pode ser nulo | Direção | O que traz |
+|---|---|---|---|---|
+| `messageId` | `string` | Não | As duas | Identificador da mensagem no canal (no WhatsApp, o `wamid`). Em mensagem enviada sem identificador do canal, vem o identificador interno da WizeBot |
+| `from` | `string` | Não | As duas | Telefone (ou identificador) do **contato**. Na mensagem enviada, apesar do nome, é o destinatário |
+| `contactName` | `string` | Sim | As duas | Nome do contato. Na recebida, o nome do perfil do WhatsApp; na enviada, o nome salvo no contato |
+| `body` | `string` | Sim | As duas | Texto da mensagem. Veja a seção **Diferenças por tipo de mensagem** |
+| `type` | `string` | Não | As duas | Tipo da mensagem: `text`, `image`, `audio`, `video`, `document`, `sticker`, `template`, `interactive`, `button`, `location`, `contacts`, entre outros |
+| `phoneNumber` | `string` | Não | As duas | Número da sua conta que recebeu ou enviou. O formato pode variar entre mensagens recebidas e enviadas: compare só os dígitos. Vem vazio em SMS enviado por fluxo |
+| `mediaUrl` | `string` | Sim | As duas | Endereço do arquivo de mídia. Veja **Mídia**, em **Diferenças por tipo de mensagem** |
+| `caption` | `string` | Sim | As duas | Legenda de imagem, vídeo ou documento |
+| `direction` | `string` | Não | As duas | `inbound` (recebida) ou `outbound` (enviada) |
+| `mimeType` | `string` | Sim | As duas | Tipo do arquivo de mídia, por exemplo `image/jpeg` |
+| `fileName` | `string` | Sim | As duas | Nome do arquivo, em documentos |
+| `sentBy` | `string` | Sim | Enviada | Nome do atendente que enviou, nos tipos `attendant` e `attendant_template`. Nos demais, `null` |
+| `source` | `string` | Sim | Enviada | Mantido por compatibilidade: `chat` em mensagem do atendente (`attendant`) e `null` em todo o resto. **Integrações novas devem usar `origin`** |
+| `origin` | `string` | Sim | Enviada | Tipo da mensagem enviada, com os valores da tabela em **Todas as mensagens ou só alguns tipos**. `null` em mensagem recebida |
+| `forwarded` | `boolean` | Não | Recebida | `true` se o contato encaminhou a mensagem de outra conversa. Sempre `false` na enviada |
+| `frequentlyForwarded` | `boolean` | Não | Recebida | `true` se a mensagem já foi encaminhada muitas vezes. Sempre `false` na enviada |
+| `referral` | `object` | Sim | Recebida | Dados do anúncio quando o contato chegou por um anúncio de clique para o WhatsApp. Veja **Anúncio de clique para o WhatsApp** |
+| `referredProduct` | `object` | Sim | Recebida | Produto do catálogo que originou a mensagem: `catalogId` e `productRetailerId` |
+
+<Note>
+  Os campos seguem `camelCase`, diferente do `snake_case` da [API da WizeBot](/api-reference/introducao).
+</Note>
+
+## Diferenças por tipo de mensagem
+
+### Texto
+
+`body` traz o texto. `mediaUrl`, `caption`, `mimeType` e `fileName` vêm `null`.
+
+### Mídia
+
+Imagem, áudio, vídeo, documento e figurinha. `body` vem `null`; a legenda, quando existe, vem em `caption`.
+
+- **Recebida:** `mediaUrl` é o endereço público do arquivo, guardado pela WizeBot. O encaminhamento acontece depois que o arquivo foi baixado do WhatsApp, por isso pode chegar alguns segundos depois de uma mensagem de texto enviada no mesmo momento. Se o arquivo não puder ser obtido do WhatsApp, a mensagem é encaminhada assim mesmo, com `mediaUrl: null`.
+- **Enviada:** `mediaUrl` é o endereço do arquivo usado no envio.
+- **Resposta pelo celular** (`phone_echo`): vem com `mediaUrl: null`. O tipo, a legenda e o nome do arquivo vêm preenchidos quando existem.
+
+### Botão e lista
+
+Quando o contato toca num botão ou escolhe um item de lista, chega um `message.received` com `type` `interactive` (botão ou lista de mensagem interativa) ou `button` (botão de modelo). `body` vem `null`: **a opção escolhida não vem no encaminhamento**.
+
+Na mensagem enviada com botões ou lista, `type` é `interactive` e `body` traz o texto principal da mensagem. Os botões não vêm.
+
+### Resposta de formulário
+
+A resposta de um formulário do WhatsApp chega como `message.received` com `type` `interactive` e `body` `null`. **As respostas preenchidas não vêm no encaminhamento.**
+
+### Modelo
+
+Na mensagem enviada com `type` `template`, `body` traz o texto do corpo do modelo com as variáveis já preenchidas. Cabeçalho e botões não vêm, e `mediaUrl` vem `null` mesmo quando o modelo tem cabeçalho de mídia.
+
+### Anúncio de clique para o WhatsApp
+
+A mensagem que o contato envia ao chegar por um anúncio traz `referral` preenchido:
+
+| Campo | O que traz |
+|---|---|
+| `sourceUrl` | Endereço do anúncio |
+| `sourceId` | Identificador do anúncio |
+| `sourceType` | Tipo da origem, por exemplo `ad` |
+| `headline` | Título do anúncio |
+| `body` | Texto do anúncio |
+| `mediaType` | Tipo de mídia do anúncio |
+| `ctwaClid` | Identificador do clique, para atribuição |
+
+Qualquer um desses campos pode vir `null`.
+
+### Localização, contatos e outros
+
+Mensagens de localização, cartão de contato e pedido chegam com o `type` correspondente e `body` `null`. O conteúdo delas não vem no encaminhamento.
+
+## Exemplos
+
+Todos os dados abaixo são fictícios.
+
+<AccordionGroup>
+  <Accordion title="Mensagem recebida: texto">
+```json
+{
+  "event": "message.received",
+  "timestamp": "2026-11-03T14:30:05.120Z",
+  "data": {
+    "messageId": "wamid.EXEMPLO0000000000000000000001",
+    "from": "5511900000001",
+    "contactName": "Cliente Exemplo",
+    "body": "Bom dia, meu pedido já saiu?",
+    "type": "text",
+    "phoneNumber": "5511300000000",
+    "mediaUrl": null,
+    "caption": null,
+    "direction": "inbound",
+    "mimeType": null,
+    "fileName": null,
+    "sentBy": null,
+    "source": null,
+    "origin": null,
+    "forwarded": false,
+    "frequentlyForwarded": false,
+    "referral": null,
+    "referredProduct": null
+  }
+}
+```
+  </Accordion>
+  <Accordion title="Mensagem recebida: mídia">
+```json
+{
+  "event": "message.received",
+  "timestamp": "2026-11-03T14:31:10.480Z",
+  "data": {
+    "messageId": "wamid.EXEMPLO0000000000000000000002",
+    "from": "5511900000001",
+    "contactName": "Cliente Exemplo",
+    "body": null,
+    "type": "image",
+    "phoneNumber": "5511300000000",
+    "mediaUrl": "https://arquivos.exemplo.com/midia/foto-exemplo.jpg",
+    "caption": "Foto do produto que chegou",
+    "direction": "inbound",
+    "mimeType": "image/jpeg",
+    "fileName": null,
+    "sentBy": null,
+    "source": null,
+    "origin": null,
+    "forwarded": false,
+    "frequentlyForwarded": false,
+    "referral": null,
+    "referredProduct": null
+  }
+}
+```
+  </Accordion>
+  <Accordion title="Mensagem recebida: anúncio">
+```json
+{
+  "event": "message.received",
+  "timestamp": "2026-11-03T14:32:00.000Z",
+  "data": {
+    "messageId": "wamid.EXEMPLO0000000000000000000003",
+    "from": "5511900000002",
+    "contactName": "Contato Fictício",
+    "body": "Olá! Quero saber mais sobre a promoção",
+    "type": "text",
+    "phoneNumber": "5511300000000",
+    "mediaUrl": null,
+    "caption": null,
+    "direction": "inbound",
+    "mimeType": null,
+    "fileName": null,
+    "sentBy": null,
+    "source": null,
+    "origin": null,
+    "forwarded": false,
+    "frequentlyForwarded": false,
+    "referral": {
+      "sourceUrl": "https://anuncio.exemplo.com/123",
+      "sourceId": "000000000000000",
+      "sourceType": "ad",
+      "headline": "Promoção de exemplo",
+      "body": "Texto fictício do anúncio",
+      "mediaType": "image",
+      "ctwaClid": "EXEMPLO_CLID_0001"
+    },
+    "referredProduct": null
+  }
+}
+```
+  </Accordion>
+  <Accordion title="Mensagem enviada: atendente">
+```json
+{
+  "event": "message.sent",
+  "timestamp": "2026-11-03T14:33:20.010Z",
+  "data": {
+    "messageId": "wamid.EXEMPLO0000000000000000000004",
+    "from": "5511900000001",
+    "contactName": "Cliente Exemplo",
+    "body": "Saiu sim! Chega amanhã até as 18h.",
+    "type": "text",
+    "phoneNumber": "+55 11 3000 0000",
+    "mediaUrl": null,
+    "caption": null,
+    "direction": "outbound",
+    "mimeType": null,
+    "fileName": null,
+    "sentBy": "Atendente Exemplo",
+    "source": "chat",
+    "origin": "attendant",
+    "forwarded": false,
+    "frequentlyForwarded": false,
+    "referral": null,
+    "referredProduct": null
+  }
+}
+```
+  </Accordion>
+  <Accordion title="Mensagem enviada: modelo enviado pelo atendente">
+```json
+{
+  "event": "message.sent",
+  "timestamp": "2026-11-03T14:34:45.300Z",
+  "data": {
+    "messageId": "wamid.EXEMPLO0000000000000000000005",
+    "from": "5511900000003",
+    "contactName": "Contato Fictício",
+    "body": "Olá, Contato! Seu pedido 0000 foi confirmado.",
+    "type": "template",
+    "phoneNumber": "+55 11 3000 0000",
+    "mediaUrl": null,
+    "caption": null,
+    "direction": "outbound",
+    "mimeType": null,
+    "fileName": null,
+    "sentBy": "Atendente Exemplo",
+    "source": null,
+    "origin": "attendant_template",
+    "forwarded": false,
+    "frequentlyForwarded": false,
+    "referral": null,
+    "referredProduct": null
+  }
+}
+```
+  </Accordion>
+  <Accordion title="Mensagem enviada: fluxo">
+```json
+{
+  "event": "message.sent",
+  "timestamp": "2026-11-03T14:35:02.700Z",
+  "data": {
+    "messageId": "wamid.EXEMPLO0000000000000000000006",
+    "from": "5511900000002",
+    "contactName": "Contato Fictício",
+    "body": "Obrigado pelo contato! Escolha uma opção abaixo.",
+    "type": "interactive",
+    "phoneNumber": "+55 11 3000 0000",
+    "mediaUrl": null,
+    "caption": null,
+    "direction": "outbound",
+    "mimeType": null,
+    "fileName": null,
+    "sentBy": null,
+    "source": null,
+    "origin": "flow",
+    "forwarded": false,
+    "frequentlyForwarded": false,
+    "referral": null,
+    "referredProduct": null
+  }
+}
+```
+  </Accordion>
+  <Accordion title="Mensagem enviada: agente de IA">
+```json
+{
+  "event": "message.sent",
+  "timestamp": "2026-11-03T14:36:15.900Z",
+  "data": {
+    "messageId": "wamid.EXEMPLO0000000000000000000007",
+    "from": "5511900000004",
+    "contactName": "Cliente Exemplo",
+    "body": "Nosso horário de atendimento é de segunda a sexta, das 9h às 18h.",
+    "type": "text",
+    "phoneNumber": "+55 11 3000 0000",
+    "mediaUrl": null,
+    "caption": null,
+    "direction": "outbound",
+    "mimeType": null,
+    "fileName": null,
+    "sentBy": null,
+    "source": null,
+    "origin": "ai_agent",
+    "forwarded": false,
+    "frequentlyForwarded": false,
+    "referral": null,
+    "referredProduct": null
+  }
+}
+```
+  </Accordion>
+  <Accordion title="Mensagem enviada: campanha">
+```json
+{
+  "event": "message.sent",
+  "timestamp": "2026-11-03T15:00:00.450Z",
+  "data": {
+    "messageId": "wamid.EXEMPLO0000000000000000000008",
+    "from": "5511900000005",
+    "contactName": "Contato Fictício",
+    "body": "Oi, Contato! Nossa liquidação de exemplo começa hoje.",
+    "type": "template",
+    "phoneNumber": "+55 11 3000 0000",
+    "mediaUrl": null,
+    "caption": null,
+    "direction": "outbound",
+    "mimeType": null,
+    "fileName": null,
+    "sentBy": null,
+    "source": null,
+    "origin": "campaign",
+    "forwarded": false,
+    "frequentlyForwarded": false,
+    "referral": null,
+    "referredProduct": null
+  }
+}
+```
+  </Accordion>
+</AccordionGroup>
+
+<Note>
+  Respostas longas do agente de IA podem ser enviadas em várias partes. Nesse caso, cada parte chega como um `message.sent` separado.
+</Note>
+
+## Cabeçalhos
+
+| Cabeçalho | Valor |
+|---|---|
+| `Content-Type` | `application/json` |
+| `User-Agent` | `WizeBot-Webhook/1.0` |
+| `X-Webhook-Event` | O mesmo valor de `event` |
+| `X-Webhook-Delivery` | Identificador da tentativa de entrega. Muda a cada tentativa |
+| `X-Webhook-Signature` | `sha256=` seguido da assinatura em hexadecimal. Só existe quando o webhook tem **Secret** |
+
+## Assinatura HMAC-SHA256
+
+Com o **Secret** preenchido, a WizeBot calcula o HMAC-SHA256 do corpo da requisição, usando o secret como chave, e envia o resultado em hexadecimal no cabeçalho `X-Webhook-Signature`, com o prefixo `sha256=`.
+
+Para validar:
+
+<Steps>
+  <Step title="Use o corpo bruto">
+    Calcule a assinatura sobre os bytes do corpo **exatamente como chegaram**, antes de converter o JSON. Reconverter o objeto para texto pode mudar espaços ou a ordem dos campos e invalidar a comparação.
+  </Step>
+  <Step title="Calcule e compare">
+    Calcule o HMAC-SHA256 do corpo com o seu secret, acrescente o prefixo `sha256=` e compare com o cabeçalho. No seu servidor, use uma comparação de tempo constante.
+  </Step>
+  <Step title="Recuse o que não bate">
+    Responda com erro e descarte o conteúdo quando a assinatura não bater.
+  </Step>
+</Steps>
+
+Para conferir manualmente uma requisição salva, com o corpo gravado em `corpo.json`:
+
+```bash
+SECRET='seu-secret'
+RECEBIDA='sha256=valor-do-cabecalho-X-Webhook-Signature'
+
+ESPERADA="sha256=$(openssl dgst -sha256 -hmac "$SECRET" < corpo.json | awk '{print $NF}')"
+
+[ "$ESPERADA" = "$RECEBIDA" ] && echo "assinatura válida" || echo "assinatura inválida"
+```
+
+## Entrega
+
+| Item | Comportamento |
+|---|---|
+| Sucesso | Qualquer resposta `2xx` |
+| Tempo limite | 30 segundos por tentativa |
+| Novas tentativas | Respostas `4xx` e `5xx`, tempo esgotado e erro de conexão geram nova tentativa |
+| Total de tentativas | 5 por mensagem, com espera de 3, 6, 12 e 24 segundos entre elas |
+| Redirecionamentos | Seguidos até 3 vezes |
+| Outras respostas | Qualquer resposta fora de `2xx` conta como falha |
+
+### Desativação automática
+
+Cada tentativa que falha soma uma falha seguida, e cada entrega com sucesso zera a contagem. Ao chegar a **50 falhas seguidas**, o webhook é desativado automaticamente e para de receber mensagens.
+
+Para reativar, corrija o problema no seu servidor e clique em **Resetar** no card do webhook, em **Configurações › Webhook**. Isso zera a contagem e volta a ativar o webhook. Só ligar o webhook de novo, sem resetar, mantém a contagem: a próxima falha o desativa outra vez.
+
+### Mensagens repetidas
+
+A mesma mensagem pode chegar mais de uma vez, por exemplo quando o seu servidor processa a requisição mas demora mais que o tempo limite para responder. Para não processar duas vezes, use a combinação de `event` com `data.messageId` como chave.
+
+<Warning>
+  Não use `X-Webhook-Delivery` para descartar repetição: ele muda a cada tentativa de entrega da mesma mensagem.
+</Warning>
+
+<Steps>
+  <Step title="Responda rápido">
+    Responda `200` assim que receber e processe depois. Processamento demorado dentro da requisição aumenta a chance de nova tentativa.
+  </Step>
+  <Step title="Não dependa da ordem">
+    Mensagens podem chegar fora da ordem em que aconteceram, inclusive por causa das novas tentativas.
+  </Step>
+</Steps>
+
+## Testar a configuração
+
+O botão **Enviar teste**, no card do webhook, manda um `message.received` de exemplo só para aquele webhook, desde que ele esteja ativo. O `messageId` do teste começa com `test-`.
+
+## Limitações atuais
+
+- **Status de entrega não é encaminhado.** Os eventos de enviado, entregue, lido e falha não geram encaminhamento. Para saber se um envio foi entregue ou lido, use a [consulta de status](/api-reference/whatsapp/status-da-mensagem).
+- **Reações não são encaminhadas**, nem as recebidas nem as enviadas.
+- **Mensagens recebidas só são encaminhadas no WhatsApp.** Mensagens recebidas no Telegram, no chat do site ou por SMS não geram `message.received`.
+- **Mensagens enviadas em outros canais** (Telegram, chat do site e SMS por fluxo) só chegam a webhooks com **Todas as contas** em **Conta WhatsApp**.
+- **Conteúdo que não vem no encaminhamento:** a opção escolhida em botões e listas, as respostas de formulários, o conteúdo de localização, de cartão de contato e de pedido, e o cabeçalho e os botões de modelos.

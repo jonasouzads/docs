@@ -67,7 +67,8 @@
         "group": "Automação",
         "icon": "bolt",
         "pages": [
-          "tutoriais/integracoes/webhooks"
+          "tutoriais/integracoes/webhooks",
+          "tutoriais/integracoes/encaminhamento-webhook"
         ]
       },
       {
